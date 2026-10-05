@@ -630,19 +630,25 @@ input,textarea{cursor:text}
 .pk-area.phys .pk-zone .mono,.pk-area.phys .pk-zone b{display:none}
 .cart{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;transform-origin:var(--ox,75%) 92%}
 .cart.back{z-index:0}.cart.front{z-index:6}
-.cart .red{fill:#D7263D}.cart .red2{fill:#B01C30}
-.cart .fur{fill:#FFFFFF;stroke:#E4E1DC;stroke-width:1.5}
-.cart .pom{fill:#FFFFFF;stroke:#E4E1DC;stroke-width:1.5}
-.cart .shade{fill:#000;opacity:.12}
-.pk-area.bump .cart{animation:cart-bump .5s cubic-bezier(.3,1.6,.5,1)}
+.pot-liq{transition:fill .6s}
+.pot-glow stop{transition:stop-color .6s}
+.pot .bub{transform-box:fill-box;transform-origin:center;animation:bub calc(1.8s / var(--heat,1)) ease-in infinite}
+@keyframes bub{0%{transform:translateY(6px) scale(.2);opacity:0}30%{opacity:1}80%{transform:translateY(-26px) scale(1);opacity:.9}100%{transform:translateY(-34px) scale(1.25);opacity:0}}
+.pot .fl{transform-box:fill-box;transform-origin:50% 100%;animation:flame .5s ease-in-out infinite alternate}
+.pot .fl:nth-of-type(2n){animation-duration:.37s}.pot .fl:nth-of-type(3n){animation-duration:.61s}
+@keyframes flame{from{transform:scale(1,1) skewX(-4deg)}to{transform:scale(.86,1.18) skewX(5deg)}}
+.pk-area.bump .cart.back,.pk-area.bump .cart.front{animation:cart-bump .5s cubic-bezier(.3,1.6,.5,1)}
 .pk-area.leaving{overflow:visible}
-.santa{position:absolute;left:0;bottom:-4px;width:250px;height:330px;z-index:8;pointer-events:none;display:none;will-change:transform}
-.pk-area.phys .santa{display:block}
-.santa svg{width:100%;height:100%;overflow:visible}
-.santa-say{position:absolute;left:50%;top:-6px;transform:translateX(-50%);white-space:nowrap;background:#fff;color:#101217;border:1.5px solid #101217;border-radius:14px;padding:6px 12px;font-size:13px;font-weight:600;opacity:0;transition:opacity .25s}
-.santa.talk .santa-say{opacity:1}
-.santa-say{transform:translateX(-50%) scaleX(var(--f,1))}
-@keyframes cart-bump{0%{transform:none}30%{transform:rotate(-2.2deg) translateY(3px)}60%{transform:rotate(1.2deg)}100%{transform:none}}
+.pk-area.boom .cart{opacity:0;transform:scale(.6);transition:opacity .08s,transform .08s}
+.brew-fx{position:absolute;left:-320px;top:-320px;width:calc(100% + 640px);height:calc(100% + 640px);z-index:9;pointer-events:none}
+.brew-logo{position:absolute;z-index:10;transform:translate(-50%,-50%) scale(.2);opacity:0;display:flex;flex-direction:column;align-items:center;gap:14px;pointer-events:none;text-align:center}
+.brew-logo.on{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto;transition:opacity .25s,transform .9s cubic-bezier(.2,1.7,.4,1)}
+.brew-logo .bm{width:118px;height:118px;border-radius:30px;background:#101217;position:relative;box-shadow:0 0 0 10px rgba(255,255,255,.7),0 30px 60px -20px rgba(155,107,255,.9),0 0 90px 20px rgba(255,200,90,.55)}
+.brew-logo .bm::after{content:"";position:absolute;inset:30px 30px 30px 56px;background:#fff;border-radius:6px}
+.brew-logo .wm{font-family:var(--f-display);font-weight:700;font-size:64px;letter-spacing:-.05em;line-height:1;background:linear-gradient(90deg,#FF4F8B,#FF8A3D,#9B6BFF,#2E8BFF);-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .06em .1em}
+.brew-logo .tg{white-space:nowrap;font-size:15px;color:var(--ink-2);background:var(--board);padding:6px 14px;border-radius:999px;border:1px solid var(--line)}
+.brew-logo .btn{pointer-events:auto}
+@keyframes cart-bump{0%{transform:none}30%{transform:rotate(-1.6deg) translateY(4px)}60%{transform:rotate(1deg)}100%{transform:none}}
 .cart-badge{position:absolute;z-index:7;display:none;align-items:center;gap:8px;pointer-events:none;font-weight:600;font-size:14px;background:var(--ink);color:var(--board);border-radius:999px;padding:6px 12px 6px 8px;transform:translate(-50%,-50%)}
 .cart-badge b{display:grid;place-items:center;min-width:24px;height:24px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-size:13px;padding:0 6px}
 .pk-area.phys .cart-badge{display:flex}
@@ -846,7 +852,7 @@ footer{padding-block:28px 48px}
     <nav class="dock" id="dock" aria-label="Bölümler">
   <a href="#top" style="--c:#101217"><span>Giriş</span></a>
   <a href="#hizmetler" style="--c:#2E43FF"><span>Hizmetler</span></a>
-  <a href="#paket" style="--c:#0C9F63"><span>Şapkayı doldur</span></a>
+  <a href="#paket" style="--c:#0C9F63"><span>İksirini karıştır</span></a>
   <a href="#dene" style="--c:#D9306F"><span>Markanızı deneyin</span></a>
   <a href="#bot" style="--c:#7044F2"><span>WhatsApp asistanı</span></a>
   <a href="#kareler" style="--c:#E39A12;--t:#101217"><span>İşler</span></a>
@@ -1054,9 +1060,9 @@ footer{padding-block:28px 48px}
 <section class="sec" id="paket" style="padding-top:0">
   <div class="wrap pk">
     <div class="pk-side">
-      <div class="eyebrow">Paketini kur</div>
-      <h2>Şapkayı doldurun.</h2>
-      <p>İşleri şapkaya fırlatın ya da üstüne tıklayın, kendileri uçsun. Listede yoksa yazın, o da şapkaya uçar. İşiniz bitince aşağı kaydırın: Noel Baba şapkayı alıp götürür.</p>
+      <div class="eyebrow">İksir kazanı</div>
+      <h2>İksirinizi karıştırın.</h2>
+      <p>İstediğiniz işleri kazana fırlatın ya da üstüne tıklayın. Her iş iksirin rengini değiştirir. Listede yoksa yazın, o da kazana düşer. Karışım hazır olunca aşağı kaydırın.</p>
       <form class="add" id="addForm" autocomplete="off">
         <label for="addIn" class="sr">Listede olmayan iş</label>
         <input id="addIn" type="text" placeholder="Örn. menü tasarımı, podcast, TikTok…" maxlength="40">
@@ -1064,21 +1070,21 @@ footer{padding-block:28px 48px}
       </form>
       <div class="toast" id="toast" aria-live="polite"></div>
       <div class="sum" id="sum">
-        <div class="sum-top"><b>Şapkadakiler</b><span class="mono" id="sumCount">0 iş</span></div>
+        <div class="sum-top"><b>Kazandakiler</b><span class="mono" id="sumCount">0 iş</span></div>
         <ul id="sumList"></ul>
-        <div class="empty" id="sumEmpty">Şapka boş. Birkaç iş atın.</div>
+        <div class="empty" id="sumEmpty">Kazan boş. Birkaç iş atın.</div>
         <a class="btn accent" href="#iletisim" id="sendPk">Bu işlerle yazın</a>
       </div>
     </div>
     <div class="pk-area" id="pkArea">
       <div class="pk-pool" id="pkPool"></div>
       <div class="pk-zone" id="pkZone">
-        <span class="mono">ŞAPKA</span>
+        <span class="mono">KAZAN</span>
         <b id="zoneCount">0 iş</b>
         <div class="zlist" id="zList"></div>
       </div>
-      <div class="pk-hint mono" id="pkHint">İşleri şapkaya fırlatın ya da üstüne tıklayın.</div>
-      <div class="cart-badge" id="cartBadge"><b id="cartN">0</b>Şapkada</div>
+      <div class="pk-hint mono" id="pkHint">İşleri kazana fırlatın ya da üstüne tıklayın.</div>
+      <div class="cart-badge" id="cartBadge"><b id="cartN">0</b>Kazanda</div>
     </div>
   </div>
 </section>
@@ -1183,7 +1189,7 @@ footer{padding-block:28px 48px}
           </form>
           <div class="ys-q" id="ysQ"><button type="button">Çiçekçi</button><button type="button">Diş kliniği</button><button type="button">Spor salonu</button><button type="button">Avukat</button><button type="button">Pastane</button><button type="button">Veteriner</button></div>
           <div class="ys-out" id="ysOut" aria-live="polite"></div>
-          <div class="ys-act" id="ysAct" hidden><button class="btn ghost" type="button" id="ysAdd">Şapkaya ekle</button><a class="btn accent" href="#iletisim" id="ysSend">Bu işlerle yazın</a></div>
+          <div class="ys-act" id="ysAct" hidden><button class="btn ghost" type="button" id="ysAdd">Kazana ekle</button><a class="btn accent" href="#iletisim" id="ysSend">Bu işlerle yazın</a></div>
         </div>
         <div class="town-flat" id="tFlat"></div>
       </div>
@@ -2021,22 +2027,33 @@ function startPhysics() {
   area.prepend(back); area.appendChild(front);
   function drawCart() {
     const w = W(), h = H(), zx = zoneX();
-    const bl = zx + 14, br = w - 112, top = h * .42, fl = h - 46;
-    C = { bl, br, top, fl, in: 46 };
+    const cx = zx + (w - zx) / 2, rw = Math.min(300, w - zx - 80), top = h * .42, fl = h - 110, ry = 20, liq = top + 16, mid = top + (fl - top) * .45;
+    const bl = cx - rw / 2, br = cx + rw / 2;
+    C = { bl, br, top, fl, cx, rw, liq };
     const vb = `0 0 ${w} ${h}`; back.setAttribute("viewBox", vb); front.setAttribute("viewBox", vb);
-    // ters duran Noel Baba şapkası: kürklü ağız yukarıda, gövde aşağı daralır, sivri ucu sağa kıvrılıp ponpona iner
-    const cx = (bl + br) / 2, bw = br - bl, I = C.in;
-    back.innerHTML = `<path class="red" d="M ${bl - 18} ${top} L ${br + 18} ${top} C ${br + 14} ${top + 90}, ${br - I + 30} ${fl - 40}, ${br - I} ${fl} Q ${cx} ${fl + 22} ${bl + I} ${fl} C ${bl + I - 30} ${fl - 40}, ${bl - 14} ${top + 90}, ${bl - 18} ${top} Z"/>
-      <path class="red" d="M ${br - I - 6} ${fl - 6} C ${br + 40} ${fl - 4}, ${br + 80} ${fl - 30}, ${br + 92} ${fl - 116} C ${br + 84} ${fl - 70}, ${br + 50} ${fl - 44}, ${br - I + 4} ${fl - 46} Z"/>
-      <path class="red2" d="M ${br - I + 4} ${fl - 46} C ${br + 50} ${fl - 44}, ${br + 84} ${fl - 70}, ${br + 92} ${fl - 116} C ${br + 76} ${fl - 84}, ${br + 46} ${fl - 60}, ${br - I + 10} ${fl - 64} Z"/>
-      <path class="shade" d="M ${bl - 18} ${top} C ${bl - 14} ${top + 90}, ${bl + I - 30} ${fl - 40}, ${bl + I} ${fl} Q ${bl + I + 20} ${fl + 8} ${bl + I + 30} ${fl + 6} C ${bl + I - 10} ${fl - 60}, ${bl + 10} ${top + 90}, ${bl + 14} ${top} Z"/>`;
-    let fur = "";
-    const n = Math.max(8, Math.round((bw + 40) / 26));
-    for (let k = 0; k <= n; k++) { const x = bl - 18 + (bw + 36) * k / n; fur += `<circle class="fur" cx="${x}" cy="${top + (k % 2 ? 4 : -3)}" r="${15 + (k % 3) * 2}"/>`; }
-    front.innerHTML = `<rect class="fur" x="${bl - 26}" y="${top - 13}" width="${bw + 52}" height="26" rx="13"/>${fur}
-      <circle class="pom" cx="${br + 92}" cy="${fl - 124}" r="26"/><circle class="pom" cx="${br + 82}" cy="${fl - 136}" r="14"/><circle class="pom" cx="${br + 104}" cy="${fl - 110}" r="12"/>`;
-    const ox = ((bl + br) / 2 / w * 100).toFixed(1) + "%"; back.style.setProperty("--ox", ox); front.style.setProperty("--ox", ox);
-    const bd = $("#cartBadge"); bd.style.left = cx + "px"; bd.style.top = (top - 46) + "px";
+    back.setAttribute("class", "cart back pot"); front.setAttribute("class", "cart front pot");
+    let bubs = ""; for (let k = 0; k < 7; k++) { const bx = cx - rw * .32 + rw * .64 * (k / 6), r = 5 + (k % 3) * 3; bubs += `<circle class="bub pot-liq" cx="${bx}" cy="${liq - 2}" r="${r}" style="animation-delay:${(k * .27).toFixed(2)}s;fill:var(--liq)" opacity=".9"/>`; }
+    back.innerHTML = `<defs><radialGradient id="potGlow" cx="50%" cy="100%" r="70%"><stop class="pot-glow" offset="0" stop-color="var(--liq)" stop-opacity=".55"/><stop offset="1" stop-color="var(--liq)" stop-opacity="0"/></radialGradient></defs>
+      <ellipse cx="${cx}" cy="${top - 40}" rx="${rw * .7}" ry="90" fill="url(#potGlow)"/>
+      <ellipse cx="${cx}" cy="${top}" rx="${rw / 2 + 8}" ry="${ry + 4}" fill="none" stroke="#2A2D35" stroke-width="14"/>
+      <ellipse cx="${cx}" cy="${top}" rx="${rw / 2}" ry="${ry}" fill="#121318"/>
+      <ellipse class="pot-liq" cx="${cx}" cy="${liq}" rx="${rw / 2 - 6}" ry="${ry - 5}" style="fill:var(--liq)"/>
+      <ellipse cx="${cx - rw * .12}" cy="${liq - 3}" rx="${rw * .18}" ry="4" fill="#fff" opacity=".35"/>${bubs}`;
+    const body = `M ${bl} ${liq} A ${rw / 2} ${ry} 0 0 0 ${br} ${liq} C ${br + 18} ${liq + 30}, ${br + 34} ${mid - 20}, ${br + 30} ${mid} C ${br + 26} ${fl - 40}, ${cx + rw * .36} ${fl}, ${cx + rw * .22} ${fl + 6} Q ${cx} ${fl + 16} ${cx - rw * .22} ${fl + 6} C ${cx - rw * .36} ${fl}, ${bl - 26} ${fl - 40}, ${bl - 30} ${mid} C ${bl - 34} ${mid - 20}, ${bl - 18} ${liq + 30}, ${bl} ${liq} Z`;
+    let fire = ""; const fc = ["#FF3D2E", "#FF7A1A", "#FFC23D", "#FF7A1A", "#FF3D2E"];
+    for (let k = 0; k < 5; k++) { const fx = cx - rw * .26 + rw * .13 * k, fh = 46 + (k % 2 ? 10 : 22); fire += `<path class="fl" d="M ${fx - 16} ${h - 30} Q ${fx - 18} ${h - 30 - fh * .6} ${fx} ${h - 30 - fh} Q ${fx + 18} ${h - 30 - fh * .6} ${fx + 16} ${h - 30} Z" fill="${fc[k]}"/><path class="fl" d="M ${fx - 7} ${h - 30} Q ${fx - 8} ${h - 30 - fh * .35} ${fx} ${h - 30 - fh * .6} Q ${fx + 8} ${h - 30 - fh * .35} ${fx + 7} ${h - 30} Z" fill="#FFE9A0"/>`; }
+    front.innerHTML = `<defs><linearGradient id="potIron" x1="0" x2="1"><stop offset="0" stop-color="#1B1D23"/><stop offset=".32" stop-color="#4A4F5C"/><stop offset=".5" stop-color="#2E323B"/><stop offset="1" stop-color="#15161B"/></linearGradient></defs>
+      <rect x="${cx - rw * .42}" y="${h - 34}" width="${rw * .84}" height="12" rx="6" fill="#6B4226"/><rect x="${cx - rw * .36}" y="${h - 26}" width="${rw * .72}" height="12" rx="6" fill="#8A5A34" transform="rotate(-4 ${cx} ${h - 20})"/>
+      ${fire}
+      <path d="M ${cx - rw * .3} ${fl} l -14 ${h - fl - 40} h 14 z M ${cx + rw * .3} ${fl} l 14 ${h - fl - 40} h -14 z" fill="#22252C"/>
+      <path d="${body}" fill="url(#potIron)"/>
+      <path d="M ${bl - 8} ${top} A ${rw / 2 + 8} ${ry + 4} 0 0 0 ${br + 8} ${top}" fill="none" stroke="#3A3E48" stroke-width="14" stroke-linecap="round"/>
+      <path d="M ${bl - 6} ${top + 4} A ${rw / 2 + 6} ${ry + 2} 0 0 0 ${cx - rw * .15} ${top + ry + 5}" fill="none" stroke="#7B8190" stroke-width="3" stroke-linecap="round" opacity=".7"/>
+      <path d="M ${bl - 26} ${mid - 30} q -22 6 -20 30 q 2 20 20 22" fill="none" stroke="#2A2D35" stroke-width="9" stroke-linecap="round"/>
+      <path d="M ${br + 26} ${mid - 30} q 22 6 20 30 q -2 20 -20 22" fill="none" stroke="#2A2D35" stroke-width="9" stroke-linecap="round"/>`;
+    const ox = (cx / w * 100).toFixed(1) + "%"; back.style.setProperty("--ox", ox); front.style.setProperty("--ox", ox);
+    const bd = $("#cartBadge"); bd.style.left = cx + "px"; bd.style.top = (top - 70) + "px";
+    if (window.__brewPlace) window.__brewPlace();
   }
   function buildWalls() {
     Composite.remove(engine.world, walls);
@@ -2047,10 +2064,10 @@ function startPhysics() {
       Bodies.rectangle(w / 2, h + t / 2, w * 2, t, { isStatic: true }),
       Bodies.rectangle(-t / 2, h / 2, t, h * 3, { isStatic: true }),
       Bodies.rectangle(w + t / 2, h / 2, t, h * 3, { isStatic: true }),
-      seg(bl + C.in, fl + 4, br - C.in, fl + 4, 12),
-      seg(bl - 18, top, bl + C.in, fl, 12),
-      seg(br + 18, top, br - C.in, fl, 12),
-      Bodies.rectangle((bl + br) / 2, (fl + h) / 2 + 6, br - bl - 10, Math.max(8, h - fl - 4), { isStatic: true })
+      seg(C.cx - C.rw * .3, fl, C.cx + C.rw * .3, fl, 14),
+      seg(bl, top, bl - 30, top + (fl - top) * .45, 12), seg(bl - 30, top + (fl - top) * .45, C.cx - C.rw * .3, fl, 12),
+      seg(br, top, br + 30, top + (fl - top) * .45, 12), seg(br + 30, top + (fl - top) * .45, C.cx + C.rw * .3, fl, 12),
+      Bodies.rectangle(C.cx, (fl + h) / 2, C.rw * .7, h - fl, { isStatic: true })
     ];
     Composite.add(engine.world, walls);
   }
@@ -2084,57 +2101,82 @@ function startPhysics() {
       if (hit) phys.teleport(hit.plugin.item, !hit.plugin.item.inPk);
     });
               }
-  /* Noel Baba: aşağı kaydırınca sağdan gelir, şapkayı sürükleyip götürür */
-  let hatDX = 0, hatDY = 0;
-  const santa = document.createElement("div"); santa.className = "santa"; santa.setAttribute("aria-hidden", "true");
-  santa.innerHTML = `<span class="santa-say">Bunları götürüyorum!</span><svg viewBox="0 0 160 220">
-    <g class="lg2"><rect x="88" y="150" width="20" height="44" rx="8" fill="#C21F35"/><path d="M84 188h30a10 10 0 0 1 10 10v6H84z" fill="#1B1B1F"/></g>
-    <g class="lg1"><rect x="58" y="150" width="20" height="44" rx="8" fill="#D7263D"/><path d="M54 188h30a10 10 0 0 1 10 10v6H54z" fill="#1B1B1F"/></g>
-    <path d="M44 96c0-22 18-36 38-36s38 14 38 36v52c0 12-10 18-38 18s-38-6-38-18z" fill="#D7263D"/>
-    <rect x="78" y="70" width="10" height="90" fill="#FFFFFF"/>
-    <rect x="42" y="132" width="80" height="12" rx="3" fill="#1B1B1F"/><rect x="74" y="129" width="18" height="18" rx="3" fill="none" stroke="#F6C344" stroke-width="4"/>
-    <rect x="40" y="152" width="84" height="12" rx="6" fill="#FFFFFF"/>
-    <g class="arm"><path d="M52 92 C30 104 18 116 8 124" stroke="#D7263D" stroke-width="16" stroke-linecap="round" fill="none"/><circle cx="8" cy="124" r="9" fill="#1B1B1F"/></g>
-    <path d="M110 92 C122 108 124 120 120 132" stroke="#C21F35" stroke-width="15" stroke-linecap="round" fill="none"/><circle cx="120" cy="134" r="8" fill="#1B1B1F"/>
-    <circle cx="84" cy="44" r="22" fill="#F2C29B"/>
-    <path d="M60 46c2 30 14 48 24 52 10-4 22-22 24-52-6 8-14 10-24 10s-18-2-24-10z" fill="#FFFFFF" stroke="#E4E1DC" stroke-width="1.5"/>
-    <path d="M70 52c6-5 10-4 14 0 4-4 8-5 14 0-4 6-10 6-14 2-4 4-10 4-14-2z" fill="#FFFFFF" stroke="#E4E1DC" stroke-width="1.2"/>
-    <circle cx="84" cy="47" r="4" fill="#E88C8C"/><circle cx="77" cy="38" r="2.3" fill="#1B1B1F"/><circle cx="91" cy="38" r="2.3" fill="#1B1B1F"/>
-    <path d="M60 30c4-20 18-28 34-26 14 2 22 12 26 28-6 2-14 6-20 14-8-6-24-12-40-16z" fill="#D7263D"/>
-    <path d="M118 30c10 2 18 8 22 18" stroke="#D7263D" stroke-width="12" stroke-linecap="round" fill="none"/>
-    <circle cx="142" cy="50" r="9" fill="#FFFFFF" stroke="#E4E1DC" stroke-width="1.5"/>
-    <rect x="58" y="24" width="64" height="14" rx="7" fill="#FFFFFF" stroke="#E4E1DC" stroke-width="1.5" transform="rotate(8 90 31)"/>
-  </svg>`;
-  area.appendChild(santa);
-  const sLg1 = santa.querySelector(".lg1"), sLg2 = santa.querySelector(".lg2"), sArm = santa.querySelector(".arm");
-  [sLg1, sLg2].forEach((g, k) => { g.style.transformOrigin = k ? "98px 150px" : "68px 150px"; g.style.transformBox = "view-box"; });
-  let sp = 0;
-  function santaAt(p) {
-    const ar = area.getBoundingClientRect(), offR = innerWidth - ar.left + 60, hand = 12;
-    const grabX = C.br + 110;                          // eli ponponda
-    const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
-    let x, face = -1, walk = 0;
-    if (p < .32) { x = offR + 250 + (grabX - offR - 250) * ease(p / .32); walk = x; face = -1; }
-    else if (p < .42) { x = grabX; face = p < .37 ? -1 : 1; }
-    else { x = grabX + (offR + C.br - C.bl + 140 - grabX) * ease((p - .42) / .58); walk = x; face = 1; }
-    hatDX = p >= .42 ? x - grabX : 0; hatDY = p >= .42 ? -Math.abs(Math.sin(x * .05)) * 4 : 0;
-    const visible = p > .001 && x < offR + 20;
-    santa.style.opacity = visible ? 1 : 0;
-    santa.style.transform = `translateX(${x}px) scaleX(${face})`; santa.style.setProperty("--f", face);
-    santa.style.transformOrigin = `${hand}px 50%`;
-    const sw = Math.sin(walk * .06) * (p > .32 && p < .42 ? 0 : 22);
-    sLg1.style.transform = `rotate(${sw}deg)`; sLg2.style.transform = `rotate(${-sw}deg)`;
-    sArm.style.transform = p >= .37 ? "rotate(0deg)" : "rotate(-20deg)";
-    santa.classList.toggle("talk", p > .38 && p < .62);
-    area.classList.toggle("leaving", visible);
-    const tr = `translate(${hatDX}px,${hatDY}px)`; back.style.transform = tr; front.style.transform = tr; $("#cartBadge").style.translate = `${hatDX}px ${hatDY}px`;
+  /* İksir kazanı: kaydırınca kaynar, patlar ve logo çıkar */
+  let hatDX = 0, hatDY = 0, heat = 0, exploded = false;
+  const CATHEX = { marka: "#2E43FF", dijital: "#0C9F63", icerik: "#E0287A", buyume: "#F29A00", strateji: "#5B5E66", otomasyon: "#7B45F5", ozel: "#00B8A9" };
+  area.style.setProperty("--liq", "#7CFF6B");
+  function mixLiquid() {
+    const sel = items.filter(i => i.inPk); if (!sel.length) { area.style.setProperty("--liq", "#7CFF6B"); return "#7CFF6B"; }
+    let r = 0, g = 0, b = 0; sel.forEach(i => { const c = CATHEX[i.cat] || CATHEX.ozel; r += parseInt(c.substr(1, 2), 16); g += parseInt(c.substr(3, 2), 16); b += parseInt(c.substr(5, 2), 16); });
+    const n = sel.length, hx = v => Math.min(255, Math.round(v / n * 1.15 + 18)).toString(16).padStart(2, "0"); const col = "#" + hx(r) + hx(g) + hx(b);
+    area.style.setProperty("--liq", col); return col;
   }
-  window.__santaAt = santaAt; santaAt(window.__santaP || 0);
+  const fx = document.createElement("canvas"); fx.className = "brew-fx"; fx.setAttribute("aria-hidden", "true"); area.appendChild(fx);
+  const fg = fx.getContext("2d"); const PAD = 320; let FW = 1, FH = 1, DPR = Math.min(2, devicePixelRatio || 1);
+  const fxSize = () => { FW = W() + PAD * 2; FH = H() + PAD * 2; fx.width = FW * DPR; fx.height = FH * DPR; fg.setTransform(DPR, 0, 0, DPR, 0, 0); };
+  fxSize();
+  const logo = document.createElement("div"); logo.className = "brew-logo";
+  logo.innerHTML = `<span class="bm" aria-hidden="true"></span><span class="wm">${CONFIG.BRAND}</span><span class="tg">İksiriniz hazır. Gerisi bizde.</span><a class="btn accent" href="#iletisim">Bu tarifle yazın</a>`;
+  area.appendChild(logo);
+  logo.querySelector("a").addEventListener("click", () => { const sel = items.filter(i => i.inPk).map(i => i.name); if (sel.length) $("#cMsg").value = `Paketim: ${sel.join(", ")}.`; });
+  window.__brewPlace = () => { logo.style.left = C.cx + "px"; logo.style.top = (C.top + 40) + "px"; fxSize(); }; window.__brewPlace();
+  const parts = []; let shock = null, flash = 0, fxRun = false;
+  function P(o) { parts.push(Object.assign({ vx: 0, vy: 0, g: 0, life: 1, age: 0, size: 4, rot: 0, vr: 0, drag: 1 }, o)); kick(); }
+  function splash(col) {
+    const x = C.cx + PAD, y = C.liq + PAD;
+    for (let k = 0; k < 26; k++) { const a = -Math.PI / 2 + (Math.random() - .5) * 1.6, v = 3 + Math.random() * 5; P({ type: "drop", x: x + (Math.random() - .5) * C.rw * .5, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: .32, life: 1 + Math.random() * .5, size: 3 + Math.random() * 4, col }); }
+    for (let k = 0; k < 6; k++) P({ type: "smoke", x: x + (Math.random() - .5) * C.rw * .4, y: y - 10, vx: (Math.random() - .5) * .6, vy: -1 - Math.random(), life: 1.6, size: 16 + Math.random() * 14, col: "#E8E4F0", a0: .35 });
+  }
+  function explode() {
+    exploded = true; const x = C.cx + PAD, y = C.liq + PAD, col = getComputedStyle(area).getPropertyValue("--liq").trim() || "#7CFF6B";
+    flash = 1; shock = { r: 10, a: 1 };
+    for (let k = 0; k < 46; k++) { const a = Math.random() * Math.PI * 2, v = 2 + Math.random() * 9; P({ type: "fire", x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v * .8 - 3, g: -.04, drag: .93, life: .9 + Math.random() * .5, size: 30 + Math.random() * 40 }); }
+    for (let k = 0; k < 40; k++) { const a = Math.random() * Math.PI * 2, v = 1 + Math.random() * 4; P({ type: "smoke", x: x + Math.cos(a) * 30, y: y + Math.sin(a) * 20, vx: Math.cos(a) * v, vy: Math.sin(a) * v * .6 - 2.2, g: -.02, drag: .96, life: 1.8 + Math.random() * .9, size: 26 + Math.random() * 34, col: k % 3 ? "#CFC8D8" : "#F1ECF5", a0: .4 }); }
+    for (let k = 0; k < 160; k++) { const a = Math.random() * Math.PI * 2, v = 6 + Math.random() * 16; P({ type: "spark", x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 4, g: .35, drag: .97, life: .8 + Math.random() * .8, size: 2 + Math.random() * 2, col: Math.random() < .5 ? "#FFE27A" : "#FFFFFF" }); }
+    for (let k = 0; k < 60; k++) { const a = Math.random() * Math.PI * 2, v = 4 + Math.random() * 10; P({ type: "drop", x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 6, g: .4, life: 1.4, size: 4 + Math.random() * 6, col }); }
+    // iksir parçaları ve işler savrulur
+    items.forEach(i => { if (!i.body) return; if (i.inPk) { i.el.style.opacity = "0"; return; } const d = Math.max(60, Math.hypot(i.body.position.x - C.cx, i.body.position.y - C.liq)), k = Math.min(1, 220 / d); M.Body.setVelocity(i.body, { x: (i.body.position.x - C.cx) / d * 22 * k, y: -14 * k - 4 }); M.Body.setAngularVelocity(i.body, (Math.random() - .5) * .5); });
+    area.classList.add("boom", "leaving"); shakeT = .55;
+    setTimeout(() => { if (!exploded) return; logo.classList.add("on"); const cols = ["#FF4F8B", "#FF8A3D", "#FFC93C", "#9B6BFF", "#2E8BFF", "#34C778"];
+      for (let k = 0; k < 120; k++) { const a = -Math.PI / 2 + (Math.random() - .5) * 2.6, v = 8 + Math.random() * 12; P({ type: "conf", x: C.cx + PAD, y: C.top + PAD, vx: Math.cos(a) * v, vy: Math.sin(a) * v, g: .3, drag: .975, life: 2.6, size: 6 + Math.random() * 6, rot: Math.random() * 6, vr: (Math.random() - .5) * .4, col: cols[k % cols.length] }); } }, 520);
+  }
+  function reset() {
+    exploded = false; logo.classList.remove("on"); area.classList.remove("boom", "leaving");
+    items.forEach(i => { i.el.style.opacity = ""; });
+  }
+  let shakeT = 0, lastF = performance.now();
+  function kick() { if (!fxRun) { fxRun = true; lastF = performance.now(); requestAnimationFrame(fxLoop); } }
+  function fxLoop(now) {
+    const dt = Math.min(.05, (now - lastF) / 1000) * 60; lastF = now;
+    fg.clearRect(0, 0, FW, FH);
+    if (flash > 0) { fg.fillStyle = `rgba(255,248,225,${flash * .85})`; fg.fillRect(0, 0, FW, FH); flash = Math.max(0, flash - .06 * dt); }
+    if (shock) { shock.r += 22 * dt; shock.a -= .03 * dt; if (shock.a <= 0) shock = null; else { fg.strokeStyle = `rgba(255,255,255,${shock.a})`; fg.lineWidth = 6 * shock.a + 1; fg.beginPath(); fg.ellipse(C.cx + PAD, C.liq + PAD, shock.r, shock.r * .55, 0, 0, 7); fg.stroke(); } }
+    for (let k = parts.length - 1; k >= 0; k--) {
+      const q = parts[k]; q.age += dt / 60; const f = q.age / q.life; if (f >= 1) { parts.splice(k, 1); continue; }
+      q.vx *= Math.pow(q.drag, dt); q.vy = q.vy * Math.pow(q.drag, dt) + q.g * dt; const px = q.x, py = q.y; q.x += q.vx * dt; q.y += q.vy * dt; q.rot += q.vr * dt;
+      if (q.type === "fire") { const r = q.size * (.6 + f * 1.4); fg.globalCompositeOperation = "lighter"; const gr = fg.createRadialGradient(q.x, q.y, 0, q.x, q.y, r);
+        const c1 = f < .25 ? "255,250,220" : f < .5 ? "255,190,70" : "240,90,30"; gr.addColorStop(0, `rgba(${c1},${(1 - f) * .9})`); gr.addColorStop(.5, `rgba(255,120,30,${(1 - f) * .45})`); gr.addColorStop(1, "rgba(200,40,10,0)"); fg.fillStyle = gr; fg.beginPath(); fg.arc(q.x, q.y, r, 0, 7); fg.fill(); fg.globalCompositeOperation = "source-over"; }
+      else if (q.type === "smoke") { const r = q.size * (.7 + f * 1.6); fg.fillStyle = q.col; fg.globalAlpha = (q.a0 || .4) * (f < .15 ? f / .15 : 1 - f); fg.beginPath(); fg.arc(q.x, q.y, r, 0, 7); fg.fill(); fg.globalAlpha = 1; }
+      else if (q.type === "spark") { fg.globalCompositeOperation = "lighter"; fg.strokeStyle = q.col; fg.globalAlpha = 1 - f; fg.lineWidth = q.size; fg.beginPath(); fg.moveTo(px, py); fg.lineTo(q.x, q.y); fg.stroke(); fg.globalAlpha = 1; fg.globalCompositeOperation = "source-over"; }
+      else if (q.type === "drop") { fg.fillStyle = q.col; fg.globalAlpha = 1 - f * f; fg.beginPath(); fg.arc(q.x, q.y, q.size * (1 - f * .4), 0, 7); fg.fill(); fg.globalAlpha = 1; }
+      else if (q.type === "conf") { fg.save(); fg.translate(q.x, q.y); fg.rotate(q.rot); fg.globalAlpha = Math.min(1, (1 - f) * 2); fg.fillStyle = q.col; fg.fillRect(-q.size / 2, -q.size / 4, q.size, q.size / 2); fg.restore(); }
+    }
+    if (shakeT > 0) { shakeT -= dt / 60; const m = shakeT * 22; area.style.translate = `${(Math.random() - .5) * m}px ${(Math.random() - .5) * m}px`; if (shakeT <= 0) area.style.translate = ""; }
+    if (parts.length || flash > 0 || shock || shakeT > 0) requestAnimationFrame(fxLoop); else { fxRun = false; fg.clearRect(0, 0, FW, FH); }
+  }
+  function brewAt(p) {
+    heat = exploded ? 0 : Math.max(0, Math.min(1, p / .3));
+    area.style.setProperty("--heat", (1 + heat * 4).toFixed(2));
+    if (!exploded && p > .3) explode();
+    if (exploded && p < .12) reset();
+  }
+  window.__brewAt = brewAt; brewAt(window.__santaP || 0);
+  const shakePot = () => { if (heat > .05 && !exploded) { const m = heat * heat * 7; const tr = `translate(${(Math.random() - .5) * m}px,${(Math.random() - .5) * m * .6}px) rotate(${(Math.random() - .5) * heat * 2}deg)`; back.style.transform = tr; front.style.transform = tr; if (Math.random() < heat * .25) P({ type: "smoke", x: C.cx + PAD + (Math.random() - .5) * C.rw * .5, y: C.liq + PAD - 10, vx: (Math.random() - .5) * .5, vy: -1.5 - heat * 2, life: 1.4, size: 14 + heat * 20, col: getComputedStyle(area).getPropertyValue("--liq").trim(), a0: .3 }); } else if (!exploded) { back.style.transform = ""; front.style.transform = ""; } };
 
   phys = {
     teleport(i, toPk) {
       if (toPk) { // kavis çizerek sepete uçar
-        const tx = C.bl + 40 + Math.random() * (C.br - C.bl - 80), ty = C.top - 50, p = i.body.position;
+        const tx = C.cx + (Math.random() - .5) * C.rw * .5, ty = C.top - 60, p = i.body.position;
         const f = i.body.frictionAir, g = engine.gravity.y * engine.gravity.scale * (1000 / 60) ** 2, T2 = 42;
         const vx = (tx - p.x) * f / (1 - Math.pow(1 - f, T2));
         const yAt = vy => { let y = 0, v = vy; for (let k = 0; k < T2; k++) { v = v * (1 - f) + g; y += v; } return y; };
@@ -2153,22 +2195,23 @@ function startPhysics() {
     items.forEach(i => {
       if (!i.body) return; const p = i.body.position;
       if (i.flight > 0 && --i.flight === 0) i.body.collisionFilter.mask = 0xFFFFFFFF;
-      const ox = i.inPk ? hatDX : 0, oy = i.inPk ? hatDY : 0;
+      const ox = 0, oy = 0;
       i.el.style.transform = `translate(${p.x - i.w / 2 + ox}px,${p.y - i.h / 2 + oy}px) rotate(${i.body.angle}rad)`;
-      i.inPk = p.x > C.bl - 18 && p.x < C.br + 18 && p.y > C.top - 30 && p.y < C.fl + 8;
+      i.inPk = p.x > C.bl - 26 && p.x < C.br + 26 && p.y > C.top - 26 && p.y < C.fl + 8;
     });
     const key = items.map(i => i.inPk ? 1 : 0).join("");
     if (key !== last) {
       const before = (last.match(/1/g) || []).length, now = (key.match(/1/g) || []).length; last = key; renderSummary();
       $("#cartN").textContent = now;
-      if (now > before) { area.classList.remove("bump"); void area.offsetWidth; area.classList.add("bump"); }
+      if (now > before) { area.classList.remove("bump"); void area.offsetWidth; area.classList.add("bump"); splash(mixLiquid()); } else mixLiquid();
     }
+    shakePot();
     requestAnimationFrame(tick);
   })();
   addEventListener("resize", () => buildWalls());
 }
 // Bölüme gelince taşlar düşmeye başlar
-if (window.ScrollTrigger && !reduce && innerWidth >= 700) ScrollTrigger.create({ trigger: area, start: "center center", end: "+=90%", pin: "#paket", scrub: .5, onUpdate: s => { window.__santaP = s.progress; window.__santaAt && window.__santaAt(s.progress); } });
+if (window.ScrollTrigger && !reduce && innerWidth >= 700) ScrollTrigger.create({ trigger: area, start: "center center", end: "+=110%", pin: "#paket", scrub: .3, onUpdate: s => { window.__santaP = s.progress; window.__brewAt && window.__brewAt(s.progress); } });
 const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); startPhysics(); } }, { threshold: .35 });
 io.observe(area);
 renderSummary();
@@ -2485,11 +2528,11 @@ $("#sendPk").addEventListener("click", () => {
     picked = d ? d.biz.concat(d === DEF ? [] : ["Sosyal medya"]).slice(0, 5) : DEF.biz;
     const name = (q.length > 28 ? q.slice(0, 28) + "…" : q).replace(/[<&>]/g, "");
     out.innerHTML = `<b>${name} için ilk adımlar</b><div class="ys-chips">${picked.map((p, i) => `<span style="--i:${i};--c:${col(p)}"><i></i>${p}</span>`).join("")}</div>`;
-    act.hidden = false; $("#ysAdd").textContent = "Şapkaya ekle";
+    act.hidden = false; $("#ysAdd").textContent = "Kazana ekle";
   }
   $("#ysAdd").addEventListener("click", () => {
     picked.forEach(n => { const it = items.find(i => i.name.toLocaleLowerCase("tr") === n.toLocaleLowerCase("tr")); if (it) { if (!it.inPk) toggle(it); } else addItem(n); });
-    $("#ysAdd").textContent = "Şapkaya eklendi ✓";
+    $("#ysAdd").textContent = "Kazana eklendi ✓";
   });
   $("#ysSend").addEventListener("click", () => { if (picked.length) $("#cMsg").value = `Sektörüm: ${$("#ysIn").value.trim()}. İlgilendiğim işler: ${picked.join(", ")}.`; });
   let onAsk = (q) => { const t = q.toLocaleLowerCase("tr"); const d = DATA.find(x => x.re.test(t)); suggest(q, d || DEF); };
