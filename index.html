@@ -396,7 +396,7 @@ a:hover .roll > span,button:hover .roll > span,a:focus-visible .roll > span{tran
 @media (prefers-reduced-motion: reduce){.roll > span{transition:none}}
 
 /* Koyu sahne panelleri: aynı zemin, aynı kenar */
-.hero-panel,.bst,.hx-panel,.close-board{box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
+.hero-panel,.bst,.close-board{box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
 
 /* ---------- Film greni ---------- */
 .grain{position:fixed;inset:-50%;z-index:85;pointer-events:none;opacity:.05;
@@ -418,27 +418,42 @@ input,textarea{cursor:text}
 @media (hover:hover) and (pointer:fine){.cur2{display:block}}
 
 /* ---------- Alt menü: kapalıyken tek küçük düğme, basınca renkli etiketler yukarı açılır ---------- */
-.dock{position:fixed;left:clamp(12px,1.6vw,22px);bottom:calc(clamp(12px,2vw,22px) + env(safe-area-inset-bottom,0px));z-index:60;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.topbar-in{align-items:flex-start}
+.dock{position:relative;pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:5px;margin-top:2px}
+.dock .dock-t{
+  order:-1;position:relative;display:flex;align-items:center;gap:12px;height:54px;padding:0 24px 0 18px;border-radius:999px;border:0;cursor:pointer;
+  background:linear-gradient(100deg,#FF4F8B,#FF8A3D 30%,#9B6BFF 62%,#2E8BFF);background-size:220% 100%;animation:menu-shine 7s ease-in-out infinite alternate;
+  color:#fff;font-weight:650;font-size:16px;letter-spacing:-.01em;box-shadow:0 14px 30px -12px rgba(155,107,255,.85),inset 0 0 0 1px rgba(255,255,255,.3);
+  transition:transform .3s cubic-bezier(.3,1.6,.5,1),box-shadow .3s;
+}
+.dock .dock-t:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 18px 36px -12px rgba(255,79,139,.8),inset 0 0 0 1px rgba(255,255,255,.4)}
+.dock .dock-t::after{content:"";position:absolute;inset:-6px;border-radius:999px;border:2px solid rgba(155,107,255,.6);animation:menu-ping 2.2s ease-out 1s 4;pointer-events:none;opacity:0}
+.dock .dock-t em{font-style:normal;opacity:.85;font-weight:500;font-size:14px;padding-left:12px;border-left:1px solid rgba(255,255,255,.35)}
+.dock .bg{position:relative;width:20px;height:14px;display:block}
+.dock .bg b{position:absolute;left:0;right:0;height:2.5px;border-radius:2px;background:#fff;transition:transform .35s cubic-bezier(.3,1.4,.5,1),opacity .2s,top .35s}
+.dock .bg b:nth-child(1){top:0}.dock .bg b:nth-child(2){top:5.75px}.dock .bg b:nth-child(3){top:11.5px}
+.dock.open .bg b:nth-child(1){top:5.75px;transform:rotate(45deg)}.dock.open .bg b:nth-child(2){opacity:0}.dock.open .bg b:nth-child(3){top:5.75px;transform:rotate(-45deg)}
+@keyframes menu-shine{from{background-position:0% 50%}to{background-position:100% 50%}}
+@keyframes menu-ping{0%{opacity:.9;transform:scale(.96)}100%{opacity:0;transform:scale(1.25)}}
 .dock a{
-  --r:0deg;display:flex;align-items:center;height:38px;padding:0 16px;border-radius:13px;white-space:nowrap;
-  background:var(--c);color:var(--t,#fff);text-decoration:none;font-weight:600;font-size:14px;letter-spacing:-.01em;
-  box-shadow:0 6px 16px -10px rgba(0,0,0,.5);border:1.5px solid transparent;
-  opacity:0;transform:translateY(14px) scale(.8);transform-origin:left bottom;pointer-events:none;
-  transition:opacity .25s,transform .45s cubic-bezier(.3,1.5,.4,1),background .3s,color .3s;transition-delay:calc((7 - var(--k)) * 30ms);
+  --r:0deg;display:flex;align-items:center;justify-content:center;min-width:220px;height:46px;padding:0 20px;border-radius:15px;white-space:nowrap;
+  background:var(--c);color:var(--t,#fff);text-decoration:none;font-weight:650;font-size:16px;letter-spacing:-.01em;
+  box-shadow:0 10px 22px -12px rgba(0,0,0,.45);border:1.5px solid transparent;
+  opacity:0;transform:translateY(-16px) scale(.85);transform-origin:center top;pointer-events:none;
+  transition:opacity .25s,transform .5s cubic-bezier(.3,1.5,.4,1),background .3s,color .3s;transition-delay:calc(var(--k) * 35ms);
 }
 .dock a span{padding:0}
-.dock a:nth-child(odd){--r:-2.5deg}.dock a:nth-child(even){--r:2deg}.dock a:nth-child(3n){--r:-1deg}
+.dock a:nth-child(odd){--r:-2deg}.dock a:nth-child(even){--r:1.6deg}.dock a:nth-child(3n){--r:-.8deg}
 .dock.open a{opacity:1;transform:rotate(var(--r));pointer-events:auto}
-.dock.open a:hover{transform:rotate(0) translateX(6px) scale(1.04)}
-.dock a.on{background:var(--board);color:var(--ink);border-color:var(--ink)}
-.dock .dock-t{
-  display:flex;align-items:center;gap:9px;height:40px;padding:0 15px 0 12px;border-radius:14px;border:0;cursor:pointer;
-  background:var(--ink);color:var(--board);font-weight:600;font-size:13.5px;box-shadow:0 8px 20px -10px rgba(0,0,0,.5);transition:transform .25s;
+.dock.open a:hover{transform:rotate(0) scale(1.05)}
+.dock a.on{background:#fff;color:#101217;border-color:#101217}
+.dock a.on::before{content:"";width:9px;height:9px;border-radius:50%;background:#FF4F8B;margin-right:10px}
+@media (max-width:760px){
+  .dock .dock-t{height:46px;padding:0 16px 0 14px;font-size:15px;gap:9px}
+  .dock .dock-t em{display:none}
+  .dock a{min-width:200px;height:44px}
+  .brand span[data-brand]{display:none}
 }
-.dock .dock-t:hover{transform:translateY(-1px)}
-.dock .dock-t i{width:9px;height:9px;border-radius:3px;background:var(--dc,#fff);flex:none;transition:background .3s}
-.dock .dock-t em{font-style:normal;opacity:.6;font-weight:500}
-@media (max-width:760px){.dock .dock-t em{display:none}}
 @media (prefers-reduced-motion: reduce){.dock a{transition:none}}
 
 /* ---------- WhatsApp asistanı: sekmeler + sohbet + canlı pano (koyu sahne) ---------- */
@@ -549,19 +564,22 @@ input,textarea{cursor:text}
 
 /* ---------- Proje sarmalı ---------- */
 .hx{padding-block:clamp(40px,6vw,80px)}
-.hx-panel{position:relative;height:100vh;max-height:980px;min-height:620px;border-radius:28px;overflow:hidden;background:var(--hero-bg);color:#F4F5F8;isolation:isolate}
-.hx-panel::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(42% 52% at 50% 45%,rgba(80,96,255,.18),transparent 70%),radial-gradient(30% 40% at 85% 95%,rgba(255,79,139,.08),transparent 70%)}
-.hx-panel::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;
-  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:64px 64px;
+.hx-panel{position:relative;height:100vh;max-height:980px;min-height:620px;border-radius:28px;overflow:hidden;background:#FBF8F3;color:#101217;isolation:isolate;box-shadow:inset 0 0 0 1px rgba(16,18,23,.06)}
+.hx-panel::before{content:"";position:absolute;inset:-10%;z-index:0;pointer-events:none;filter:blur(30px);
+  background:radial-gradient(28% 34% at 18% 22%,rgba(255,79,139,.30),transparent 70%),radial-gradient(30% 36% at 84% 18%,rgba(46,139,255,.28),transparent 70%),
+    radial-gradient(32% 38% at 78% 84%,rgba(255,200,61,.34),transparent 70%),radial-gradient(30% 34% at 20% 82%,rgba(155,107,255,.28),transparent 70%),radial-gradient(26% 30% at 52% 50%,rgba(52,199,120,.16),transparent 70%);
+  animation:hx-blob 16s ease-in-out infinite alternate}
+@keyframes hx-blob{from{transform:translate(-2%,-1%) rotate(0deg)}to{transform:translate(2%,1%) rotate(4deg)}}
+.hx-panel::after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.6;
+  background-image:radial-gradient(rgba(16,18,23,.12) 1px,transparent 1.3px);background-size:22px 22px;
   -webkit-mask-image:radial-gradient(70% 70% at 50% 50%,#000,transparent);mask-image:radial-gradient(70% 70% at 50% 50%,#000,transparent)}
 .hx-title{position:absolute;inset:0;z-index:1;display:grid;place-items:center;pointer-events:none;text-align:center}
-.hx-title h2{font-size:clamp(48px,7.4vw,124px); 96;letter-spacing:-.045em;line-height:.85;color:#F4F5F8}
-.hx-title h2 em{font-style:normal;color:rgba(244,245,248,.38)}
+.hx-title h2{font-size:clamp(48px,7.4vw,124px);letter-spacing:-.045em;line-height:.88;color:#101217}
+.hx-title h2 em{font-style:normal;background:linear-gradient(90deg,#FF4F8B,#FF8A3D,#9B6BFF,#2E8BFF);-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .04em .12em}
 #hxGl{position:absolute;inset:0;width:100%;height:100%;z-index:2;display:block}
-.hx-cap{position:absolute;z-index:3;left:clamp(20px,3vw,40px);right:clamp(20px,3vw,40px);bottom:clamp(18px,3vw,32px);display:flex;justify-content:space-between;gap:16px;align-items:flex-end;font-family:var(--f-mono);font-size:12px;color:rgba(244,245,248,.6);pointer-events:none}
-.hx-cap b{display:block;font-family:var(--f-display);font-size:clamp(20px,2vw,28px);font-weight:700;color:#F4F5F8;letter-spacing:-.02em;margin-top:4px}
-.hx-top{position:absolute;z-index:3;left:clamp(20px,3vw,40px);top:clamp(18px,3vw,32px);font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(244,245,248,.55)}
+.hx-cap{position:absolute;z-index:3;left:clamp(20px,3vw,40px);right:clamp(20px,3vw,40px);bottom:clamp(18px,3vw,32px);display:flex;justify-content:space-between;gap:16px;align-items:flex-end;font-family:var(--f-mono);font-size:12px;color:rgba(16,18,23,.6);pointer-events:none}
+.hx-cap b{display:block;font-family:var(--f-display);font-size:clamp(20px,2vw,28px);font-weight:600;color:#101217;letter-spacing:-.02em;margin-top:4px}
+.hx-top{position:absolute;z-index:3;left:clamp(20px,3vw,40px);top:clamp(18px,3vw,32px);font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:rgba(16,18,23,.55)}
 .hx-grid{display:none}
 .hx.flat .hx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;position:relative;z-index:3;padding:80px 20px 20px}
 .hx.flat .hx-grid img{width:100%;border-radius:10px;display:block}
@@ -825,20 +843,20 @@ footer{padding-block:28px 48px}
     <div class="tb">
       <a class="brand" href="#top" aria-label="Ana sayfa"><span class="brand-mark" aria-hidden="true"></span><span data-brand>sayfa</span></a>
     </div>
-    <div class="tb"><a class="btn" href="#iletisim">Teklif al</a></div>
-  </div>
-</header>
-
-<nav class="dock" id="dock" aria-label="Bölümler">
-  <a href="#top" style="--c:var(--ink);--t:var(--board)"><span>Giriş</span></a>
+    <nav class="dock" id="dock" aria-label="Bölümler">
+  <a href="#top" style="--c:#101217"><span>Giriş</span></a>
   <a href="#hizmetler" style="--c:#2E43FF"><span>Hizmetler</span></a>
   <a href="#paket" style="--c:#0C9F63"><span>Şapkayı doldur</span></a>
   <a href="#dene" style="--c:#D9306F"><span>Markanızı deneyin</span></a>
   <a href="#bot" style="--c:#7044F2"><span>WhatsApp asistanı</span></a>
   <a href="#kareler" style="--c:#E39A12;--t:#101217"><span>İşler</span></a>
-  <a href="#iletisim" style="--c:var(--ink);--t:var(--board)"><span>İletişim</span></a>
-  <button class="dock-t" type="button" aria-expanded="false" aria-controls="dock"><i></i><span>Menü</span><em id="dockNow">· Giriş</em></button>
+  <a href="#iletisim" style="--c:#101217"><span>İletişim</span></a>
+  <button class="dock-t" type="button" aria-expanded="false" aria-controls="dock"><i class="bg" aria-hidden="true"><b></b><b></b><b></b></i><span>Menü</span><em id="dockNow">Giriş</em></button>
 </nav>
+    <div class="tb"><a class="btn" href="#iletisim">Teklif al</a></div>
+  </div>
+</header>
+
 <div class="grain" aria-hidden="true"></div>
 <main id="icerik">
 <!-- GİRİŞ -->
@@ -1719,7 +1737,7 @@ $$(".btn").forEach(b => {
   const secs = links.map(a => $(a.getAttribute("href"))).filter(Boolean);
   const set = id => links.forEach(a => {
     const on = a.getAttribute("href") === "#" + id; a.classList.toggle("on", on);
-    if (on) { nowEl.textContent = "· " + a.textContent.trim(); tg.style.setProperty("--dc", getComputedStyle(a).getPropertyValue("--c")); }
+    if (on) nowEl.textContent = a.textContent.trim();
   });
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) set(e.target.id); }), { rootMargin: "-45% 0px -50% 0px" });
   secs.forEach(x => io.observe(x)); set("top");
