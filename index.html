@@ -3037,7 +3037,7 @@ $("#sendPk").addEventListener("click", () => {
   let ok = false; try { ok = !!document.createElement("canvas").getContext("webgl"); } catch (e) {}
   if (!ok) return;
   const cv = document.createElement("canvas"); cv.className = "roam"; cv.setAttribute("aria-hidden", "true"); document.body.appendChild(cv);
-  let S = innerWidth < 760 ? 140 : 210;
+  let S = innerWidth < 760 ? 112 : 160;
   const renderer = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, premultipliedAlpha: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.setSize(S, S);
   renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = .92;
@@ -3126,7 +3126,7 @@ $("#sendPk").addEventListener("click", () => {
     if (Math.hypot(e.clientX - pos.x, e.clientY - pos.y) < S * .38) { spinTo += Math.PI * 2; scared = 1; }
   });
   addEventListener("scroll", () => { scrollV += (scrollY - lastY); lastY = scrollY; }, { passive: true });
-  addEventListener("resize", () => { S = innerWidth < 760 ? 140 : 210; renderer.setSize(S, S); pos.x = Math.min(pos.x, innerWidth - S / 2); pos.y = Math.min(pos.y, innerHeight - S / 2); pickTarget(); });
+  addEventListener("resize", () => { S = innerWidth < 760 ? 112 : 160; renderer.setSize(S, S); pos.x = Math.min(pos.x, innerWidth - S / 2); pos.y = Math.min(pos.y, innerHeight - S / 2); pickTarget(); });
   // şehir sahnesinin kendi hayaleti var: orada çekilir
   const town = document.querySelector("#isler"); let inTown = false;
   if (town) new IntersectionObserver(es => { inTown = es[0].intersectionRect.height > innerHeight * .4; }, { threshold: Array.from({ length: 51 }, (_, i) => i / 50) }).observe(town);
