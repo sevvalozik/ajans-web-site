@@ -421,32 +421,28 @@ a:hover .roll > span,button:hover .roll > span,a:focus-visible .roll > span{tran
 .cur2.text .dot{width:2px;height:22px;margin:-11px 0 0 -1px;border-radius:1px}
 @media (hover:hover) and (pointer:fine){html.cc .cur2{display:block}html.cc,html.cc *{cursor:none!important}}
 
-/* ---------- Alt menü (yapışkan etiketler) ---------- */
-/* Kapalıyken: renkli dar sekmeler + aktif bölüm dikey uzun etiket. Üzerine gelince hepsi etikete açılır. */
-.dock{position:fixed;left:clamp(10px,1.6vw,22px);bottom:calc(clamp(12px,2vw,24px) + env(safe-area-inset-bottom,0px));z-index:60;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+/* ---------- Alt menü: kapalıyken tek küçük düğme, basınca renkli etiketler yukarı açılır ---------- */
+.dock{position:fixed;left:clamp(12px,1.6vw,22px);bottom:calc(clamp(12px,2vw,22px) + env(safe-area-inset-bottom,0px));z-index:60;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
 .dock a{
-  --r:0deg;position:relative;display:flex;align-items:center;height:30px;width:16px;padding:0;border-radius:8px;overflow:hidden;white-space:nowrap;
-  background:var(--c);color:var(--t,#fff);text-decoration:none;font-weight:650;font-size:14px;letter-spacing:-.01em;
-  transform:rotate(var(--r));transform-origin:left center;box-shadow:0 6px 16px -10px rgba(0,0,0,.5);border:1.5px solid transparent;
-  transition:width .5s cubic-bezier(.3,1.25,.4,1),height .55s cubic-bezier(.25,1.25,.35,1),padding .45s,background .3s,color .3s,border-color .3s,transform .45s cubic-bezier(.3,1.5,.4,1),border-radius .4s;
-  transition-delay:calc(var(--k) * 22ms);
+  --r:0deg;display:flex;align-items:center;height:38px;padding:0 16px;border-radius:13px;white-space:nowrap;
+  background:var(--c);color:var(--t,#fff);text-decoration:none;font-weight:600;font-size:14px;letter-spacing:-.01em;
+  box-shadow:0 6px 16px -10px rgba(0,0,0,.5);border:1.5px solid transparent;
+  opacity:0;transform:translateY(14px) scale(.8);transform-origin:left bottom;pointer-events:none;
+  transition:opacity .25s,transform .45s cubic-bezier(.3,1.5,.4,1),background .3s,color .3s;transition-delay:calc((7 - var(--k)) * 30ms);
 }
-.dock a span{opacity:0;transition:opacity .25s;padding:0 15px}
-.dock a:nth-child(odd){--r:-3deg}.dock a:nth-child(even){--r:2.5deg}.dock a:nth-child(3n){--r:-1deg}
-.dock a.on{height:110px;width:34px;background:var(--board);color:var(--ink);border-color:var(--ink);border-radius:12px;--r:-3deg;justify-content:center}
-.dock a.on span{opacity:1;padding:0;writing-mode:vertical-rl;transform:rotate(180deg);font-size:13px}
-.dock:hover a,.dock:focus-within a{width:var(--w,170px);height:38px;border-radius:13px}
-.dock:hover a span,.dock:focus-within a span{opacity:1;writing-mode:horizontal-tb;transform:none;padding:0 15px;font-size:14px}
-.dock:hover a.on,.dock:focus-within a.on{height:84px;justify-content:flex-start}
-.dock:hover a:hover{transform:rotate(0deg) translateX(8px) scale(1.04)}
-.dock .dock-t{display:none}
-@media (max-width:760px){
-  .dock a,.dock a.on{width:var(--w,170px);height:38px;border-radius:13px;opacity:0;transform:translateY(16px) scale(.85);pointer-events:none}
-  .dock a span,.dock a.on span{opacity:1;writing-mode:horizontal-tb;transform:none;padding:0 15px;font-size:14px}
-  .dock.open a{opacity:1;transform:rotate(var(--r));pointer-events:auto}
-  .dock.open a.on{height:60px}
-  .dock .dock-t{display:flex;order:99;height:42px;padding:0 18px;border-radius:14px;border:0;background:var(--ink);color:var(--board);font-weight:650;font-size:14px;align-items:center;gap:8px;box-shadow:0 8px 20px -10px rgba(0,0,0,.5)}
+.dock a span{padding:0}
+.dock a:nth-child(odd){--r:-2.5deg}.dock a:nth-child(even){--r:2deg}.dock a:nth-child(3n){--r:-1deg}
+.dock.open a{opacity:1;transform:rotate(var(--r));pointer-events:auto}
+.dock.open a:hover{transform:rotate(0) translateX(6px) scale(1.04)}
+.dock a.on{background:var(--board);color:var(--ink);border-color:var(--ink)}
+.dock .dock-t{
+  display:flex;align-items:center;gap:9px;height:40px;padding:0 15px 0 12px;border-radius:14px;border:0;cursor:pointer;
+  background:var(--ink);color:var(--board);font-weight:600;font-size:13.5px;box-shadow:0 8px 20px -10px rgba(0,0,0,.5);transition:transform .25s;
 }
+.dock .dock-t:hover{transform:translateY(-1px)}
+.dock .dock-t i{width:9px;height:9px;border-radius:3px;background:var(--dc,#fff);flex:none;transition:background .3s}
+.dock .dock-t em{font-style:normal;opacity:.6;font-weight:500}
+@media (max-width:760px){.dock .dock-t em{display:none}}
 @media (prefers-reduced-motion: reduce){.dock a{transition:none}}
 
 /* ---------- WhatsApp asistanı: sekmeler + sohbet + canlı pano (koyu sahne) ---------- */
@@ -770,7 +766,7 @@ footer{padding-block:28px 48px}
   <a href="#bot" style="--c:#7044F2"><span>WhatsApp asistanı</span></a>
   <a href="#kareler" style="--c:#E39A12;--t:#101217"><span>İşler</span></a>
   <a href="#iletisim" style="--c:var(--ink);--t:var(--board)"><span>İletişim</span></a>
-  <button class="dock-t" type="button" aria-expanded="false"><span>Menü</span></button>
+  <button class="dock-t" type="button" aria-expanded="false" aria-controls="dock"><i></i><span>Menü</span><em id="dockNow">· Giriş</em></button>
 </nav>
 <div class="grain" aria-hidden="true"></div>
 <main id="icerik">
@@ -1667,23 +1663,23 @@ $$(".btn").forEach(b => {
   })();
 })();
 
-/* ---------- Alt menü: aktif bölüm uzun etikete dönüşür ---------- */
+/* ---------- Alt menü: tıklayınca açılır, dışarı tıklayınca / bölüm seçince kapanır ---------- */
 (() => {
   const dock = $("#dock"); if (!dock) return;
-  const links = $$("a", dock);
+  const links = $$("a", dock), tg = $(".dock-t", dock), nowEl = $("#dockNow");
   links.forEach((a, k) => a.style.setProperty("--k", k));
-  const meas = () => links.forEach(a => { const sp = a.querySelector("span"); const c = sp.cloneNode(true); c.style.cssText = "position:absolute;visibility:hidden;writing-mode:horizontal-tb;padding:0 15px;font-size:14px;font-weight:650;white-space:nowrap"; document.body.appendChild(c); a.style.setProperty("--w", Math.ceil(c.getBoundingClientRect().width + 4) + "px"); c.remove(); });
-  (document.fonts ? document.fonts.ready : Promise.resolve()).then(meas); meas();
-  const tg = $(".dock-t", dock);
-  tg && tg.addEventListener("click", () => { const o = dock.classList.toggle("open"); tg.setAttribute("aria-expanded", o); tg.querySelector("span").textContent = o ? "Kapat" : "Menü"; });
-  links.forEach(a => a.addEventListener("click", () => { dock.classList.remove("open"); if (tg) { tg.setAttribute("aria-expanded", "false"); tg.querySelector("span").textContent = "Menü"; } }));
+  const setOpen = o => { dock.classList.toggle("open", o); tg.setAttribute("aria-expanded", o); tg.querySelector("span").textContent = o ? "Kapat" : "Menü"; };
+  tg.addEventListener("click", e => { e.stopPropagation(); setOpen(!dock.classList.contains("open")); });
+  links.forEach(a => a.addEventListener("click", () => setOpen(false)));
+  document.addEventListener("click", e => { if (!dock.contains(e.target)) setOpen(false); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") setOpen(false); });
   const secs = links.map(a => $(a.getAttribute("href"))).filter(Boolean);
-  const set = id => links.forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + id));
-  const io = new IntersectionObserver(es => {
-    es.forEach(e => { if (e.isIntersecting) set(e.target.id); });
-  }, { rootMargin: "-45% 0px -50% 0px" });
-  secs.forEach(s => io.observe(s));
-  set("top");
+  const set = id => links.forEach(a => {
+    const on = a.getAttribute("href") === "#" + id; a.classList.toggle("on", on);
+    if (on) { nowEl.textContent = "· " + a.textContent.trim(); tg.style.setProperty("--dc", getComputedStyle(a).getPropertyValue("--c")); }
+  });
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) set(e.target.id); }), { rootMargin: "-45% 0px -50% 0px" });
+  secs.forEach(x => io.observe(x)); set("top");
 })();
 
 /* ---------- WhatsApp asistanı: sohbet + canlı pano ---------- */
