@@ -855,6 +855,8 @@ footer{padding-block:28px 48px}
 .foot .big{font-family:var(--f-display);font-weight:800;font-size:clamp(64px,16vw,240px);letter-spacing:-.05em;line-height:.8;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);width:100%}
 
 /* ---------- Ziyaretçi imleci ---------- */
+.roam{position:fixed;left:0;top:0;z-index:45;pointer-events:none;opacity:0;filter:drop-shadow(0 22px 20px rgba(70,50,110,.2));will-change:transform,opacity}
+@media print{.roam{display:none}}
 .me{position:fixed;left:0;top:0;z-index:60;pointer-events:none;display:none}
 .me span{display:inline-block;margin:18px 0 0 14px;background:var(--ink);color:var(--board);font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:6px 999px 999px 999px}
 @media (hover:hover) and (pointer:fine){.me{display:block}}
@@ -3027,6 +3029,159 @@ $("#sendPk").addEventListener("click", () => {
     b.k.g.position.y = -.12 * (1 - hc);
     const s = 1 + (b.hov || 0) * .03 + (h - hc) * .3; b.k.g.scale.set(s, s, s);
   }
+})();
+
+/* ---------- Gezgin hayalet: sitede kendi kendine dolaşan tek bir dost ---------- */
+(() => {
+  const T = window.THREE; if (!T) return;
+  let ok = false; try { ok = !!document.createElement("canvas").getContext("webgl"); } catch (e) {}
+  if (!ok) return;
+  const cv = document.createElement("canvas"); cv.className = "roam"; cv.setAttribute("aria-hidden", "true"); document.body.appendChild(cv);
+  let S = innerWidth < 760 ? 140 : 210;
+  const renderer = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, premultipliedAlpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.setSize(S, S);
+  renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = .92;
+  const scene = new T.Scene();
+  const cam = new T.PerspectiveCamera(30, 1, .1, 50); cam.position.set(0, .35, 13.5); cam.lookAt(0, .35, 0);
+  scene.add(new T.HemisphereLight("#FFFFFF", "#8F86A3", .38));
+  const key = new T.DirectionalLight("#FFF1E0", 1.9); key.position.set(-4, 5, 4); scene.add(key);
+  const fill = new T.DirectionalLight("#DCE4FF", .35); fill.position.set(5, 0, 3); scene.add(fill);
+  const rim = new T.DirectionalLight("#FFFFFF", .9); rim.position.set(2, 3, -5); scene.add(rim);
+
+  /* çarşaf: kubbe baş, yanlara açılan dökümlü gövde, sivri uçlu etek */
+  const prof = [];
+  for (let i = 0; i <= 18; i++) { const a = i / 18 * Math.PI / 2; prof.push(new T.Vector2(Math.max(.001, Math.sin(a)), 1 + Math.cos(a) * 1.05)); }
+  for (let i = 1; i <= 34; i++) { const s = i / 34; prof.push(new T.Vector2(1 + .85 * Math.pow(s, 1.9), 1 - s * 2.15)); }
+  const geo = new T.LatheGeometry(prof, 96), base = geo.attributes.position.array.slice();
+  const sm = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  // statik şekil (yüz yerleşimi için de kullanılır)
+  function shape(x, y, z, t, vx, vy) {
+    if (y > .999) return [x, y, z];
+    const d = Math.min(1, (1 - y) / 2.15), ph = Math.atan2(z, x), r0 = Math.hypot(x, z) || 1e-4;
+    const wing = 1 + .3 * Math.pow(Math.abs(Math.cos(ph)), 3) * sm(.15, .7, d);
+    const cr = Math.pow(Math.abs(Math.sin(ph * 4 + .4 + Math.sin(t * .7) * .08)), .4), fold = 1 - .19 * d * (1 - cr);
+    const tc = Math.cos(ph * 8 + .4 + Math.sin(t * 1.3) * .15), tip = Math.pow((tc + 1) / 2, 3) * 2 - .5, d6 = Math.pow(d, 6);
+    const r = r0 * wing * fold * (1 + .1 * d6 * tip) * (1 + Math.sin(ph * 3 + t * 2.1) * .025 * d * d);
+    let yy = y - .22 * d6 * tip - .04 * d6 + Math.sin(ph * 5 - t * 2.4) * .04 * d * d;
+    let nx = x / r0 * r, nz = z / r0 * r;
+    const d2 = d * d; nx -= d2 * vx * .55; yy += d2 * Math.abs(vx) * .18 - d2 * vy * .3;
+    return [nx, yy, nz];
+  }
+  const sheetM = new T.MeshPhysicalMaterial({ color: "#ECE8E1", roughness: .55, sheen: .6, sheenColor: new T.Color("#E9E2F5"), sheenRoughness: .5, clearcoat: .15, side: T.DoubleSide, transparent: true });
+  const ghost = new T.Group(), body = new T.Group(); ghost.add(body); scene.add(ghost);
+  const sheet = new T.Mesh(geo, sheetM); body.add(sheet);
+  const fm = [sheetM];
+  const M = (c, o = {}) => { const m = new T.MeshStandardMaterial(Object.assign({ color: c, roughness: .4, transparent: true }, o)); fm.push(m); return m; };
+  // yüzeye yerleştir
+  const onHead = (dir, eps) => { const n = dir.clone().normalize(); const p = new T.Vector3(0, 1, 0).add(n.clone().multiplyScalar(1 + eps)); return [p, new T.Vector3(0, 1, 0).add(n.clone().multiplyScalar(5))]; };
+  const face = new T.Group(); body.add(face);
+  // gözler: iri, parlak, lacivert-siyah
+  const eyeM = new T.MeshStandardMaterial({ color: "#04050A", roughness: .18, metalness: .2, transparent: true }); fm.push(eyeM);
+  const hiM = M("#FFFFFF", { emissive: "#FFFFFF", emissiveIntensity: 1, roughness: 1 });
+  const eyes = [];
+  [-1, 1].forEach(sd => {
+    const [p, tg] = onHead(new T.Vector3(sd * .34, .14, .93), -.06);
+    const e = new T.Group(); e.position.copy(p); e.lookAt(tg); face.add(e);
+    const ball = new T.Mesh(new T.SphereGeometry(.225, 32, 24), eyeM); ball.scale.set(.92, 1, .62); e.add(ball);
+    const h1 = new T.Mesh(new T.SphereGeometry(.055, 12, 8), hiM); h1.position.set(.07 * -sd + .02, .075, .12); e.add(h1);
+    const h2 = new T.Mesh(new T.SphereGeometry(.024, 10, 6), hiM); h2.position.set(-.06, -.07, .125); e.add(h2);
+    eyes.push({ e, ball, h1, h2, sd });
+    // kaş: ince, yumuşak kemer
+    const [bp, bt] = onHead(new T.Vector3(sd * .38, .5, .78), .008);
+    const brow = new T.Mesh(new T.TorusGeometry(.15, .022, 8, 24, Math.PI * .6), M("#4A3830", { roughness: .7 }));
+    brow.position.copy(bp); brow.lookAt(bt); brow.rotateZ(Math.PI / 2 - Math.PI * .31 + sd * .12); face.add(brow);
+  });
+  // ağız: açık, mutlu hilal; içinde dil
+  const ms = new T.Shape(); const w = .27; ms.moveTo(-w, .02); ms.bezierCurveTo(-w * .55, -.3, w * .55, -.3, w, .02); ms.bezierCurveTo(w * .45, -.07, -w * .45, -.07, -w, .02);
+  const mouth = new T.Mesh(new T.ShapeGeometry(ms, 24), M("#120202", { roughness: .9 }));
+  const my = .74, mr = 1 + .85 * Math.pow((1 - my) / 2.15, 1.9), mq = shape(0, my, mr, 0, 0, 0); mouth.position.set(mq[0], mq[1], mq[2] + .035); mouth.lookAt(mq[0], mq[1] + .25, mq[2] + 5); face.add(mouth);
+  const ts = new T.Shape(); ts.absellipse(0, -.185, .085, .032, 0, Math.PI * 2);
+  const tongue = new T.Mesh(new T.ShapeGeometry(ts, 20), M("#4A0E08", { roughness: .8 })); tongue.position.z = .004; mouth.add(tongue);
+  const ls = new T.Shape(); ls.moveTo(-w * 1.04, .035); ls.bezierCurveTo(-w * .45, -.06, w * .45, -.06, w * 1.04, .035); ls.bezierCurveTo(w * .45, -.035, -w * .45, -.035, -w * 1.04, .035);
+  const lip = new T.Mesh(new T.ShapeGeometry(ls, 20), M("#EDE6DC", { roughness: .6 })); lip.position.z = .006; mouth.add(lip);
+  ghost.scale.setScalar(1.0); setOp(1);
+
+  function deform(t, vx, vy) {
+    const p = geo.attributes.position.array;
+    for (let i = 0; i < p.length; i += 3) { const r = shape(base[i], base[i + 1], base[i + 2], t, vx, vy); p[i] = r[0]; p[i + 1] = r[1]; p[i + 2] = r[2]; }
+    geo.attributes.position.needsUpdate = true; geo.computeVertexNormals();
+  }
+  function setOp(o) { fm.forEach(m => { m.opacity = o; m.depthWrite = o > .98; }); }
+
+  /* dolaşma: hedef noktaya yaylı süzülme, imleçten kaçma, ara sıra kaybolup başka yerde belirme */
+  const pos = { x: innerWidth * .82, y: innerHeight * .7 }, vel = { x: 0, y: 0 };
+  let tgt = { x: pos.x, y: pos.y }, nextT = 0, t = 0, last = performance.now(), mouse = { x: -999, y: -999, t: 0 };
+  let op = 0, opT = 1, spin = 0, spinTo = 0, scared = 0, hidden = false, phaseAt = 18 + Math.random() * 10, phasing = 0, scrollV = 0, lastY = scrollY;
+  const pickTarget = () => {
+    const m = S * .55, top = 90;
+    for (let k = 0; k < 6; k++) {
+      const x = m + Math.random() * (innerWidth - 2 * m), y = top + m * .6 + Math.random() * (innerHeight - top - m * 1.6);
+      if (Math.hypot(x - pos.x, y - pos.y) > innerWidth * .18) { tgt = { x, y }; return; }
+    }
+    tgt = { x: m + Math.random() * (innerWidth - 2 * m), y: top + m + Math.random() * (innerHeight - top - 2 * m) };
+  };
+  addEventListener("pointermove", e => { mouse = { x: e.clientX, y: e.clientY, t: performance.now() }; }, { passive: true });
+  addEventListener("pointerdown", e => {
+    if (op < .5) return;
+    if (Math.hypot(e.clientX - pos.x, e.clientY - pos.y) < S * .38) { spinTo += Math.PI * 2; scared = 1; }
+  });
+  addEventListener("scroll", () => { scrollV += (scrollY - lastY); lastY = scrollY; }, { passive: true });
+  addEventListener("resize", () => { S = innerWidth < 760 ? 140 : 210; renderer.setSize(S, S); pos.x = Math.min(pos.x, innerWidth - S / 2); pos.y = Math.min(pos.y, innerHeight - S / 2); pickTarget(); });
+  // şehir sahnesinin kendi hayaleti var: orada çekilir
+  const town = document.querySelector("#isler"); let inTown = false;
+  if (town) new IntersectionObserver(es => { inTown = es[0].intersectionRect.height > innerHeight * .4; }, { threshold: Array.from({ length: 51 }, (_, i) => i / 50) }).observe(town);
+  let visible = !document.hidden; document.addEventListener("visibilitychange", () => { visible = !document.hidden; last = performance.now(); });
+
+  window.__roam = (n, x, y) => { S = n; renderer.setSize(S, S); pos.x = x; pos.y = y; tgt = { x, y }; nextT = 1e9; phaseAt = 1e9; };
+  if (reduce) { pos.x = innerWidth - S * .6; pos.y = innerHeight - S * .7; }
+  pickTarget();
+  (function loop() {
+    requestAnimationFrame(loop); if (!visible) return;
+    const now = performance.now(), dt = Math.min(.05, (now - last) / 1000); last = now; t += dt;
+    // görünürlük
+    phaseAt -= dt;
+    if (!reduce && phaseAt < 0 && !phasing) { phasing = 1; }
+    if (phasing === 1) { opT = 0; if (op < .03) { pos.x = S * .6 + Math.random() * (innerWidth - S * 1.2); pos.y = 120 + Math.random() * (innerHeight - 240); vel.x = vel.y = 0; pickTarget(); phasing = 2; } }
+    else if (phasing === 2) { opT = 1; if (op > .97) { phasing = 0; phaseAt = 20 + Math.random() * 16; } }
+    else opT = 1;
+    if (inTown) opT = 0;
+    op += (opT - op) * Math.min(1, dt * 3.2);
+    cv.style.opacity = op.toFixed(3); if (op < .01) { if (!hidden) { hidden = true; cv.style.visibility = "hidden"; } return; } else if (hidden) { hidden = false; cv.style.visibility = "visible"; }
+
+    // hareket
+    if (!reduce) {
+      nextT -= dt; if (nextT < 0 || Math.hypot(tgt.x - pos.x, tgt.y - pos.y) < 30) { pickTarget(); nextT = 4 + Math.random() * 5; }
+      const md = Math.hypot(mouse.x - pos.x, mouse.y - pos.y);
+      if (md < S * .75 && now - mouse.t < 1500) { // imleç yaklaşınca nazikçe kaçar
+        const ax = (pos.x - mouse.x) / (md || 1), ay = (pos.y - mouse.y) / (md || 1);
+        tgt = { x: Math.max(S * .55, Math.min(innerWidth - S * .55, pos.x + ax * S * 2.2)), y: Math.max(110, Math.min(innerHeight - S * .6, pos.y + ay * S * 1.6)) }; nextT = 2.5; scared = Math.min(1, scared + dt * 4);
+      }
+      const k = 1.6, dmp = 2.2;
+      vel.x += ((tgt.x - pos.x) * k - vel.x * dmp) * dt; vel.y += ((tgt.y - pos.y) * k - vel.y * dmp) * dt;
+      vel.y -= scrollV * .9; scrollV = 0;
+      const sp = Math.hypot(vel.x, vel.y), mx = 520; if (sp > mx) { vel.x *= mx / sp; vel.y *= mx / sp; }
+      pos.x += vel.x * dt; pos.y += vel.y * dt;
+      pos.x = Math.max(S * .45, Math.min(innerWidth - S * .45, pos.x)); pos.y = Math.max(80, Math.min(innerHeight - S * .45, pos.y));
+    } else scrollV = 0;
+    scared = Math.max(0, scared - dt * .8);
+    const bob = Math.sin(t * 2.1) * 7;
+    cv.style.transform = `translate3d(${(pos.x - S / 2).toFixed(1)}px,${(pos.y - S / 2 + bob).toFixed(1)}px,0)`;
+
+    // duruş: yöne eğilir, imlece bakar, tıklanınca döner
+    const nvx = Math.max(-1, Math.min(1, vel.x / 420)), nvy = Math.max(-1, Math.min(1, vel.y / 420));
+    body.rotation.z += (-nvx * .32 - body.rotation.z) * Math.min(1, dt * 5);
+    body.rotation.x += (nvy * .2 - body.rotation.x) * Math.min(1, dt * 5);
+    const lx = mouse.t ? Math.max(-1, Math.min(1, (mouse.x - pos.x) / 500)) : 0, ly = mouse.t ? Math.max(-1, Math.min(1, (mouse.y - pos.y) / 500)) : 0;
+    spin += (spinTo - spin) * Math.min(1, dt * 3.2);
+    ghost.rotation.y += (lx * .45 + nvx * .35 + spin - ghost.rotation.y) * Math.min(1, dt * 4);
+    ghost.rotation.x += (ly * .18 - ghost.rotation.x) * Math.min(1, dt * 4);
+    // göz kırpma, şaşırınca iri gözler
+    const blink = (t % 3.8) < .13 ? .1 : 1, big = 1 + scared * .18;
+    eyes.forEach(o => { o.ball.scale.y += (blink * big - o.ball.scale.y) * Math.min(1, dt * 20); o.ball.scale.x = .92 * big; o.h1.visible = o.h2.visible = blink > .5; });
+    mouth.scale.set(1 - scared * .25, 1 + scared * .5, 1);
+    deform(t, nvx, nvy);
+    renderer.render(scene, cam);
+  })();
 })();
 
 /* ---------- Süreç çizgisi ---------- */
