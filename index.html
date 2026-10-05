@@ -600,6 +600,12 @@ input,textarea{cursor:text}
 .hx-grid{display:none}
 .hx.flat .hx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;position:relative;z-index:3;padding:80px 20px 20px}
 .hx.flat .hx-grid img{width:100%;border-radius:10px;display:block}
+/* tam ekran: kenardan kenara */
+.hx{padding-block:0!important}
+.hx > .wrap{max-width:none;padding:0}
+.hx .hx-panel{height:100vh;height:100svh;min-height:600px;max-height:none;border-radius:0;box-shadow:none}
+.hx .hx-top{top:calc(96px + env(safe-area-inset-top,0px));left:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)))}
+.hx .hx-cap{left:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));right:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));bottom:clamp(84px,9vh,104px)}
 .hx.flat .hx-panel{height:auto;max-height:none}
 .hx.flat .hx-title{position:relative;padding-top:60px}
 
