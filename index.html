@@ -370,8 +370,7 @@ section{position:relative}
 .orbs{display:none}
 .orbs-on .orbs{display:block}
 .orbs-on .bento{display:none}
-.orb-stage{position:relative;height:clamp(360px,40vw,520px);width:100vw;margin-left:calc(50% - 50vw);cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.orb-stage.drag{cursor:grabbing}
+.orb-stage{position:relative;height:clamp(360px,40vw,520px);width:100vw;margin-left:calc(50% - 50vw);touch-action:pan-y;user-select:none;-webkit-user-select:none}
 .orb-stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .orb-hint{position:absolute;left:50%;bottom:6px;transform:translateX(-50%);display:flex;gap:10px;align-items:center;color:var(--ink-3);font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;pointer-events:none}
 .orb-hint b{display:inline-block;width:28px;height:1px;background:currentColor}
@@ -406,20 +405,17 @@ a:hover .roll > span,button:hover .roll > span,a:focus-visible .roll > span{tran
 @keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-4%)}60%{transform:translate(-4%,1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
 @media (prefers-reduced-motion: reduce){.grain{animation:none}}
 
-/* ---------- Özel imleç: küçük nokta + ince halka, bağlamda yanında küçük etiket ---------- */
+/* ---------- İmleç: tarayıcının kendi imleci, özel ok çizimi (gecikmesiz, her zeminde görünür) ---------- */
+html,body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M4 2.5 L21.5 12.2 L13.4 14.1 L9.6 22.6 Z' fill='%230F1012' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3,auto}
+a,button,[role=button],.chip,.tile,label[for],select,summary,.dock-t{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M4 2.5 L21.5 12.2 L13.4 14.1 L9.6 22.6 Z' fill='%232E43FF' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3,pointer!important}
+#orbStage,#pkArea,#stGl{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M4 2.5 L21.5 12.2 L13.4 14.1 L9.6 22.6 Z' fill='%230F1012' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3,grab}
+#orbStage.drag,#pkArea:active,#stGl:active{cursor:grabbing}
+input,textarea{cursor:text}
 .cur2{position:fixed;left:0;top:0;z-index:95;pointer-events:none;display:none}
-.cur2 .dot,.cur2 .ring{position:absolute;left:0;top:0;border-radius:50%;mix-blend-mode:difference;will-change:transform}
-.cur2 .dot{width:6px;height:6px;margin:-3px 0 0 -3px;background:#fff;transition:opacity .2s,transform .2s}
-.cur2 .ring{width:26px;height:26px;margin:-13px 0 0 -13px;border:1px solid rgba(255,255,255,.9);
-  transition:width .4s cubic-bezier(.2,.8,.2,1),height .4s cubic-bezier(.2,.8,.2,1),margin .4s cubic-bezier(.2,.8,.2,1),opacity .25s}
-.cur2 .cl{position:absolute;left:0;top:0;will-change:transform;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
-  background:var(--ink);color:var(--board);padding:4px 8px;border-radius:999px;white-space:nowrap;opacity:0;transform-origin:left top;transition:opacity .2s}
+.cur2 .cl{position:absolute;left:0;top:0;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--ink);color:var(--board);padding:4px 8px;border-radius:999px;white-space:nowrap;opacity:0;transition:opacity .15s}
 .cur2.lab .cl{opacity:1}
-.cur2.link .ring{width:44px;height:44px;margin:-22px 0 0 -22px}
-.cur2.link .dot{opacity:0}
-.cur2.text .ring{opacity:0}
-.cur2.text .dot{width:2px;height:22px;margin:-11px 0 0 -1px;border-radius:1px}
-@media (hover:hover) and (pointer:fine){html.cc .cur2{display:block}html.cc,html.cc *{cursor:none!important}}
+@media (hover:hover) and (pointer:fine){.cur2{display:block}}
 
 /* ---------- Alt menü: kapalıyken tek küçük düğme, basınca renkli etiketler yukarı açılır ---------- */
 .dock{position:fixed;left:clamp(12px,1.6vw,22px);bottom:calc(clamp(12px,2vw,22px) + env(safe-area-inset-bottom,0px));z-index:60;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
@@ -1661,7 +1657,7 @@ $$(".btn").forEach(b => {
         }
       }
     }
-    if (pick && !drag) { rc.setFromCamera(ray, cam); const hit = rc.intersectObjects(orbs.map(o => o.m))[0]; hover = hit ? orbs.findIndex(o => o.m === hit.object) : -1; stage.style.cursor = hover >= 0 ? "pointer" : ""; }
+    if (pick && !drag) { rc.setFromCamera(ray, cam); const hit = rc.intersectObjects(orbs.map(o => o.m))[0]; hover = hit ? orbs.findIndex(o => o.m === hit.object) : -1;  }
     let best = 0, bx = 1e9;
     orbs.forEach((o, i) => {
       const x = wrapX(i), ax = Math.abs(x);
@@ -1680,38 +1676,24 @@ $$(".btn").forEach(b => {
   })();
 })();
 
-/* ---------- Özel imleç: nokta + gecikmeli halka, bağlama göre etiket ---------- */
+/* ---------- İmleç etiketi: bazı alanlarda okun yanında küçük ipucu ---------- */
 (() => {
-  if (!fine || reduce) return;
-  document.documentElement.classList.add("cc");
+  if (!fine) return;
   const c = document.createElement("div"); c.className = "cur2"; c.setAttribute("aria-hidden", "true");
-  c.innerHTML = `<span class="dot"></span><span class="ring"></span><span class="cl"></span>`; document.body.appendChild(c);
-  const dot = c.querySelector(".dot"), ring = c.querySelector(".ring"), lab = c.querySelector(".cl");
-  let x = innerWidth / 2, y = innerHeight / 2, rx = x, ry = y;
-  addEventListener("pointermove", e => { x = e.clientX; y = e.clientY; }, { passive: true });
-  addEventListener("pointerdown", () => c.classList.add("down")); addEventListener("pointerup", () => c.classList.remove("down"));
-  document.addEventListener("pointerleave", () => c.style.opacity = "0"); document.addEventListener("pointerenter", () => c.style.opacity = "1");
-  const AUTO = [["#orbStage", "Sürükle"], ["#pkArea", "Fırlat"], ["#gl", "Dağıt"]];
+  c.innerHTML = `<span class="cl"></span>`; document.body.appendChild(c);
+  const lab = c.querySelector(".cl");
+  const AUTO = [["#orbStage", "Sürükle"], ["#pkArea", "Fırlat"], ["#gl", "Dağıt"], ["#stGl", "Çevir"]];
+  addEventListener("pointermove", e => { lab.style.transform = `translate3d(${e.clientX + 20}px,${e.clientY + 18}px,0)`; }, { passive: true });
   document.addEventListener("pointerover", e => {
     const t = e.target;
-    const txt = t.closest("input,textarea,select");
-    const l = t.closest("[data-cursor]") || AUTO.map(([s, w]) => t.closest(s) && { dataset: { cursor: w } }).find(Boolean);
-    const link = t.closest("a,button,[role=button],.chip,.tile");
-    c.classList.toggle("text", !!txt);
-    c.classList.toggle("link", !!link && !txt);
-    c.classList.toggle("lab", !link && !txt && !!l);
-    lab.textContent = !link && l ? l.dataset.cursor : "";
+    const hit = t.closest("a,button,input,textarea,select,.chip") ? null : (t.closest("[data-cursor]") || AUTO.map(([sel, w]) => t.closest(sel) && { dataset: { cursor: w } }).find(Boolean));
+    c.classList.toggle("lab", !!hit); if (hit) lab.textContent = hit.dataset.cursor;
   });
-  // butonlar imlece doğru hafifçe çekilir
+  document.addEventListener("pointerleave", () => c.classList.remove("lab"));
   $$(".btn").forEach(b => {
-    b.addEventListener("pointermove", e => { const r = b.getBoundingClientRect(); b.style.translate = `${(e.clientX - r.left - r.width / 2) * .18}px ${(e.clientY - r.top - r.height / 2) * .25}px`; });
+    b.addEventListener("pointermove", e => { const r = b.getBoundingClientRect(); b.style.translate = `${(e.clientX - r.left - r.width / 2) * .12}px ${(e.clientY - r.top - r.height / 2) * .18}px`; });
     b.addEventListener("pointerleave", () => { b.style.translate = ""; });
   });
-  (function loop() {
-    rx += (x - rx) * .18; ry += (y - ry) * .18;
-    dot.style.transform = `translate3d(${x}px,${y}px,0)`; ring.style.transform = `translate3d(${rx}px,${ry}px,0)${c.classList.contains("down") ? " scale(.85)" : ""}`; lab.style.transform = `translate3d(${rx + 18}px,${ry + 16}px,0)`;
-    requestAnimationFrame(loop);
-  })();
 })();
 
 /* ---------- Alt menü: tıklayınca açılır, dışarı tıklayınca / bölüm seçince kapanır ---------- */
@@ -2043,10 +2025,7 @@ function startPhysics() {
       const r = area.getBoundingClientRect(); const hit = Query.point(items.map(i => i.body).filter(Boolean), { x: e.clientX - r.left, y: e.clientY - r.top })[0];
       if (hit) phys.teleport(hit.plugin.item, !hit.plugin.item.inPk);
     });
-    area.style.cursor = "grab";
-    Events.on(mc, "startdrag", () => area.style.cursor = "grabbing");
-    Events.on(mc, "enddrag", () => area.style.cursor = "grab");
-  }
+              }
   phys = {
     teleport(i, toPk) {
       const zx = zoneX();
