@@ -140,6 +140,12 @@ p{margin:0}
 }
 #gl{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1;touch-action:pan-y}
 .hero-ui{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(22px,3.6vw,48px);pointer-events:none}
+/* giriş tam ekran: kenardan kenara, üst çubuk üstünde durur */
+.hero{padding:0!important}
+.hero > .wrap{max-width:none;padding:0}
+.hero .hero-panel{height:100vh;height:100svh;min-height:620px;max-height:none;border-radius:0;box-shadow:none}
+.hero .hero-ui{padding:calc(104px + env(safe-area-inset-top,0px)) max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter))) clamp(28px,4vw,56px)}
+.hero .hero-hint{right:clamp(16px,2vw,28px)}
 .hero-ui a,.hero-ui button{pointer-events:auto}
 .hero-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
 .hero .eyebrow{color:rgba(16,18,23,.55)}
@@ -167,7 +173,7 @@ p{margin:0}
 .btn.line:hover{background:#fff}
 .hero-hint{position:absolute;z-index:2;right:clamp(22px,3.6vw,48px);top:50%;transform:translateY(-50%) rotate(90deg);transform-origin:right center;color:rgba(16,18,23,.45);pointer-events:none;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
 @media (max-width:760px){
-  .hero-panel{height:clamp(620px,calc(100svh - 96px),860px);border-radius:22px}
+  .hero .hero-ui{padding:96px 18px 96px}
   .hero-top{flex-direction:column;gap:12px}
   .modes{flex-direction:row;flex-wrap:wrap;gap:4px 12px;align-items:center}
   .modes button{font-size:11px;padding:2px 0}
