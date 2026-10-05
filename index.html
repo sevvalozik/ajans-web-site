@@ -608,7 +608,23 @@ input,textarea{cursor:text}
 .pk-area.phys.touch .chip{pointer-events:auto}
 .pk-area.phys .pk-pool{display:none}
 .pk-area.phys .pk-hint{top:16px;bottom:auto}
-.pk-area.phys::after{content:"";position:absolute;left:calc(58% - 22px);bottom:0;width:8px;height:60%;border-radius:4px;background:var(--line)}
+.pk-area.phys .pk-zone{border-color:transparent;background:none}
+.pk-area.phys .pk-zone .mono,.pk-area.phys .pk-zone b{display:none}
+.cart{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;transform-origin:var(--ox,75%) 92%}
+.cart.back{z-index:0}.cart.front{z-index:6}
+.cart .bk{fill:color-mix(in srgb,var(--chip) 80%,transparent);stroke:var(--ink);stroke-width:3;stroke-linejoin:round}
+.cart .gr{stroke:var(--ink);stroke-width:1.6;opacity:.32;fill:none}
+.cart .rim{stroke:var(--ink);stroke-width:4;stroke-linecap:round;fill:none}
+.cart .fr{stroke:var(--ink);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.cart .wh{fill:var(--ink)}.cart .hub{fill:var(--board)}
+.cart .hd{fill:var(--accent)}
+.pk-area.bump .cart{animation:cart-bump .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes cart-bump{0%{transform:none}30%{transform:rotate(-2.2deg) translateY(3px)}60%{transform:rotate(1.2deg)}100%{transform:none}}
+.cart-badge{position:absolute;z-index:7;display:none;align-items:center;gap:8px;pointer-events:none;font-weight:600;font-size:14px;background:var(--ink);color:var(--board);border-radius:999px;padding:6px 12px 6px 8px;transform:translate(-50%,-50%)}
+.cart-badge b{display:grid;place-items:center;min-width:24px;height:24px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-size:13px;padding:0 6px}
+.pk-area.phys .cart-badge{display:flex}
+.pk-area.bump .cart-badge b{animation:badge .5s cubic-bezier(.3,1.8,.5,1)}
+@keyframes badge{40%{transform:scale(1.45)}}
 .pk-zone .zlist{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;pointer-events:auto}
 .pk-area.phys .zlist{display:none}
 @media (max-width:900px){.pk{grid-template-columns:1fr}}
@@ -678,69 +694,83 @@ input,textarea{cursor:text}
   .sb-name{flex:1 1 100%}
 }
 
-/* ---------- Sektörler: koridorda kartlar, öne gelen kart vakaya açılır ---------- */
-.works-stage{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-.wcard{background:var(--board);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;min-width:0;position:relative}
-.wcard .vis{aspect-ratio:16/10;position:relative;background:var(--chip) var(--img) center/cover no-repeat}
-.wcard .vis .mono{position:absolute;left:12px;top:12px;background:rgba(255,255,255,.9);color:#101217;padding:3px 8px;border-radius:6px;font-size:10.5px}
-.wcard .bd{padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px}
-.wcard h3{font-size:28px;line-height:1.05}
-.wcard ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
-.wcard li{font-size:13px;background:var(--chip);border-radius:999px;padding:3px 10px;color:var(--ink-2)}
-.wcard.you{border:1.5px dashed var(--ink-3)}
-.wcard.you .vis{display:none}
-
-/* vaka sahnesi */
-.scene{position:absolute;inset:0;z-index:2;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:0;background:var(--board);opacity:0;pointer-events:none}
-.scene .sv{position:relative;overflow:hidden;background:#0B0C10}
-.scene .sv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;will-change:opacity,transform}
-.scene .sv .cnt{position:absolute;left:18px;bottom:16px;z-index:2;font-family:var(--f-mono);font-size:11px;color:#fff;background:rgba(11,12,16,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:5px 10px;border-radius:999px}
-.scene .sv .dots{position:absolute;right:18px;bottom:20px;z-index:2;display:flex;gap:5px}
-.scene .sv .dots i{width:22px;height:3px;border-radius:2px;background:rgba(255,255,255,.35);overflow:hidden;position:relative}
-.scene .sv .dots i b{position:absolute;inset:0;background:#fff;transform-origin:left;transform:scaleX(0)}
-.scene .sx{display:flex;flex-direction:column;justify-content:space-between;gap:20px;padding:clamp(22px,3vw,40px);min-width:0}
-.scene .sx .lab{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
-.scene .sx .lab i{width:10px;height:10px;border-radius:3px;background:var(--sc)}
-.scene .sx h3{font-size:clamp(32px,3.6vw,56px);line-height:1;letter-spacing:-.045em;margin-top:14px}
-.scene .sx ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-.scene .sx ol li{display:flex;align-items:baseline;gap:14px;padding:11px 0;border-top:1px solid var(--line);font-size:16px;background:none;border-radius:0;color:var(--ink);opacity:.25;transform:translateX(-8px);transition:opacity .4s,transform .5s cubic-bezier(.2,.8,.2,1)}
-.scene .sx ol li span{font-family:var(--f-mono);font-size:11px;color:var(--ink-3);min-width:22px}
-.scene .sx ol li.on{opacity:1;transform:none}
-.scene .sx .ft{font-size:13.5px;color:var(--ink-2)}
-
-.works.is-3d .works-pin{height:100vh;overflow:hidden;display:flex;flex-direction:column}
-.works.is-3d .works-head{padding-top:96px}
-.works.is-3d .works-pin > .wrap{width:100%}
-.works.is-3d .works-stage{flex:1;position:relative;display:block;perspective:1200px;perspective-origin:50% 45%}
-.works.is-3d .wcard{position:absolute;left:50%;top:50%;width:400px;transform-style:preserve-3d;will-change:transform,opacity,width,height;box-shadow:var(--shadow)}
-.works-count{font-family:var(--f-mono);font-size:12px;color:var(--ink-2)}
-.wprog{display:none}
-.works.is-3d .wprog{display:flex;width:100%;justify-content:space-between;gap:16px;padding-block:16px 22px;padding-left:150px;font-family:var(--f-mono);font-size:12px;color:var(--ink-2)}
-.wprog b{font-weight:500;color:var(--ink)}
-.wbar{flex:1;min-width:80px;height:2px;background:var(--line);align-self:center;position:relative}
-.wbar i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);width:0}
-
-/* sizin sektörünüz */
-.ys{justify-content:center;gap:14px}
-.ys h3{font-size:clamp(28px,3vw,48px)}
-.ys-p{color:var(--ink-2);max-width:46ch}
-.ys-f{display:flex;gap:8px;max-width:560px}
-.ys-f input{flex:1;min-width:0;background:var(--canvas);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:16px}
-.ys-f input:focus{outline:2px solid var(--accent);outline-offset:1px}
+/* ---------- Sektör şehri (bilinçli olarak tek görünüm: açık gökyüzü sahnesi) ---------- */
+.town{position:relative}
+.town-pin{height:100vh;padding:84px 0 16px;box-sizing:border-box}
+.town-wrap{height:100%}
+.town-panel{position:relative;height:100%;border-radius:28px;overflow:hidden;background:#C3C7CE;isolation:isolate;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);color:#101217}
+#townGl{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
+.town-head{position:absolute;z-index:2;left:clamp(18px,2.6vw,36px);top:clamp(18px,2.6vw,32px);max-width:420px;pointer-events:none;transition:opacity .5s}
+.town-eb{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(16,18,23,.6)}
+.town-head h2{font-size:clamp(32px,4.2vw,64px);margin-top:8px;color:#101217}
+.town-head p{margin-top:10px;font-size:15px;color:rgba(16,18,23,.7);max-width:34ch}
+.town-card{
+  position:absolute;z-index:2;right:clamp(14px,2vw,28px);top:clamp(14px,2vw,28px);width:min(360px,calc(100% - 28px));
+  background:rgba(255,255,255,.84);backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);
+  border:1px solid rgba(255,255,255,.7);border-radius:22px;padding:18px 18px 16px;box-shadow:0 18px 40px -20px rgba(30,20,60,.45);
+  opacity:0;transform:translateY(10px) scale(.98);transition:opacity .35s,transform .45s cubic-bezier(.2,.9,.3,1.2);pointer-events:none;color:#101217
+}
+.town-card.on{opacity:1;transform:none}
+.tc-top{display:flex;justify-content:space-between;align-items:center;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:rgba(16,18,23,.55)}
+.tc-top b{display:inline-flex;align-items:center;gap:7px;font-weight:500;color:#101217}
+.tc-top b i{width:10px;height:10px;border-radius:3px;background:var(--tc)}
+.town-card h3{font-size:28px;letter-spacing:-.04em;margin:10px 0 12px;color:#101217}
+.tc-row{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid rgba(16,18,23,.08);font-size:13.5px;line-height:1.4}
+.tc-row span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:rgba(16,18,23,.5);padding-top:2px}
+.tc-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tc-chips em{font-style:normal;font-size:12.5px;font-weight:600;border:1.5px solid #101217;border-radius:999px;padding:4px 10px;background:#fff}
+.town-prog{position:absolute;z-index:2;left:50%;bottom:18px;transform:translateX(-50%);display:flex;white-space:nowrap;align-items:center;gap:12px;font-family:var(--f-mono);font-size:12px;color:rgba(16,18,23,.7);
+  background:rgba(255,255,255,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:8px 14px;border-radius:999px;transition:opacity .4s}
+.tbar{width:140px;height:4px;border-radius:2px;background:rgba(16,18,23,.12);overflow:hidden}
+.tbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#FF7AB6,#9B7BFF,#5BC0FF);transition:width .3s}
+.town-end{
+  position:absolute;z-index:3;left:50%;bottom:18px;width:min(680px,calc(100% - 28px));transform:translate(-50%,16px);
+  background:rgba(255,255,255,.88);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);
+  border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:12px;box-shadow:0 24px 50px -24px rgba(30,20,60,.5);
+  opacity:0;pointer-events:none;transition:opacity .45s,transform .55s cubic-bezier(.2,.9,.3,1.2);color:#101217
+}
+.town-end.on{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+.town-end h3{font-size:clamp(22px,2.4vw,32px);color:#101217}
+.town-end .ys-f{display:flex;gap:8px}
+.town-end .ys-f input{flex:1;min-width:0;background:#F3F2EF;border:1px solid rgba(16,18,23,.1);border-radius:12px;padding:12px 14px;font-size:15px;color:#101217}
+.town-end .ys-f input:focus{outline:2px solid #9B7BFF;outline-offset:1px}
+.town-end .btn{background:#101217;color:#fff}
+.town-end .btn.ghost{background:transparent;color:#101217;border:1px solid rgba(16,18,23,.2)}
+.town-end .btn.accent{background:#2E43FF;color:#fff}
 .ys-q{display:flex;flex-wrap:wrap;gap:6px}
-.ys-q button{border:1px solid var(--line);background:var(--board);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;color:var(--ink-2)}
-.ys-q button:hover{color:var(--ink);border-color:var(--ink-3)}
-.ys-out{display:flex;flex-direction:column;gap:12px}
+.ys-q button{border:1px solid rgba(16,18,23,.14);background:#fff;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;color:#4B4A4F}
+.ys-q button:hover{color:#101217;border-color:rgba(16,18,23,.4)}
+.ys-out{display:flex;flex-direction:column;gap:10px}
 .ys-out:empty{display:none}
-.ys-out b{font-size:15px}
-.ys-chips{display:flex;flex-wrap:wrap;gap:8px}
-.ys-chips span{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--ink);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;background:var(--board);animation:ys-in .5s cubic-bezier(.2,1.3,.4,1) both;animation-delay:calc(var(--i) * 70ms)}
+.ys-out b{font-size:14.5px}
+.ys-chips{display:flex;flex-wrap:wrap;gap:7px}
+.ys-chips span{display:inline-flex;align-items:center;gap:8px;border:1.5px solid #101217;border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:600;background:#fff;animation:ys-in .5s cubic-bezier(.2,1.3,.4,1) both;animation-delay:calc(var(--i) * 70ms)}
 .ys-chips span i{width:9px;height:9px;border-radius:50%;background:var(--c)}
 @keyframes ys-in{from{opacity:0;transform:translateY(12px) scale(.9)}to{opacity:1;transform:none}}
 .ys-act{display:flex;flex-wrap:wrap;gap:8px}
-.works.is-3d .wcard.you .bd{position:absolute;inset:0;padding:clamp(24px,4vw,56px);overflow:auto}
-
-@media (max-width:760px){.scene{display:none}}
+.town-flat{display:none}
+.town.flat .town-pin{height:auto;padding:40px 0}
+.town.flat .town-panel{height:auto;background:#EFE8F4;padding:clamp(18px,3vw,32px);display:flex;flex-direction:column;gap:18px}
+.town.flat #townGl,.town.flat .town-prog,.town.flat .town-card{display:none}
+.town.flat .town-head{position:static;max-width:none}
+.town.flat .town-flat{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.town.flat .town-flat article{background:#fff;border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:8px;font-size:13.5px;color:#101217}
+.town.flat .town-flat h3{font-size:22px}
+.town.flat .town-end{position:static;transform:none;opacity:1;pointer-events:auto;width:auto}
+@media (max-width:760px){
+  .town-pin{padding:76px 0 12px}
+  .town-head{max-width:70%}
+  .town-head p{display:none}
+  .town-head h2{font-size:30px}
+  .town-card{top:auto;bottom:62px;right:12px;left:12px;width:auto;padding:14px}
+  .town-card h3{font-size:22px;margin:6px 0 8px}
+  .tc-row{grid-template-columns:80px minmax(0,1fr);font-size:12.5px;padding:6px 0}
+  .tc-row:nth-of-type(2){display:none}
+  .town-end{bottom:12px;padding:14px;gap:9px}
+  .town-end .ys-q{display:none}
+  .tbar{width:70px}
+  .town-prog{bottom:12px;left:auto;right:12px;transform:none}
+}
 @media (prefers-reduced-motion: reduce){.ys-chips span{animation:none}}
 
 /* ---------- Süreç ---------- */
@@ -797,7 +827,7 @@ footer{padding-block:28px 48px}
 <nav class="dock" id="dock" aria-label="Bölümler">
   <a href="#top" style="--c:var(--ink);--t:var(--board)"><span>Giriş</span></a>
   <a href="#hizmetler" style="--c:#2E43FF"><span>Hizmetler</span></a>
-  <a href="#paket" style="--c:#0C9F63"><span>Paketini kur</span></a>
+  <a href="#paket" style="--c:#0C9F63"><span>Sepetini doldur</span></a>
   <a href="#dene" style="--c:#D9306F"><span>Markanızı deneyin</span></a>
   <a href="#bot" style="--c:#7044F2"><span>WhatsApp asistanı</span></a>
   <a href="#kareler" style="--c:#E39A12;--t:#101217"><span>İşler</span></a>
@@ -1002,8 +1032,8 @@ footer{padding-block:28px 48px}
   <div class="wrap pk">
     <div class="pk-side">
       <div class="eyebrow">Paketini kur</div>
-      <h2>Paketinizi kurun.</h2>
-      <p>İşleri sürükleyip pakete bırakın ya da üstüne tıklayın. Aradığınız listede yoksa yazın: o da paketinize düşer ve doğru başlığa yerleşir.</p>
+      <h2>Sepetinizi doldurun.</h2>
+      <p>İşleri sepete fırlatın ya da üstüne tıklayın, kendileri uçsun. Aradığınız listede yoksa yazın: o da sepete uçar ve doğru başlığa yerleşir.</p>
       <form class="add" id="addForm" autocomplete="off">
         <label for="addIn" class="sr">Listede olmayan iş</label>
         <input id="addIn" type="text" placeholder="Örn. menü tasarımı, podcast, TikTok…" maxlength="40">
@@ -1011,20 +1041,21 @@ footer{padding-block:28px 48px}
       </form>
       <div class="toast" id="toast" aria-live="polite"></div>
       <div class="sum" id="sum">
-        <div class="sum-top"><b>Paketiniz</b><span class="mono" id="sumCount">0 iş</span></div>
+        <div class="sum-top"><b>Sepetiniz</b><span class="mono" id="sumCount">0 iş</span></div>
         <ul id="sumList"></ul>
-        <div class="empty" id="sumEmpty">Henüz boş. Birkaç iş seçin.</div>
-        <a class="btn accent" href="#iletisim" id="sendPk">Bu paketle yazın</a>
+        <div class="empty" id="sumEmpty">Sepet boş. Birkaç iş atın.</div>
+        <a class="btn accent" href="#iletisim" id="sendPk">Bu sepetle yazın</a>
       </div>
     </div>
     <div class="pk-area" id="pkArea">
       <div class="pk-pool" id="pkPool"></div>
       <div class="pk-zone" id="pkZone">
-        <span class="mono">PAKET</span>
+        <span class="mono">SEPET</span>
         <b id="zoneCount">0 iş</b>
         <div class="zlist" id="zList"></div>
       </div>
-      <div class="pk-hint mono" id="pkHint">Sürükleyin, fırlatın ya da tıklayın.</div>
+      <div class="pk-hint mono" id="pkHint">İşleri sepete fırlatın ya da üstüne tıklayın.</div>
+      <div class="cart-badge" id="cartBadge"><b id="cartN">0</b>Sepet</div>
     </div>
   </div>
 </section>
@@ -1107,58 +1138,32 @@ footer{padding-block:28px 48px}
   </div>
 </section>
 
-<!-- İŞLER -->
-<section class="works" id="isler">
-  <div class="works-pin">
-    <div class="wrap works-head sec" style="padding-bottom:28px">
-      <div class="sec-head" style="margin-bottom:0">
-        <h2>Hangi sektör olursa</h2>
-        <p>Müşterilerimizin adını vermiyoruz, yaptığımız işi gösteriyoruz. Kaydırdıkça her sektörün kartı açılır ve o işin içinden kareler görürsünüz. En sonda sıra sizin sektörünüzde.</p>
+<!-- SEKTÖR ŞEHRİ -->
+<section class="town" id="isler">
+  <div class="town-pin">
+    <div class="wrap town-wrap">
+      <div class="town-panel" id="townPanel">
+        <canvas id="townGl" aria-label="Kahramanımızın sektör binalarını yeniden canlandırdığı şehir" role="img"></canvas>
+        <div class="town-head">
+          <span class="town-eb">Sektör şehri</span>
+          <h2>Hangi sektör olursa</h2>
+          <p>Kaydırın, kahramanımız şehrin üstünden geçsin. Uğradığı her dükkân yeniden canlanır.</p>
+        </div>
+        <div class="town-card" id="tCard" aria-live="polite"></div>
+        <div class="town-prog" aria-hidden="true"><span id="tCount">0 / 12 yenilendi</span><span class="tbar"><i id="tBar"></i></span></div>
+        <div class="town-end" id="tEnd">
+          <h3 id="tEndH">Şehir yenilendi. Sıradaki sizin dükkânınız.</h3>
+          <form class="ys-f" id="ysForm" autocomplete="off">
+            <label for="ysIn" class="sr">Sektörünüz</label>
+            <input id="ysIn" type="text" placeholder="Ne iş yapıyorsunuz? Örn. çiçekçi, avukat, otel…" maxlength="40">
+            <button class="btn" type="submit">Uçur</button>
+          </form>
+          <div class="ys-q" id="ysQ"><button type="button">Çiçekçi</button><button type="button">Diş kliniği</button><button type="button">Spor salonu</button><button type="button">Avukat</button><button type="button">Pastane</button><button type="button">Veteriner</button></div>
+          <div class="ys-out" id="ysOut" aria-live="polite"></div>
+          <div class="ys-act" id="ysAct" hidden><button class="btn ghost" type="button" id="ysAdd">Sepetime ekle</button><a class="btn accent" href="#iletisim" id="ysSend">Bu işlerle yazın</a></div>
+        </div>
+        <div class="town-flat" id="tFlat"></div>
       </div>
-    </div>
-    <div class="wrap" style="flex:1;display:flex;flex-direction:column;min-height:0">
-      <div class="works-stage" id="stage">
-        <article class="wcard" data-imgs="s-a1,s-a2,s-a3,s-a4" data-c="var(--c-tasarim)">
-          <div class="vis"><span class="mono">Sağlık ve danışmanlık</span></div>
-          <div class="bd"><h3>Bir danışmanlık merkezi</h3><ul><li>Hikâye anlatan scroll sitesi</li><li>Uzman profil sistemi</li><li>Sosyal medya serisi</li><li>Tanıtım filmi</li><li>Pazarlama ve SEO denetimi</li></ul></div>
-        </article>
-        <article class="wcard" data-imgs="s-b1,s-b2,s-b3,s-b4" data-c="var(--c-video)">
-          <div class="vis"><span class="mono">Kozmetik</span></div>
-          <div class="bd"><h3>Bir cilt bakımı markası</h3><ul><li>Web stratejisi ve yeni site planı</li><li>Ürün sunumu</li><li>Yapay zekâ ile ürün videoları</li><li>Aylık içerik takvimi</li><li>Instagram önizleme</li></ul></div>
-        </article>
-        <article class="wcard" data-imgs="s-c1,s-c2,s-c3" data-c="var(--c-reklam)">
-          <div class="vis"><span class="mono">Otomotiv</span></div>
-          <div class="bd"><h3>Bir ekspertiz firması</h3><ul><li>Aylık post seti</li><li>Video planı</li><li>Yerel içerik takvimi</li></ul></div>
-        </article>
-        <article class="wcard" data-imgs="s-d1,s-d2,s-d3,s-d4" data-c="var(--c-kod)">
-          <div class="vis"><span class="mono">Teknoloji</span></div>
-          <div class="bd"><h3>Bir teknoloji şirketi</h3><ul><li>Kurumsal katalog</li><li>Web sitesi</li></ul></div>
-        </article>
-        <article class="wcard" data-imgs="s-e1,s-e2,s-e3" data-c="var(--c-otomasyon)">
-          <div class="vis"><span class="mono">Dernek</span></div>
-          <div class="bd"><h3>Bir üye derneği</h3><ul><li>Mobil uygulama</li><li>Web uygulaması</li><li>Üye ağı</li></ul></div>
-        </article>
-        <article class="wcard" data-imgs="s-f1,s-f2,s-f3" data-c="var(--ink)">
-          <div class="vis"><span class="mono">Girişim</span></div>
-          <div class="bd"><h3>Yeni kurulan bir girişim</h3><ul><li>Marka brief'i</li><li>Konumlandırma</li></ul></div>
-        </article>
-        <article class="wcard you">
-          <div class="vis"><span class="mono">Sizin sektörünüz</span></div>
-          <div class="bd ys">
-            <h3>Sıra sizin sektörünüzde.</h3>
-            <p class="ys-p">Ne iş yaptığınızı yazın, sizin için ilk adımları çıkaralım.</p>
-            <form class="ys-f" id="ysForm" autocomplete="off">
-              <label for="ysIn" class="sr">Sektörünüz</label>
-              <input id="ysIn" type="text" placeholder="Örn. diş kliniği, pastane, butik…" maxlength="40">
-              <button class="btn" type="submit">Göster</button>
-            </form>
-            <div class="ys-q" id="ysQ"><button type="button">Diş kliniği</button><button type="button">Pastane</button><button type="button">Butik</button><button type="button">Oto galeri</button><button type="button">Emlak</button><button type="button">Kurs</button></div>
-            <div class="ys-out" id="ysOut" aria-live="polite"></div>
-            <div class="ys-act" id="ysAct" hidden><button class="btn ghost" type="button" id="ysAdd">Paketime ekle</button><a class="btn accent" href="#iletisim" id="ysSend">Bu işlerle yazın</a></div>
-          </div>
-        </article>
-      </div>
-      <div class="wprog" aria-hidden="true"><span id="wNow"><b>1 / 7</b> · Sağlık ve danışmanlık</span><span class="wbar"><i id="wBar"></i></span><span>Kaydırın</span></div>
     </div>
   </div>
 </section>
@@ -1985,14 +1990,48 @@ function startPhysics() {
   const W = () => area.clientWidth, H = () => area.clientHeight;
   let walls = [];
   const zoneX = () => zone.offsetLeft;
+  // market arabası: sepetin iç sınırları
+  let C = {};
+  const NS = "http://www.w3.org/2000/svg";
+  const back = document.createElementNS(NS, "svg"), front = document.createElementNS(NS, "svg");
+  back.setAttribute("class", "cart back"); front.setAttribute("class", "cart front"); back.setAttribute("aria-hidden", "true"); front.setAttribute("aria-hidden", "true");
+  area.prepend(back); area.appendChild(front);
+  function drawCart() {
+    const w = W(), h = H(), zx = zoneX();
+    const bl = zx + 26, br = w - 100, top = h * .4, fl = h - 118;
+    C = { bl, br, top, fl };
+    const vb = `0 0 ${w} ${h}`; back.setAttribute("viewBox", vb); front.setAttribute("viewBox", vb);
+    const poly = `${bl - 16},${top} ${br + 8},${top} ${br},${fl} ${bl + 12},${fl}`;
+    back.innerHTML = `<polygon class="bk" points="${poly}"/>`;
+    let g = "";
+    const cols = 7, rows = 4;
+    for (let i = 1; i < cols; i++) { const f = i / cols; g += `<line class="gr" x1="${bl - 16 + (br + 24 - bl) * f}" y1="${top}" x2="${bl + 12 + (br - bl - 12) * f}" y2="${fl}"/>`; }
+    for (let j = 1; j < rows; j++) { const f = j / rows, y = top + (fl - top) * f; g += `<line class="gr" x1="${bl - 16 + 28 * f}" y1="${y}" x2="${br + 8 - 8 * f}" y2="${y}"/>`; }
+    const wy = h - 30;
+    front.innerHTML = g + `<polyline class="fr" points="${bl - 16},${top} ${bl + 12},${fl} ${br},${fl} ${br + 8},${top}"/>
+      <line class="rim" x1="${bl - 20}" y1="${top}" x2="${br + 10}" y2="${top}"/>
+      <polyline class="fr" points="${br + 8},${top} ${br + 40},${top - 46} ${br + 64},${top - 46}"/>
+      <rect class="hd" x="${br + 52}" y="${top - 53}" width="26" height="14" rx="7"/>
+      <polyline class="fr" points="${bl + 12},${fl} ${bl + 30},${fl + 46} ${br - 6},${fl + 46} ${br},${fl}"/>
+      <line class="fr" x1="${br - 6}" y1="${fl + 46}" x2="${br + 26}" y2="${top + 10}"/>
+      <circle class="wh" cx="${bl + 46}" cy="${wy}" r="17"/><circle class="hub" cx="${bl + 46}" cy="${wy}" r="6"/>
+      <circle class="wh" cx="${br - 22}" cy="${wy}" r="17"/><circle class="hub" cx="${br - 22}" cy="${wy}" r="6"/>`;
+    const ox = ((bl + br) / 2 / w * 100).toFixed(1) + "%"; back.style.setProperty("--ox", ox); front.style.setProperty("--ox", ox);
+    const bd = $("#cartBadge"); bd.style.left = ((bl + br) / 2) + "px"; bd.style.top = (top - 34) + "px";
+  }
   function buildWalls() {
     Composite.remove(engine.world, walls);
-    const w = W(), h = H(), t = 80;
+    drawCart();
+    const w = W(), h = H(), t = 80, { bl, br, top, fl } = C;
+    const seg = (x1, y1, x2, y2, th = 10) => { const len = Math.hypot(x2 - x1, y2 - y1); return Bodies.rectangle((x1 + x2) / 2, (y1 + y2) / 2, len, th, { isStatic: true, angle: Math.atan2(y2 - y1, x2 - x1), chamfer: { radius: th / 2 - 1 } }); };
     walls = [
       Bodies.rectangle(w / 2, h + t / 2, w * 2, t, { isStatic: true }),
       Bodies.rectangle(-t / 2, h / 2, t, h * 3, { isStatic: true }),
       Bodies.rectangle(w + t / 2, h / 2, t, h * 3, { isStatic: true }),
-      Bodies.rectangle(zoneX() - 10, h - h * .3, 8, h * .6, { isStatic: true, chamfer: { radius: 4 } })
+      seg(bl + 12, fl + 4, br, fl + 4, 10),
+      seg(bl - 16, top, bl + 12, fl, 10),
+      seg(br + 8, top, br, fl, 10),
+      Bodies.rectangle((bl + br) / 2, (fl + h) / 2 + 6, br - bl - 10, h - fl - 4, { isStatic: true })
     ];
     Composite.add(engine.world, walls);
   }
@@ -2028,26 +2067,35 @@ function startPhysics() {
               }
   phys = {
     teleport(i, toPk) {
-      const zx = zoneX();
-      const x = toPk ? zx + 30 + Math.random() * (W() - zx - 60) : 40 + Math.random() * (zx - 120);
-      Body.setPosition(i.body, { x: Math.max(i.w / 2 + 6, Math.min(W() - i.w / 2 - 6, x)), y: 40 });
-      Body.setVelocity(i.body, { x: 0, y: 2 }); Body.setAngle(i.body, (Math.random() - .5) * .6);
+      if (toPk) { // kavis çizerek sepete uçar
+        const tx = C.bl + 40 + Math.random() * (C.br - C.bl - 80), ty = C.top - 50, p = i.body.position;
+        const f = i.body.frictionAir, g = engine.gravity.y * engine.gravity.scale * (1000 / 60) ** 2, T2 = 42;
+        const vx = (tx - p.x) * f / (1 - Math.pow(1 - f, T2));
+        const yAt = vy => { let y = 0, v = vy; for (let k = 0; k < T2; k++) { v = v * (1 - f) + g; y += v; } return y; };
+        let lo = -80, hi = 20; for (let k = 0; k < 30; k++) { const m = (lo + hi) / 2; if (yAt(m) < ty - p.y) lo = m; else hi = m; }
+        Body.setVelocity(i.body, { x: vx, y: (lo + hi) / 2 }); i.body.collisionFilter.mask = 0; i.flight = T2; Body.setAngularVelocity(i.body, (Math.random() - .5) * .3);
+      } else {
+        const x = 40 + Math.random() * (zoneX() - 140);
+        Body.setPosition(i.body, { x: Math.max(i.w / 2 + 6, x), y: 40 }); Body.setVelocity(i.body, { x: 0, y: 2 }); Body.setAngle(i.body, (Math.random() - .5) * .6);
+      }
     },
-    addBody(i, toPk) { const zx = zoneX(); mk(i, zx + (W() - zx) / 2, 30); }
+    addBody(i, toPk) { mk(i, 30 + i.el.getBoundingClientRect().width / 2, 60); this.teleport(i, true); }
   };
   let last = "";
   (function tick() {
     Engine.update(engine, 1000 / 60);
-    const zx = zoneX(); let hot = false;
     items.forEach(i => {
       if (!i.body) return; const p = i.body.position;
+      if (i.flight > 0 && --i.flight === 0) i.body.collisionFilter.mask = 0xFFFFFFFF;
       i.el.style.transform = `translate(${p.x - i.w / 2}px,${p.y - i.h / 2}px) rotate(${i.body.angle}rad)`;
-      i.inPk = p.x > zx;
-      if (mc && mc.body === i.body && p.x > zx) hot = true;
+      i.inPk = p.x > C.bl - 16 && p.x < C.br + 8 && p.y > C.top - 30 && p.y < C.fl + 6;
     });
-    zone.classList.toggle("hot", hot);
     const key = items.map(i => i.inPk ? 1 : 0).join("");
-    if (key !== last) { last = key; renderSummary(); }
+    if (key !== last) {
+      const before = (last.match(/1/g) || []).length, now = (key.match(/1/g) || []).length; last = key; renderSummary();
+      $("#cartN").textContent = now;
+      if (now > before) { area.classList.remove("bump"); void area.offsetWidth; area.classList.add("bump"); }
+    }
     requestAnimationFrame(tick);
   })();
   addEventListener("resize", () => buildWalls());
@@ -2321,104 +2369,431 @@ $("#sendPk").addEventListener("click", () => {
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => update(false));
 })();
 
-/* ---------- Sektörler: koridor + vakaya açılan kart + sizin sektörünüz ---------- */
+/* ---------- Sektör şehri: kahramanımız uçtukça dükkânlar yeniden canlanır ---------- */
 (() => {
-  const sec = $("#isler"), stage = $("#stage"); if (!sec) return;
-  const cards = $$(".wcard", stage), N = cards.length;
-  // kart görselleri ve vaka sahneleri
-  cards.forEach(c => {
-    const imgs = (c.dataset.imgs || "").split(",").filter(Boolean);
-    if (!imgs.length) return;
-    c.querySelector(".vis").style.setProperty("--img", `url(work/${imgs[0]}.jpg)`);
-    const lab = c.querySelector(".vis .mono").textContent, h = c.querySelector("h3").textContent;
-    const li = $$("li", c).map(x => x.textContent);
-    const sc = document.createElement("div"); sc.className = "scene"; sc.setAttribute("aria-hidden", "true");
-    sc.style.setProperty("--sc", c.dataset.c || "var(--accent)");
-    sc.innerHTML = `<div class="sv">${imgs.map(s => `<img src="work/${s}.jpg" alt="" loading="lazy" decoding="async">`).join("")}<span class="cnt">1 / ${imgs.length}</span><span class="dots">${imgs.map(() => "<i><b></b></i>").join("")}</span></div>
-      <div class="sx"><div><div class="lab"><i></i>${lab}</div><h3>${h}</h3></div><ol>${li.map((x, k) => `<li><span>${String(k + 1).padStart(2, "0")}</span>${x}</li>`).join("")}</ol><div class="ft">Müşteri adı gizli · ${imgs.length} kare</div></div>`;
-    c.appendChild(sc);
-    c._sc = { el: sc, imgs: $$("img", sc), dots: $$(".dots b", sc), cnt: $(".cnt", sc), li: $$("ol li", sc), last: -1 };
-  });
+  const sec = $("#isler"), panel = $("#townPanel"), cv = $("#townGl"); if (!sec || !panel) return;
 
-  /* sizin sektörünüz */
-  const SECT = [
-    [/diş|klinik|doktor|hekim|hastane|sağlık|saglik|psikolog|terapi|fizyo|diyet|veteriner|eczane|estetik/, ["Kurumsal site", "Randevu sistemi", "Google İşletme Profili", "Sosyal medya", "Tanıtım filmi", "WhatsApp asistanı"]],
-    [/kafe|cafe|kahve|restoran|lokanta|pastane|fırın|firin|tatlı|tatli|yemek|bar|burger|pizza|döner/, ["Logo", "Menü tasarımı", "Reels seti", "Google İşletme Profili", "Sipariş için WhatsApp asistanı", "Ambalaj"]],
-    [/kozmetik|güzellik|guzellik|kuaför|kuafor|berber|salon|spa|nail|cilt|parfüm/, ["Marka kimliği", "Ambalaj", "Yapay zekâ ile ürün görseli", "Reels seti", "E-ticaret", "Meta reklamları"]],
-    [/butik|giyim|moda|mağaza|magaza|ayakkabı|takı|taki|aksesuar|e-ticaret|eticaret|online/, ["E-ticaret", "Yapay zekâ ile ürün görseli", "Instagram serisi", "Meta reklamları", "Google Ads", "Kargo takip asistanı"]],
-    [/oto|galeri|araç|arac|ekspertiz|servis|lastik|kiralama/, ["Web sitesi", "Google İşletme Profili", "Reels seti", "Google Ads", "Randevu sistemi", "WhatsApp asistanı"]],
-    [/emlak|gayrimenkul|inşaat|insaat|mimar|iç mimar|dekor|mobilya|proje/, ["Kurumsal site", "Proje sunumu", "Drone çekimi", "Tanıtım filmi", "Meta reklamları", "CRM entegrasyonu"]],
-    [/kurs|eğitim|egitim|okul|dershane|akademi|koç|koc|öğretmen|ogretmen|dil/, ["Web sitesi", "Kayıt formu", "Eğitim videosu", "Sosyal medya", "Google Ads", "WhatsApp asistanı"]],
-    [/yazılım|yazilim|teknoloji|saas|girişim|girisim|startup|uygulama|ajans/, ["Marka kimliği", "Landing sayfası", "Yatırımcı sunumu", "Ürün videosu", "SEO", "İş akışı otomasyonu"]],
-    [/dernek|vakıf|vakif|sivil|federasyon|oda|birlik/, ["Web sitesi", "Üye uygulaması", "Bülten", "Etkinlik tanıtımı", "Proje ve hibe dosyası", "Sosyal medya"]],
-    [/avukat|hukuk|muhasebe|mali|danışman|danisman|sigorta|finans/, ["Kurumsal site", "Marka kimliği", "LinkedIn içerikleri", "SEO", "Randevu sistemi", "Kurumsal sunum"]]
+  /* sektör notları: müşteri nereden geliyor, sık görülen eksik, ne yaparız */
+  const DATA = [
+    { id: "pastane", ad: "Pastane", c: "#F48FB1", re: /pasta|tatlı|tatli|fırın|firin|börek|borek|pastane|kurabiye/,
+      gel: "Instagram'da ve haritalarda yakındaki pastaneyi arıyor.", eks: "Özel gün pastası için hızlı fiyat ve online sipariş yok.", biz: ["Ürün fotoğrafları", "Reels", "WhatsApp'tan sipariş"] },
+    { id: "kafe", ad: "Kafe", c: "#C8875A", re: /kafe|cafe|kahve|restoran|lokanta|bistro|bar|burger|pizza|döner|doner|yemek/,
+      gel: "Haritalardaki puanlara ve fotoğraflara bakıp geliyor.", eks: "İşletme profili bakımsız, menü güncel değil.", biz: ["Google İşletme Profili", "Menü tasarımı", "Reels"] },
+    { id: "oto", ad: "Oto ekspertiz", c: "#E53935", re: /oto|araba|araç|arac|galeri|ekspertiz|servis|lastik|kiralama|yıkama/,
+      gel: "Araç alırken “yakınımdaki ekspertiz” diye arıyor.", eks: "Online randevu ve örnek rapor sayfası yok.", biz: ["Randevu sistemi", "Google Ads", "WhatsApp asistanı"] },
+    { id: "hastane", ad: "Sağlık", c: "#4FC3F7", re: /hastane|poliklinik|doktor|hekim|sağlık|saglik|tıp|tip|fizyo|psikolog|terapi|diyet|veteriner|klinik/,
+      gel: "Bölüm ve hekim adıyla arama yapıyor.", eks: "Hekim profilleri eksik, randevu adımları uzun.", biz: ["Kurumsal site", "Uzman profilleri", "Randevu sistemi"] },
+    { id: "dis", ad: "Diş kliniği", c: "#80DEEA", re: /diş|dis |dişçi|disci|ortodonti|implant/,
+      gel: "Tedavi adı ve şehirle arıyor, hekimi tanımak istiyor.", eks: "Tedaviyi anlatan sayfalar yok, süreç belirsiz.", biz: ["Tedavi sayfaları ve SEO", "Tanıtım videosu", "Randevu asistanı"] },
+    { id: "butik", ad: "Butik", c: "#F06292", re: /butik|giyim|moda|mağaza|magaza|ayakkabı|takı|taki|aksesuar|tekstil|e-ticaret|eticaret/,
+      gel: "Instagram keşfetten geliyor, fiyatı DM'den soruyor.", eks: "DM'de kaybolan siparişler, kendi satış sitesi yok.", biz: ["E-ticaret", "Yapay zekâ ile ürün çekimi", "Meta reklamları"] },
+    { id: "kuafor", ad: "Kuaför ve berber", c: "#5C6BC0", re: /kuaför|kuafor|berber|güzellik|guzellik|salon|tırnak|nail|spa|cilt|kozmetik|estetik/,
+      gel: "Önceki işlere Instagram'dan bakıp telefonla arıyor.", eks: "Randevular telefonda, gelmeyen müşteri çok.", biz: ["Online randevu", "Hatırlatma mesajı", "Reels"] },
+    { id: "egitim", ad: "Eğitim ve kurs", c: "#66BB6A", re: /kurs|eğitim|egitim|okul|dershane|akademi|öğretmen|ogretmen|koç|koc|dil|anaokul|kreş/,
+      gel: "Veliler birkaç kurumu yan yana karşılaştırıyor.", eks: "Kayıt formu ve program bilgisi dağınık.", biz: ["Web sitesi ve kayıt formu", "Dönemsel Google Ads", "WhatsApp bilgilendirme"] },
+    { id: "otel", ad: "Otel ve pansiyon", c: "#7E57C2", re: /otel|pansiyon|konaklama|apart|tatil|turizm|bungalov|kamp/,
+      gel: "Rezervasyon sitelerinden ve Instagram'dan buluyor.", eks: "Doğrudan rezervasyon yok, her satışta komisyon ödeniyor.", biz: ["Rezervasyon sitesi", "Fotoğraf ve video", "Meta reklamları"] },
+    { id: "emlak", ad: "Emlak", c: "#FFB300", re: /emlak|gayrimenkul|inşaat|insaat|müteahhit|mimar|konut|arsa/,
+      gel: "İlan portallarında görüyor, sonra ofisi araştırıyor.", eks: "Kendi markası zayıf, her şey portala bağlı.", biz: ["Site ve ilan sistemi", "Drone ve video çekimi", "Müşteri takibi (CRM)"] },
+    { id: "fabrika", ad: "Üretim ve sanayi", c: "#78909C", re: /fabrika|üretim|uretim|sanayi|imalat|makine|lojistik|toptan|ihracat/,
+      gel: "Fuarda, katalogda ve LinkedIn'de tanışıyor.", eks: "Katalog eski, site yabancı dilde yok.", biz: ["Kurumsal katalog", "Çok dilli site", "LinkedIn içerikleri"] },
+    { id: "tekno", ad: "Teknoloji", c: "#26A69A", re: /yazılım|yazilim|teknoloji|saas|girişim|girisim|startup|uygulama|bilişim|bilisim|ajans/,
+      gel: "Önce demoya ve referanslara bakıyor.", eks: "Ürünü tek bakışta anlatan sayfa yok.", biz: ["Landing sayfası", "Ürün videosu", "Yatırımcı sunumu"] }
   ];
-  const DEF = ["Marka kimliği", "Web sitesi", "Sosyal medya", "Google İşletme Profili", "Reklam yönetimi", "WhatsApp asistanı"];
+  const DEF = { gel: "Önce internette arıyor, sonra yorumlara ve fotoğraflara bakıyor.", eks: "Dijitaldeki görünümü dağınık.", biz: ["Marka kimliği", "Web sitesi", "Sosyal medya", "Google İşletme Profili", "WhatsApp asistanı"] };
+  const N = DATA.length;
+  const tCard = $("#tCard"), tEnd = $("#tEnd"), tCount = $("#tCount"), tBar = $("#tBar");
+  const card = (d, i, total) => `<div class="tc-top"><b style="--tc:${d.c}"><i></i>${d.ad}</b><span>${String(i + 1).padStart(2, "0")} / ${total}</span></div>
+    <h3>${d.baslik || d.ad + " yenilendi"}</h3>
+    <div class="tc-row"><span>Müşteri</span><div>${d.gel}</div></div>
+    <div class="tc-row"><span>Sık eksik</span><div>${d.eks}</div></div>
+    <div class="tc-chips">${d.biz.map(x => `<em>${x}</em>`).join("")}</div>`;
+
+  /* sizin sektörünüz: öneriler + paket + iletişim */
   let picked = [];
   const out = $("#ysOut"), act = $("#ysAct");
-  function show(q) {
-    q = q.trim(); if (!q) return;
-    const t = q.toLocaleLowerCase("tr"); const hit = SECT.find(([re]) => re.test(t));
-    picked = hit ? hit[1] : DEF;
-    const col = n => { const k = typeof catOf === "function" ? catOf(n) : "ozel"; return k === "ozel" || !CATS[k] ? "var(--ink-3)" : `var(${CATS[k].c})`; };
-    const name = q.length > 28 ? q.slice(0, 28) + "…" : q;
-    out.innerHTML = `<b>${name.replace(/[<&>]/g, "")} için ilk adımlar</b><div class="ys-chips">${picked.map((p, i) => `<span style="--i:${i};--c:${col(p)}"><i></i>${p}</span>`).join("")}</div>`;
-    act.hidden = false;
+  const col = n => { const k = typeof catOf === "function" ? catOf(n) : "ozel"; return k === "ozel" || !CATS[k] ? "#8F8D91" : `var(${CATS[k].c})`; };
+  function suggest(q, d) {
+    picked = d ? d.biz.concat(d === DEF ? [] : ["Sosyal medya"]).slice(0, 5) : DEF.biz;
+    const name = (q.length > 28 ? q.slice(0, 28) + "…" : q).replace(/[<&>]/g, "");
+    out.innerHTML = `<b>${name} için ilk adımlar</b><div class="ys-chips">${picked.map((p, i) => `<span style="--i:${i};--c:${col(p)}"><i></i>${p}</span>`).join("")}</div>`;
+    act.hidden = false; $("#ysAdd").textContent = "Sepetime ekle";
   }
-  $("#ysForm").addEventListener("submit", e => { e.preventDefault(); show($("#ysIn").value); });
-  $$("#ysQ button").forEach(b => b.addEventListener("click", () => { $("#ysIn").value = b.textContent; show(b.textContent); }));
   $("#ysAdd").addEventListener("click", () => {
     picked.forEach(n => { const it = items.find(i => i.name.toLocaleLowerCase("tr") === n.toLocaleLowerCase("tr")); if (it) { if (!it.inPk) toggle(it); } else addItem(n); });
-    $("#ysAdd").textContent = "Pakete eklendi ✓";
+    $("#ysAdd").textContent = "Sepete eklendi ✓";
   });
   $("#ysSend").addEventListener("click", () => { if (picked.length) $("#cMsg").value = `Sektörüm: ${$("#ysIn").value.trim()}. İlgilendiğim işler: ${picked.join(", ")}.`; });
+  let onAsk = (q) => { const t = q.toLocaleLowerCase("tr"); const d = DATA.find(x => x.re.test(t)); suggest(q, d || DEF); };
+  $("#ysForm").addEventListener("submit", e => { e.preventDefault(); const v = $("#ysIn").value.trim(); if (v) onAsk(v); });
+  $$("#ysQ button").forEach(b => b.addEventListener("click", () => { $("#ysIn").value = b.textContent; onAsk(b.textContent); }));
 
-  if (!motion || innerWidth < 760) return;
-  sec.classList.add("is-3d");
-
-  /* koridor */
-  const D = 900, BW = 400;
-  cards.forEach(c => { c.style.width = BW + "px"; c._h = c.classList.contains("you") ? 300 : c.offsetHeight; c.style.height = c._h + "px"; });
-  const xs = cards.map((_, i) => (i % 2 ? 1 : -1) * Math.min(innerWidth * .2, 300));
-  const ys = cards.map((_, i) => [0, -30, 20, -10, 30, -20, 0][i % 7]);
-  const sm = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
-  let SW = 1, SH = 1; const meas = () => { SW = stage.clientWidth; SH = stage.clientHeight; }; meas(); addEventListener("resize", meas);
-  const labels = cards.map(c => c.querySelector(".vis .mono").textContent);
-  let lastI = -1;
-  function place(p) {
-    const u = Math.min(N - 1, p * (N - .55) - .55);
-    cards.forEach((c, i) => {
-      const t = u - i, last = i === N - 1;
-      const eIn = sm((t + .42) / .22), eOut = last ? 0 : sm((t - .2) / .22), e = eIn * (1 - eOut);
-      let z = t < -.2 ? (t + .2) * D * 1.25 : (t > .2 && !last) ? (t - .2) * D * 1.7 : 0;
-      let o = 1;
-      if (z > 0) o = Math.max(0, 1 - z / 420);
-      else if (z < -3 * D) o = 0; else if (z < -D) o = .3 + .7 * (1 + (z + D) / (2 * D));
-      const x = xs[i] * Math.max(0, Math.min(1, -t * 1.2)) * (1 - e), y = ys[i] * (1 - e);
-      const w = BW + (SW - BW) * e, h = c._h + (SH - c._h) * e;
-      c.style.width = w + "px"; c.style.height = h + "px";
-      c.style.transform = `translate3d(${x - w / 2}px,${y - h / 2}px,${z}px)`;
-      c.style.opacity = o.toFixed(3);
-      c.style.zIndex = String(1000 + Math.round(z) + (e > .01 ? 500 : 0));
-      c.style.pointerEvents = (e > .9 || (o > .6 && z > -200)) ? "auto" : "none";
-      c.style.borderRadius = (20 + e * 8) + "px";
-      const S = c._sc; if (!S) return;
-      S.el.style.opacity = sm((e - .35) / .5).toFixed(3);
-      if (e > .02) {
-        const n = S.imgs.length, s = Math.max(0, Math.min(1, (t + .2) / .4)) * (n - .001), cur = Math.floor(s);
-        S.imgs.forEach((im, j) => { const d = s - j; im.style.opacity = (j === 0 ? 1 : Math.max(0, Math.min(1, (d + .2) * 4))).toFixed(3); im.style.transform = `scale(${(1.1 - Math.max(0, Math.min(1, d + .2)) * .1).toFixed(4)})`; });
-        S.dots.forEach((b, j) => b.style.transform = `scaleX(${Math.max(0, Math.min(1, s - j)).toFixed(3)})`);
-        if (cur !== S.last) { S.last = cur; S.cnt.textContent = `${cur + 1} / ${n}`; }
-        const lp = Math.max(0, Math.min(1, (t + .25) / .35));
-        S.li.forEach((l, j) => l.classList.toggle("on", lp * S.li.length > j));
-      }
-    });
-    const ci = Math.max(0, Math.min(N - 1, Math.round(u)));
-    $("#wBar").style.width = (p * 100).toFixed(1) + "%";
-    if (ci !== lastI) { lastI = ci; $("#wNow").innerHTML = `<b>${ci + 1} / ${N}</b> · ${labels[ci]}`; }
+  const T = window.THREE; let ok = false;
+  try { ok = !!(T && document.createElement("canvas").getContext("webgl")); } catch (e) {}
+  if (!ok || reduce || !ST) {
+    sec.classList.add("flat");
+    $("#tFlat").innerHTML = DATA.map(d => `<article><div class="tc-top"><b style="--tc:${d.c}"><i></i>${d.ad}</b></div><div>${d.gel}</div><div style="color:#6B6A6F">${d.eks}</div><div class="tc-chips">${d.biz.map(x => `<em>${x}</em>`).join("")}</div></article>`).join("");
+    tEnd.classList.add("on"); return;
   }
-  place(0);
-  ST.create({ trigger: sec, pin: ".works-pin", start: "top top", end: () => `+=${N * 95}%`, scrub: .6, onUpdate: s => place(s.progress), onRefresh: () => { meas(); }, invalidateOnRefresh: true });
+
+  /* ---------- sahne ---------- */
+  const renderer = new T.WebGLRenderer({ canvas: cv, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, innerWidth < 760 ? 1.5 : 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.outputEncoding = T.sRGBEncoding;
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
+  const scene = new T.Scene();
+  const SKY0 = new T.Color("#AEB3BB"), SKY1 = new T.Color("#F8E3EE"), sky = SKY0.clone();
+  scene.background = sky; scene.fog = new T.Fog(sky, 40, 110);
+  const cam = new T.PerspectiveCamera(36, 1, .1, 300);
+  const hemi = new T.HemisphereLight(0xffffff, 0x8a8f98, .7); scene.add(hemi);
+  const sun = new T.DirectionalLight(0xffffff, .8); sun.position.set(-14, 24, 18); sun.castShadow = true;
+  sun.shadow.mapSize.setScalar(innerWidth < 760 ? 1024 : 2048); Object.assign(sun.shadow.camera, { left: -45, right: 45, top: 30, bottom: -30, near: 1, far: 90 }); sun.shadow.bias = -.0005; scene.add(sun);
+  const groundM = new T.MeshStandardMaterial({ color: "#9FA4AA", roughness: 1 });
+  const ground = new T.Mesh(new T.PlaneGeometry(260, 160), groundM); ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+  const roadM = new T.MeshStandardMaterial({ color: "#8C9096", roughness: 1 });
+  const road = new T.Mesh(new T.PlaneGeometry(90, 2.4), roadM); road.rotation.x = -Math.PI / 2; road.position.y = .01; road.receiveShadow = true; scene.add(road);
+  const G0 = new T.Color("#9FA4AA"), G1 = new T.Color("#8FC27E"), R0 = new T.Color("#8C9096"), R1 = new T.Color("#E8D7BD");
+
+  const grey = c => { const l = c.r * .3 + c.g * .59 + c.b * .11; return new T.Color(l * .55 + .2, l * .55 + .2, l * .55 + .22); };
+  function kit() {
+    const g = new T.Group(), parts = [], wins = [], pops = [], bad = [];
+    const add = (geo, color, p = [0, 0, 0], r = null, o = {}) => {
+      const target = new T.Color(color);
+      const m = new T.MeshStandardMaterial({ color: grey(target), roughness: o.r ?? .65, metalness: o.m ?? 0, flatShading: o.flat ?? true, transparent: !!o.op, opacity: o.op ?? 1 });
+      if (o.map) { m.map = o.map; if (o.win) m.emissiveMap = o.map; }
+      const mesh = new T.Mesh(geo, m); mesh.position.set(...p); if (r) mesh.rotation.set(...r);
+      mesh.castShadow = !o.noShadow; mesh.receiveShadow = true; g.add(mesh);
+      parts.push({ m, target, g0: grey(target), win: !!o.win, glow: o.glow ? new T.Color(o.glow) : null });
+      if (o.pop) pops.push(mesh); if (o.bad) bad.push(mesh);
+      return mesh;
+    };
+    return { g, parts, pops, bad, add };
+  }
+  const BX = (w, h, d) => new T.BoxGeometry(w, h, d), CY = (rt, rb, h, s = 24) => new T.CylinderGeometry(rt, rb, h, s), SP = (r, s = 16) => new T.SphereGeometry(r, s, Math.max(8, s * .6 | 0));
+  const WIN = "#FFE7A6";
+  // kötü hâl: çivili tahtalar ve çatlaklar
+  function boarded(k, x, y, z, w = .9, h = .9) {
+    k.add(BX(w * 1.15, .14, .06), "#7A5A3A", [x, y + .15, z], [0, 0, .35], { bad: true });
+    k.add(BX(w * 1.15, .14, .06), "#7A5A3A", [x, y - .15, z], [0, 0, -.3], { bad: true });
+  }
+  function crack(k, x, y, z, s = 1) { k.add(BX(.06, .7 * s, .03), "#2A2A2A", [x, y, z], [0, 0, .5], { bad: true }); k.add(BX(.05, .45 * s, .03), "#2A2A2A", [x + .14 * s, y - .38 * s, z], [0, 0, -.4], { bad: true }); }
+  function door(k, z, x = 0, col = "#6B3E26", h = 1, w = .7) { k.add(BX(w, h, .08), col, [x, h / 2, z]); k.add(SP(.05, 8), "#F6C344", [x + w * .32, h * .5, z + .06]); }
+
+  const B = {
+    pastane() { const k = kit();
+      k.add(CY(1.55, 1.6, 1.15, 32), "#F7B6C8", [0, .58, 0]); k.add(CY(1.18, 1.22, .95, 32), "#FFF1DC", [0, 1.62, 0]); k.add(CY(.82, .86, .8, 32), "#8B5A3C", [0, 2.48, 0]);
+      for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2; k.add(SP(.17, 10), "#FFFFFF", [Math.cos(a) * 1.5, 1.12 - (i % 2) * .12, Math.sin(a) * 1.5], null, { pop: true }); }
+      for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; k.add(SP(.13, 10), "#F7B6C8", [Math.cos(a) * 1.15, 2.06, Math.sin(a) * 1.15], null, { pop: true }); }
+      k.add(SP(.3, 16), "#E2263C", [0, 3.15, 0], null, { pop: true }); k.add(CY(.03, .03, .4, 6), "#3E7A2E", [.08, 3.5, 0], [0, 0, -.3], { pop: true });
+      [-.45, .45].forEach(x => { k.add(CY(.06, .06, .4, 8), "#9FD8FF", [x, 3.08, .3], null, { pop: true }); k.add(SP(.07, 8), "#FFB000", [x, 3.33, .3], null, { pop: true, glow: "#FF9A00" }); });
+      door(k, 1.58, 0, "#8B5A3C", .95, .65); k.add(BX(.55, .45, .06), WIN, [-.95, .65, 1.22], [0, -.6, 0], { win: true }); k.add(BX(.55, .45, .06), WIN, [.95, .65, 1.22], [0, .6, 0], { win: true });
+      boarded(k, -.95, .65, 1.3); crack(k, .5, 1.7, 1.2);
+      return { k, top: 3.4 }; },
+    kafe() { const k = kit();
+      k.add(CY(1.9, 1.9, .16, 40), "#FFFFFF", [0, .08, 0]); k.add(CY(1.35, 1.05, 2.7, 32), "#FFFFFF", [0, 1.5, 0]); k.add(CY(1.3, 1.24, .65, 32), "#C8875A", [0, 1.65, 0]);
+      k.add(CY(1.27, 1.27, .06, 32), "#5A3220", [0, 2.82, 0]); const h = k.add(new T.TorusGeometry(.55, .16, 10, 24), "#FFFFFF", [1.4, 1.7, 0]);
+      for (let i = 0; i < 3; i++) k.add(SP(.28 - i * .05, 12), "#FFFFFF", [(-.35 + i * .35), 3.3 + i * .45, 0], null, { pop: true, op: .85 });
+      door(k, 1.22, 0, "#5A3220", .9, .6); k.add(BX(.5, .4, .06), WIN, [-.75, 1.0, 1.08], [0, -.6, .1], { win: true }); k.add(BX(.5, .4, .06), WIN, [.75, 1.0, 1.08], [0, .6, -.1], { win: true });
+      boarded(k, .75, 1, 1.15); crack(k, -.4, 2.2, 1.2);
+      return { k, top: 3.6 }; },
+    oto() { const k = kit();
+      k.add(BX(3.8, 1.15, 1.9), "#E53935", [0, .95, 0]); k.add(BX(2.1, .95, 1.7), "#E53935", [-.25, 2.0, 0]);
+      k.add(BX(.8, .7, .06), WIN, [-.75, 2.0, .86], null, { win: true }); k.add(BX(.8, .7, .06), WIN, [.25, 2.0, .86], null, { win: true });
+      [[-1.25, .9], [1.25, .9], [-1.25, -.9], [1.25, -.9]].forEach(([x, z]) => { k.add(CY(.52, .52, .36, 20), "#222326", [x, .52, z], [Math.PI / 2, 0, 0]); k.add(CY(.24, .24, .38, 12), "#CFD4DA", [x, .52, z], [Math.PI / 2, 0, 0], { m: .6 }); });
+      k.add(BX(.08, .26, .5), "#FFF4C2", [1.92, 1.05, .55], null, { glow: "#FFE08A" }); k.add(BX(.08, .26, .5), "#FFF4C2", [1.92, 1.05, -.55], null, { glow: "#FFE08A" });
+      k.add(BX(1.1, .9, .06), "#B71C1C", [.9, 1.0, .97]); k.add(BX(.16, .05, .05), "#EEE", [1.25, 1.1, 1.01]);
+      k.add(BX(1.8, .5, .1), "#FFFFFF", [-.25, 2.75, 0], null, { pop: true }); k.add(BX(1.5, .14, .12), "#E53935", [-.25, 2.75, .02], null, { pop: true });
+      crack(k, -1.2, 1, .98); boarded(k, -.75, 2.0, .92, .8, .7);
+      return { k, top: 3.1 }; },
+    hastane() { const k = kit();
+      k.add(BX(3.2, 5.2, 2.6), "#F4F6F8", [0, 2.6, 0]); k.add(BX(3.4, .2, 2.8), "#CFD8DC", [0, 5.25, 0]);
+      k.add(BX(1.4, .4, .12), "#E53935", [0, 4.4, 1.32], null, { pop: true }); k.add(BX(.4, 1.4, .12), "#E53935", [0, 4.4, 1.32], null, { pop: true });
+      for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) k.add(BX(.55, .5, .06), WIN, [-1 + c, 1.5 + r * .9, 1.32], null, { win: true });
+      k.add(BX(1.8, .12, 1), "#4FC3F7", [0, 1.1, 1.6]); door(k, 1.32, 0, "#4FC3F7", .95, .9);
+      k.add(CY(.8, .8, .06, 24), "#90A4AE", [0, 5.38, 0]); k.add(BX(.5, .06, .12), "#FFFFFF", [0, 5.43, 0], null, { pop: true });
+      boarded(k, -1, 2.4, 1.36, .55, .5); boarded(k, 1, 1.5, 1.36, .55, .5); crack(k, .6, 3.5, 1.32, 1.4);
+      return { k, top: 5.6 }; },
+    dis() { const k = kit();
+      const crown = k.add(SP(1.45, 20), "#FFFFFF", [0, 3.1, 0]); crown.scale.set(1, .72, .85);
+      k.add(BX(2.5, 1.2, 2.1), "#FFFFFF", [0, 2.4, 0]);
+      const r1 = k.add(new T.ConeGeometry(.62, 2.0, 16), "#FFFFFF", [-.62, 1.0, 0], [Math.PI, 0, .12]), r2 = k.add(new T.ConeGeometry(.62, 2.0, 16), "#FFFFFF", [.62, 1.0, 0], [Math.PI, 0, -.12]);
+            k.add(BX(.6, .7, .06), "#80DEEA", [0, 2.35, 1.06]); k.add(BX(.4, .35, .06), WIN, [-.85, 2.6, 1.0], [0, -.3, 0], { win: true }); k.add(BX(.4, .35, .06), WIN, [.85, 2.6, 1.0], [0, .3, 0], { win: true });
+      const st = new T.Shape(); for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2, r = i % 2 ? .12 : .32; st[i ? "lineTo" : "moveTo"](Math.cos(a) * r, Math.sin(a) * r); }
+      k.add(new T.ExtrudeGeometry(st, { depth: .06, bevelEnabled: false }), "#FFE08A", [1.2, 3.9, .6], null, { pop: true, glow: "#FFD24A" });
+      crack(k, -.6, 3.2, 1.05); k.add(BX(.5, .3, .05), "#6B5B4B", [.5, 3.3, 1.08], [0, 0, .3], { bad: true });
+      return { k, top: 4.1 }; },
+    butik() { const k = kit();
+      k.add(BX(2.7, 3.1, 1.5), "#F48FB1", [0, 1.55, 0]); k.add(BX(2.72, .35, 1.52), "#EC407A", [0, 2.95, 0]);
+      [-.5, .5].forEach(z => k.add(new T.TorusGeometry(.55, .07, 8, 24, Math.PI), "#AD1457", [0, 3.1, z * .6]));
+      k.add(BX(1.6, 1.1, .06), WIN, [0, 1.6, .76], null, { win: true }); door(k, .76, 0, "#AD1457", .5, .5);
+      k.add(BX(.4, .55, .04), "#FFFFFF", [1.15, 2.4, .8], [0, 0, .25], { pop: true }); k.add(CY(.05, .05, .1, 8), "#AD1457", [1.15, 2.6, .83], [Math.PI / 2, 0, 0], { pop: true });
+      boarded(k, 0, 1.6, .82, 1.4, 1); crack(k, -.9, 2.3, .77);
+      return { k, top: 3.7 }; },
+    kuafor() { const k = kit();
+      k.add(BX(2.6, 2.3, 2.0), "#C5CAE9", [-.3, 1.15, 0]); k.add(BX(2.8, .25, 2.2), "#5C6BC0", [-.3, 2.4, 0]);
+      const cvx = document.createElement("canvas"); cvx.width = 64; cvx.height = 256; const g = cvx.getContext("2d");
+      for (let y = -64; y < 320; y += 48) { g.fillStyle = "#E53935"; g.beginPath(); g.moveTo(0, y); g.lineTo(64, y - 32); g.lineTo(64, y - 16); g.lineTo(0, y + 16); g.fill(); g.fillStyle = "#3949AB"; g.beginPath(); g.moveTo(0, y + 24); g.lineTo(64, y - 8); g.lineTo(64, y + 4); g.lineTo(0, y + 36); g.fill(); }
+      const tex = new T.CanvasTexture(cvx); tex.encoding = T.sRGBEncoding; tex.wrapT = T.RepeatWrapping;
+      const pole = k.add(CY(.32, .32, 3.2, 24), "#FFFFFF", [1.45, 1.9, .4], null, { map: tex, flat: false }); pole.userData.spin = tex;
+      k.add(SP(.36, 16), "#CFD4DA", [1.45, 3.62, .4], null, { m: .5 }); k.add(CY(.4, .4, .2, 20), "#CFD4DA", [1.45, .2, .4], null, { m: .5 });
+      k.add(BX(1.4, .9, .06), WIN, [-.6, 1.3, 1.01], null, { win: true }); door(k, 1.01, .5, "#3949AB", .55, .5);
+      boarded(k, -.6, 1.3, 1.06, 1.2, .8); crack(k, -1.2, 2, 1.01);
+      return { k, top: 3.9 }; },
+    egitim() { const k = kit();
+      const books = [["#43A047", 3.2, .75], ["#1E88E5", 2.9, .7], ["#FB8C00", 3.0, .65], ["#8E24AA", 2.6, .6]]; let y = 0;
+      books.forEach(([c, w, h], i) => { const b = k.add(BX(w, h, 2.1 - i * .1), c, [i % 2 ? .1 : -.1, y + h / 2, 0], [0, i % 2 ? .08 : -.06, 0]); k.add(BX(w - .2, h - .12, .04), "#FFFDF3", [i % 2 ? .1 : -.1, y + h / 2, (2.1 - i * .1) / 2 + .01], [0, i % 2 ? .08 : -.06, 0]); y += h; });
+      for (let i = 0; i < 3; i++) k.add(BX(.4, .3, .06), WIN, [-.9 + i * .9, .37, 1.08], null, { win: true });
+      k.add(BX(1.7, .12, 1.7), "#101217", [0, y + .25, 0], [0, Math.PI / 4, 0], { pop: true }); k.add(CY(.45, .5, .3, 16), "#101217", [0, y + .1, 0], null, { pop: true });
+      k.add(CY(.03, .03, .6, 6), "#FFC107", [.6, y - .05, .6], null, { pop: true }); k.add(SP(.08, 8), "#FFC107", [.6, y - .35, .6], null, { pop: true });
+      boarded(k, 0, .37, 1.12, .9, .6); crack(k, .8, 1.6, 1.0);
+      return { k, top: y + .6 }; },
+    otel() { const k = kit();
+      k.add(BX(3.0, 3.7, 1.5), "#7E57C2", [0, 1.95, 0]); k.add(BX(.25, 3.72, 1.52), "#4527A0", [-.75, 1.95, 0]); k.add(BX(.25, 3.72, 1.52), "#4527A0", [.75, 1.95, 0]);
+      k.add(new T.TorusGeometry(.42, .1, 8, 20, Math.PI), "#4527A0", [0, 3.8, 0]);
+      [[-1.3, .25], [1.3, .25]].forEach(([x, y2]) => k.add(CY(.2, .2, .3, 12), "#222", [x, y2 - .05, .5], [Math.PI / 2, 0, 0]));
+      for (let r = 0; r < 3; r++) for (let c = 0; c < 2; c++) k.add(BX(.42, .42, .06), WIN, [-.35 + c * .7 + (c ? .0 : 0), 1.3 + r * .85, .77], null, { win: true });
+      [["#FFCA28", -1.15, 3.0], ["#26C6DA", 1.15, 2.2], ["#EF5350", -1.1, 1.3]].forEach(([c, x, y2]) => k.add(CY(.26, .26, .04, 20), c, [x, y2, .77], [Math.PI / 2, 0, 0], { pop: true }));
+      door(k, .77, 0, "#311B92", .75, .5); boarded(k, -.35, 2.15, .82, .42, .42); crack(k, .4, 3, .77);
+      return { k, top: 4.3 }; },
+    emlak() { const k = kit();
+      k.add(BX(2.8, 2.2, 2.4), "#FFD54F", [0, 1.1, 0]); const roof = k.add(new T.ConeGeometry(2.3, 1.5, 4), "#C62828", [0, 2.95, 0], [0, Math.PI / 4, 0]);
+      k.add(BX(.4, .8, .4), "#8D6E63", [.8, 3.2, -.3]); door(k, 1.21, -.5, "#6D4C41", 1.1, .6);
+      k.add(BX(.6, .55, .06), WIN, [.6, 1.3, 1.21], null, { win: true });
+      const key = new T.Group(); key.position.set(0, 4.6, .3);
+      const km = (geo, p) => { const m = k.add(geo, "#F6C344", [0, 0, 0], null, { m: .5, r: .3, pop: true, glow: "#7A5A00" }); k.g.remove(m); m.position.set(...p); key.add(m); return m; };
+      km(new T.TorusGeometry(.38, .12, 10, 24), [-.75, 0, 0]); km(BX(1.3, .16, .16), [.15, 0, 0]); km(BX(.16, .32, .16), [.55, -.2, 0]); km(BX(.16, .24, .16), [.8, -.16, 0]);
+      k.g.add(key); key.userData.spin = true;
+      boarded(k, .6, 1.3, 1.26, .6, .55); crack(k, -.9, 1.6, 1.21);
+      return { k, top: 4.4, key }; },
+    fabrika() { const k = kit();
+      k.add(BX(4.0, 2.0, 2.4), "#90A4AE", [0, 1, 0]);
+      for (let i = 0; i < 3; i++) k.add(CY(.75, .75, 2.4, 3), "#607D8B", [-1.3 + i * 1.3, 2.2, 0], [Math.PI / 2, 0, Math.PI / 6]);
+      [[1.4, -.6], [.6, -.6]].forEach(([x, z]) => k.add(CY(.28, .34, 2.6, 16), "#B0563D", [x, 3.2, z]));
+      for (let i = 0; i < 6; i++) k.add(SP(.32 + i * .05, 12), "#FFFFFF", [1.4 + i * .18, 4.7 + i * .38, -.6], null, { pop: true, op: .8 });
+      for (let i = 0; i < 5; i++) k.add(BX(.5, .4, .06), WIN, [-1.6 + i * .8, 1.3, 1.21], null, { win: true });
+      door(k, 1.21, 0, "#455A64", .8, 1.0); boarded(k, -.8, 1.3, 1.26, .5, .4); crack(k, 1.4, 1.5, 1.21);
+      return { k, top: 3.3 }; },
+    tekno() { const k = kit();
+      k.add(BX(3.6, .3, 2.5), "#B0BEC5", [0, .15, 0], null, { m: .3 }); k.add(BX(3.2, .04, 1.2), "#37474F", [0, .31, .45]);
+      const scr = new T.Group(); scr.position.set(0, .3, -1.2); scr.rotation.x = -.22;
+      const a = k.add(BX(3.6, 2.4, .14), "#90A4AE", [0, 1.2, 0], null, { m: .3 }); k.g.remove(a); scr.add(a);
+      const cvx = document.createElement("canvas"); cvx.width = 512; cvx.height = 320; const g = cvx.getContext("2d");
+      g.fillStyle = "#0F1B2B"; g.fillRect(0, 0, 512, 320); const cols = ["#26A69A", "#80CBC4", "#FFCA28", "#EF5350", "#B0BEC5"];
+      for (let i = 0; i < 14; i++) { g.fillStyle = cols[i % 5]; g.fillRect(30 + (i % 3) * 30, 24 + i * 20, 80 + (i * 53 % 220), 9); }
+      g.fillStyle = "#26A69A"; g.fillRect(330, 40, 140, 90); g.fillStyle = "#FFCA28"; g.fillRect(330, 150, 60, 120); g.fillRect(410, 190, 60, 80);
+      const tex = new T.CanvasTexture(cvx); tex.encoding = T.sRGBEncoding;
+      const d = k.add(new T.PlaneGeometry(3.3, 2.1), "#FFFFFF", [0, 0, 0], null, { map: tex, win: true, noShadow: true }); k.g.remove(d); d.position.set(0, 1.2, .08); scr.add(d);
+      k.g.add(scr); door(k, 1.26, 1.2, "#455A64", .28, .4);
+      crack(k, .5, 1.4, -1.0, 1.6);
+      return { k, top: 3.0 }; },
+    shop(name, color) { const k = kit();
+      k.add(BX(2.6, 2.4, 2.2), color, [0, 1.2, 0]); k.add(BX(2.8, .2, 2.4), "#FFFFFF", [0, 2.5, 0]);
+      const cvx = document.createElement("canvas"); cvx.width = 512; cvx.height = 128; const g = cvx.getContext("2d");
+      g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, 512, 128); g.fillStyle = "#101217"; g.textAlign = "center"; g.textBaseline = "middle";
+      let fs = 64; g.font = `600 ${fs}px Geist, sans-serif`; while (g.measureText(name).width > 470 && fs > 20) { fs -= 4; g.font = `600 ${fs}px Geist, sans-serif`; } g.fillText(name, 256, 66);
+      const tex = new T.CanvasTexture(cvx); tex.encoding = T.sRGBEncoding;
+      k.add(BX(2.4, .6, .08), "#FFFFFF", [0, 2.95, .4], null, { map: tex, pop: true });
+      const aw = document.createElement("canvas"); aw.width = 256; aw.height = 32; const ag = aw.getContext("2d"); for (let i = 0; i < 8; i++) { ag.fillStyle = i % 2 ? "#FFFFFF" : color; ag.fillRect(i * 32, 0, 32, 32); }
+      const atex = new T.CanvasTexture(aw); atex.encoding = T.sRGBEncoding;
+      k.add(BX(2.7, .1, .9), "#FFFFFF", [0, 2.05, 1.5], [.35, 0, 0], { map: atex, pop: true });
+      k.add(BX(1.4, .9, .06), WIN, [-.4, 1.2, 1.11], null, { win: true }); door(k, 1.11, .8, "#101217", 1, .55);
+      return { k, top: 3.4 }; }
+  };
+
+  /* yerleşim */
+  const SP_X = 5.4, rowZ = i => i % 2 ? -3.0 : 3.0;
+  const B_list = DATA.map((d, i) => {
+    const r = B[d.id](); const x = (i - (N - 1) / 2) * SP_X, z = rowZ(i);
+    r.k.g.position.set(x, 0, z); scene.add(r.k.g);
+    return Object.assign(r, { d, x, z, h: 0, hv: 0, tilt: (i % 2 ? -1 : 1) * (.09 + (i % 3) * .03), burst: false });
+  });
+  // ağaçlar
+  const trees = [];
+  for (let i = 0; i < N + 1; i++) {
+    const x = (i - N / 2) * SP_X, z = i % 2 ? 6.2 : -6.4, k = kit();
+    k.add(CY(.14, .2, 1.1, 8), "#6D4C41", [0, .55, 0]); const cr = k.add(new T.IcosahedronGeometry(.9, 0), "#66BB6A", [0, 1.6, 0]); k.add(new T.IcosahedronGeometry(.6, 0), "#81C784", [.4, 1.3, .3]);
+    k.g.position.set(x, 0, z); scene.add(k.g); trees.push({ k, near: Math.max(0, Math.min(N - 1, Math.round(i - .5))), h: 0 });
+  }
+  // bulutlar
+  const clouds = [];
+  for (let i = 0; i < 7; i++) { const g = new T.Group(); for (let j = 0; j < 4; j++) { const m = new T.Mesh(SP(1 + Math.random() * .6, 12), new T.MeshStandardMaterial({ color: "#FFFFFF", transparent: true, opacity: 0, flatShading: true })); m.position.set(j * 1.2, Math.random() * .4, Math.random() * .6); g.add(m); } g.position.set(-40 + i * 13, 13 + (i % 3) * 2, -14 - (i % 2) * 6); scene.add(g); clouds.push(g); }
+
+  /* kahramanımız: peri kanatlı süper kahraman kız */
+  function makeHero() {
+    const g = new T.Group(), body = new T.Group(); g.add(body);
+    const M = (c, o = {}) => new T.MeshStandardMaterial(Object.assign({ color: c, roughness: .55, flatShading: false }, o));
+    const skin = M("#F2C6A0"), hair = M("#5B2E22"), dress = M("#FF6FAE"), top = M("#8E6CFF"), gold = M("#F6C344", { metalness: .4, roughness: .3, emissive: "#6B4A00", emissiveIntensity: .3 }), boot = M("#5B3FD9"), white = M("#FFFFFF"), dark = M("#2B1B2E");
+    const mesh = (geo, m, p, r) => { const x = new T.Mesh(geo, m); x.position.set(...p); if (r) x.rotation.set(...r); x.castShadow = true; body.add(x); return x; };
+    mesh(SP(.3, 24), skin, [0, 1.42, 0]);
+    const hb = mesh(SP(.33, 24), hair, [0, 1.5, -.05]); hb.scale.set(1.05, 1, 1.05);
+    mesh(SP(.2, 16), hair, [0, 1.42, -.26]);
+    const pt = mesh(new T.ConeGeometry(.16, .75, 14), hair, [0, 1.15, -.5], [-1.1, 0, 0]);
+    mesh(new T.TorusGeometry(.2, .035, 8, 20, Math.PI), gold, [0, 1.68, .05], [-.3, 0, 0]);
+    const st = new T.Shape(); for (let i = 0; i < 10; i++) { const a = i / 10 * Math.PI * 2 + Math.PI / 2, r = i % 2 ? .05 : .12; st[i ? "lineTo" : "moveTo"](Math.cos(a) * r, Math.sin(a) * r); }
+    const starG = new T.ExtrudeGeometry(st, { depth: .03, bevelEnabled: false });
+    mesh(starG, gold, [0, 1.84, .1]);
+    [-.1, .1].forEach(x => { mesh(SP(.045, 10), dark, [x, 1.44, .27]); mesh(SP(.05, 10), M("#FF9AB3"), [x * 1.6, 1.36, .24]); });
+    mesh(CY(.17, .22, .45, 18), top, [0, .98, 0]);
+    mesh(starG, gold, [0, 1.02, .2]);
+    mesh(new T.TorusGeometry(.21, .035, 8, 24), gold, [0, .76, 0], [Math.PI / 2, 0, 0]);
+    mesh(new T.ConeGeometry(.52, .62, 24, 1, true), dress, [0, .45, 0]);
+    mesh(new T.ConeGeometry(.42, .5, 24, 1, true), M("#FFB3D4"), [0, .5, 0]);
+    const legL = mesh(CY(.06, .06, .45, 10), skin, [-.1, .0, 0]), legR = mesh(CY(.06, .06, .45, 10), skin, [.1, .0, 0]);
+    mesh(SP(.085, 10), boot, [-.1, -.24, .03]); mesh(SP(.085, 10), boot, [.1, -.24, .03]);
+    const armL = mesh(CY(.05, .05, .48, 10), skin, [-.25, 1.0, .12], [-.9, 0, .5]);
+    const armR = mesh(CY(.05, .05, .5, 10), skin, [.26, 1.12, .22], [-1.6, 0, -.2]);
+    const wand = new T.Group(); wand.position.set(.3, 1.2, .5); body.add(wand);
+    const w1 = new T.Mesh(CY(.02, .02, .55, 8), white); w1.rotation.x = Math.PI / 2; w1.position.z = .2; wand.add(w1);
+    const ws = new T.Mesh(new T.ExtrudeGeometry((() => { const s = new T.Shape(); for (let i = 0; i < 10; i++) { const a = i / 10 * Math.PI * 2 + Math.PI / 2, r = i % 2 ? .07 : .17; s[i ? "lineTo" : "moveTo"](Math.cos(a) * r, Math.sin(a) * r); } return s; })(), { depth: .04, bevelEnabled: false }), M("#FFE58A", { emissive: "#FFC93C", emissiveIntensity: .9 }));
+    ws.position.z = .5; wand.add(ws);
+    // kanatlar
+    const wingM = new T.MeshPhysicalMaterial({ color: "#BDE6FF", transparent: true, opacity: .6, side: T.DoubleSide, roughness: .15, transmission: 0, emissive: "#9AD8FF", emissiveIntensity: .25, depthWrite: false });
+    const wingShape = (w, h) => { const s = new T.Shape(); s.moveTo(0, 0); s.bezierCurveTo(w * .3, h * .9, w * 1.1, h * 1.05, w, h * .45); s.bezierCurveTo(w * .95, h * .1, w * .4, -h * .05, 0, 0); return new T.ShapeGeometry(s, 16); };
+    const wings = [];
+    [[1, .9, .75, .15], [1, .6, .5, -.25]].forEach(([_, w, h, rz]) => [-1, 1].forEach(sd => {
+      const piv = new T.Group(); piv.position.set(0, 1.05, -.18); body.add(piv);
+      const m = new T.Mesh(wingShape(w, h), wingM); m.scale.x = sd; m.rotation.z = rz * sd * -1 + (rz < 0 ? -.4 * sd : 0); piv.add(m); wings.push({ piv, sd });
+    }));
+    g.scale.setScalar(1.4);
+    return { g, body, wings, wand, ws, legL, legR, armR, pt };
+  }
+  const hero = makeHero(); scene.add(hero.g);
+
+  /* parıltılar */
+  const PN = 700, ppos = new Float32Array(PN * 3), pcol = new Float32Array(PN * 3), pvel = new Float32Array(PN * 3), plife = new Float32Array(PN);
+  const pgeo = new T.BufferGeometry(); pgeo.setAttribute("position", new T.BufferAttribute(ppos, 3)); pgeo.setAttribute("color", new T.BufferAttribute(pcol, 3));
+  const sp = document.createElement("canvas"); sp.width = sp.height = 64; const sg = sp.getContext("2d"); const gr = sg.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, "rgba(255,255,255,1)"); gr.addColorStop(.3, "rgba(255,255,255,.8)"); gr.addColorStop(1, "rgba(255,255,255,0)"); sg.fillStyle = gr; sg.fillRect(0, 0, 64, 64);
+  const pts = new T.Points(pgeo, new T.PointsMaterial({ size: .32, map: new T.CanvasTexture(sp), vertexColors: true, transparent: true, depthWrite: false, blending: T.AdditiveBlending }));
+  scene.add(pts); for (let i = 0; i < PN; i++) ppos[i * 3 + 1] = -99;
+  const PC = ["#FFD86B", "#FF8FC7", "#B9A3FF", "#8FE3FF", "#FFFFFF"].map(c => new T.Color(c));
+  let pi = 0;
+  function emit(p, n, spread = 1, up = 1) {
+    for (let k = 0; k < n; k++) { const i = pi++ % PN, c = PC[(Math.random() * PC.length) | 0];
+      ppos[i * 3] = p.x + (Math.random() - .5) * spread * .4; ppos[i * 3 + 1] = p.y + (Math.random() - .5) * spread * .4; ppos[i * 3 + 2] = p.z + (Math.random() - .5) * spread * .4;
+      pvel[i * 3] = (Math.random() - .5) * .12 * spread; pvel[i * 3 + 1] = (Math.random() * .1 + .02) * up; pvel[i * 3 + 2] = (Math.random() - .5) * .12 * spread;
+      plife[i] = 1; pcol[i * 3] = c.r; pcol[i * 3 + 1] = c.g; pcol[i * 3 + 2] = c.b; }
+  }
+
+  /* uçuş yolu */
+  const stations = B_list.map(b => new T.Vector3(b.x, b.top + 1.4, b.z + (b.z > 0 ? .6 : 1.4)));
+  const pathPts = [new T.Vector3(stations[0].x - 9, 7, 8)].concat(stations, [new T.Vector3(stations[N - 1].x + 9, 7, 6)]);
+  const curve = new T.CatmullRomCurve3(pathPts, false, "centripetal", .5);
+  const ovCenter = new T.Vector3(0, -3.5, 3);
+
+  let W = 1, H = 1;
+  const size = () => { W = panel.clientWidth; H = panel.clientHeight; renderer.setSize(W, H, false); cam.aspect = W / H; cam.updateProjectionMatrix(); };
+  size(); new ResizeObserver(size).observe(panel);
+  const ovCam = () => { const vh = Math.tan(cam.fov * Math.PI / 360), hh = vh * cam.aspect, d = Math.max((N * SP_X / 2 + 4) / hh, 18 / vh) * .92; return new T.Vector3(0, d * .55, d * .78); };
+
+  let prog = 0, running = false;
+  ST.create({ trigger: sec, pin: ".town-pin", start: "top top", end: () => `+=${N * 55 + 140}%`, scrub: .7, onUpdate: s => { prog = s.progress; }, invalidateOnRefresh: true });
+  new IntersectionObserver(es => { running = es[0].isIntersecting; }).observe(panel);
+
+  const camPos = new T.Vector3(-30, 10, 20), camLook = new T.Vector3(), heroPos = curve.getPoint(0).clone(), prevPos = heroPos.clone();
+  const sm = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
+  const JOURNEY = .84;
+  let shownCard = -2, extra = [], fly = null, endOn = false, t = 0, parked = null;
+
+  // sonda: kendi sektörünü yazınca kahraman o dükkâna uçar
+  onAsk = (q) => {
+    const tl = q.toLocaleLowerCase("tr"); const hit = DATA.findIndex(x => x.re.test(tl));
+    let target, dd;
+    if (hit >= 0) { target = B_list[hit]; dd = Object.assign({}, DATA[hit], { baslik: "Bu sektörü tanıyoruz" }); }
+    else {
+      if (extra.length >= 5) { const old = extra.shift(); scene.remove(old.k.g); }
+      const slot = extra.length, col = ["#FFAB91", "#A5D6A7", "#90CAF9", "#CE93D8", "#FFE082"][(q.length + slot) % 5];
+      const nm = q.trim().slice(0, 18); const r = B.shop(nm.toLocaleUpperCase("tr"), col);
+      const x = (slot - 2) * 6.2, z = -9.5; r.k.g.position.set(x, 0, z); r.k.g.scale.setScalar(.01); scene.add(r.k.g);
+      target = Object.assign(r, { x, z, h: 0, hv: 0, tilt: .12, burst: false, extra: true, grow: 0 }); extra.push(target);
+      dd = Object.assign({ ad: nm, c: col, baslik: "Yeni dükkân açıldı" }, DEF);
+    }
+    fly = { from: heroPos.clone(), to: new T.Vector3(target.x, target.top + 1.8, target.z + 1.6), t0: performance.now(), dur: 1500, target, dd };
+    suggest(q, hit >= 0 ? DATA[hit] : DEF);
+  };
+
+  let lastT = performance.now();
+  const k_ = (a, dt) => 1 - Math.pow(1 - a, dt * 60);
+  (function loop() {
+    requestAnimationFrame(loop); const nowT = performance.now(), dt = Math.min(.25, (nowT - lastT) / 1000); lastT = nowT; if (!running) return; t += dt;
+    const jp = Math.min(1, prog / JOURNEY), ov = sm((prog - JOURNEY) / (1 - JOURNEY - .02));
+    const u = -1 + jp * (N + 1);                        // istasyon ölçeği: -1 .. N
+    const n = Math.floor(u), f = u - n;
+    const ue = n + (f < .3 ? 0 : f > .7 ? 1 : sm((f - .3) / .4));   // istasyonlarda bekler
+    const tc = Math.max(0, Math.min(1, (ue + 1) / (N + 1)));
+    let hp = curve.getPoint(tc);
+    // binalar iyileşir
+    let healed = 0;
+    B_list.forEach((b, i) => {
+      const tgt = sm((u - (i - .35)) / .3);
+      if (dt > .05) { b.h += (tgt - b.h) * k_(.25, dt); b.hv = 0; } else { b.hv += (tgt - b.h) * .12; b.hv *= .72; b.h += b.hv; } const h = Math.max(0, Math.min(1.15, b.h));
+      if (tgt > .5) healed++;
+      if (tgt > .3 && !b.burst) { b.burst = true; emit(new T.Vector3(b.x, b.top * .6, b.z), 110, 4, 1.4); }
+      if (tgt < .1) b.burst = false;
+      applyHeal(b, h);
+    });
+    extra.forEach(b => { b.grow += (1 - b.grow) * .08; b.k.g.scale.setScalar(Math.max(.01, b.grow)); if (b.healing) { b.hv += (1 - b.h) * .12; b.hv *= .72; b.h += b.hv; } applyHeal(b, Math.max(0, Math.min(1.15, b.h))); });
+    trees.forEach(tr => { const h = Math.max(0, Math.min(1, B_list[tr.near].h)); tr.k.parts.forEach(p => { p.m.color.copy(p.g0).lerp(p.target, h); }); tr.k.g.scale.setScalar(.65 + .35 * h); });
+    const frac = Math.min(1, healed / N + ov * .2);
+    sky.copy(SKY0).lerp(SKY1, frac); scene.fog.color.copy(sky); scene.fog.near = 40 + ov * 140; scene.fog.far = 110 + ov * 260;
+    groundM.color.copy(G0).lerp(G1, frac); roadM.color.copy(R0).lerp(R1, frac);
+    hemi.intensity = .6 + .15 * frac; sun.intensity = .75 + .3 * frac; sun.color.setRGB(1, .97 + .03 * frac, .92 + .08 * frac);
+    clouds.forEach((c, i) => { c.position.x += .01 + i * .002; if (c.position.x > 50) c.position.x = -50; c.children.forEach(m => m.material.opacity = .85 * frac); });
+    tCount.textContent = `${healed} / ${N} yenilendi`; tBar.style.width = (healed / N * 100) + "%";
+
+    // kahraman: sonda öne gelip el sallar; yazılan sektöre uçar
+    const ovHero = new T.Vector3(0, 6.5, 8.5);
+    if (ov > 0) hp = hp.clone().lerp(ovHero, ov);
+    if (fly) {
+      const k = Math.min(1, (performance.now() - fly.t0) / fly.dur), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      hp = fly.from.clone().lerp(fly.to, e); hp.y += Math.sin(k * Math.PI) * 3;
+      if (k >= 1) { const tg = fly.target; if (tg.extra) tg.healing = true; else { tg.hv += .35; } emit(new T.Vector3(tg.x, tg.top * .6, tg.z), 140, 4, 1.5); tCard.innerHTML = card(fly.dd, 0, 1); tCard.querySelector(".tc-top span").textContent = "Sizin sektörünüz"; tCard.classList.add("on"); fly = null; parked = hp.clone(); }
+    } else if (parked && ov > .98) hp = parked.clone();
+    if (ov < .9) parked = null;
+    heroPos.lerp(hp, k_(.2, dt));
+    const vel = heroPos.clone().sub(prevPos); prevPos.copy(heroPos);
+    const sp2 = vel.length() / Math.max(1, dt * 60);
+    hero.g.position.copy(heroPos); hero.g.position.y += Math.sin(t * 3) * .12;
+    const face = sp2 > .015 ? Math.atan2(vel.x, vel.z) : .5;
+    hero.g.rotation.y += (face - hero.g.rotation.y) * k_(.1, dt);
+    hero.body.rotation.x += ((sp2 > .015 ? .75 : .15) - hero.body.rotation.x) * .08;
+    hero.wings.forEach((w, i) => { w.piv.rotation.y = w.sd * (.35 + Math.sin(t * 22 + (i > 1 ? .6 : 0)) * .55); });
+    hero.legL.rotation.x = Math.sin(t * 4) * .25; hero.legR.rotation.x = -Math.sin(t * 4) * .25;
+    hero.wand.rotation.x = -.3 + Math.sin(t * 2) * .15 + (sp2 < .015 ? -.6 + Math.sin(t * 6) * .4 : 0);
+    hero.ws.rotation.z += .05;
+    if (sp2 > .01 || Math.random() < .08) { const wp = new T.Vector3(); hero.ws.getWorldPosition(wp); emit(wp, sp2 > .02 ? 3 : 1, .5, .2); }
+    // parıltıları ilerlet
+    for (let i = 0; i < PN; i++) { if (plife[i] <= 0) continue; plife[i] -= .012; ppos[i * 3] += pvel[i * 3]; ppos[i * 3 + 1] += pvel[i * 3 + 1]; ppos[i * 3 + 2] += pvel[i * 3 + 2]; pvel[i * 3 + 1] -= .002; pvel[i * 3] *= .97; pvel[i * 3 + 2] *= .97; const l = Math.max(0, plife[i]); if (l <= 0) ppos[i * 3 + 1] = -99; pcol[i * 3] *= .995; pcol[i * 3 + 1] *= .995; pcol[i * 3 + 2] *= .995; }
+    pgeo.attributes.position.needsUpdate = true; pgeo.attributes.color.needsUpdate = true;
+    // kamera
+    const narrow = W < 760;
+    const follow = heroPos.clone().add(new T.Vector3(narrow ? .5 : 4.2, narrow ? 4.5 : 3.6, narrow ? 23 : 15.5));
+    const look = heroPos.clone().add(new T.Vector3(narrow ? .3 : 3.6, narrow ? -3.2 : -1.6, 0));
+    const ovP = ovCam();
+    const cP = follow.lerp(ovP, ov), cL = look.lerp(ovCenter, ov);
+    camPos.lerp(cP, k_(.1, dt)); camLook.lerp(cL, k_(.1, dt)); cam.position.copy(camPos); cam.lookAt(camLook);
+    // kart
+    const near = Math.round(u), dist = Math.abs(u - near);
+    const ci = (ov < .05 && near >= 0 && near < N && dist < .42) ? near : -1;
+    if (!endOn && ci !== shownCard) { shownCard = ci; if (ci >= 0) { tCard.innerHTML = card(DATA[ci], ci, N); tCard.classList.add("on"); } else tCard.classList.remove("on"); }
+    const eo = ov > .85; if (eo !== endOn) { endOn = eo; tEnd.classList.toggle("on", eo); if (eo) tCard.classList.remove("on"); else shownCard = -2; $(".town-prog").style.opacity = eo ? 0 : 1; }
+    const hd = $(".town-head"); const ho = (u < .4 && !endOn) ? '1' : '0'; if (hd.style.opacity !== ho) hd.style.opacity = ho;
+    renderer.render(scene, cam);
+  })();
+
+  function applyHeal(b, h) {
+    const hc = Math.min(1, h);
+    b.k.parts.forEach(p => {
+      p.m.color.copy(p.g0).lerp(p.win ? new T.Color("#FFFFFF") : p.target, hc);
+      if (p.win) { p.m.color.copy(new T.Color("#3B3F47")).lerp(p.target, hc); p.m.emissive.copy(p.target); p.m.emissiveIntensity = hc * .55; }
+      if (p.glow) { p.m.emissive.copy(p.glow); p.m.emissiveIntensity = hc * .8; }
+    });
+    b.k.pops.forEach(m => { if (!m.userData.s0) m.userData.s0 = m.scale.clone(); m.scale.copy(m.userData.s0).multiplyScalar(Math.max(.001, h)); });
+    b.k.bad.forEach(m => { m.visible = hc < .98; m.scale.setScalar(Math.max(.001, 1 - hc)); });
+    b.k.g.rotation.z = b.tilt * (1 - hc); b.k.g.position.y = -.25 * (1 - hc);
+    if (!b.extra) b.k.g.scale.set(1 + (h - hc) * .6, 1 + (h - hc) * .9, 1 + (h - hc) * .6);
+    b.k.g.traverse(o => { if (o.userData && o.userData.spin && o.userData.spin.isTexture) o.userData.spin.offset.y -= .004 * hc; });
+    if (b.key) { b.key.rotation.y += .02 * hc; b.key.position.y = 4.6 + Math.sin(performance.now() / 600) * .15; }
+  }
 })();
 
 /* ---------- Süreç çizgisi ---------- */
