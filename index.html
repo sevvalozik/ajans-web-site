@@ -589,13 +589,13 @@ input,textarea{cursor:text}
   user-select:none;-webkit-user-select:none;
 }
 .pk-zone{
-  position:absolute;top:14px;right:14px;bottom:14px;width:calc(42% - 6px);border:1.5px dashed var(--line);border-radius:14px;
+  position:absolute;top:14px;right:14px;bottom:14px;width:calc(52% - 6px);border:1.5px dashed var(--line);border-radius:14px;
   display:flex;flex-direction:column;justify-content:flex-start;padding:14px;gap:4px;pointer-events:none;transition:border-color .2s,background .2s;
 }
 .pk-zone.hot{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,transparent)}
 .pk-zone .mono{color:var(--ink-3)}
 .pk-zone b{font-family:var(--f-display);font-size:26px;line-height:1}
-.pk-pool{position:absolute;inset:14px calc(42% + 28px) 14px 14px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px}
+.pk-pool{position:absolute;inset:14px calc(52% + 28px) 14px 14px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px}
 .pk-hint{position:absolute;left:18px;bottom:14px;color:var(--ink-3)}
 .chip{
   display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
@@ -612,13 +612,18 @@ input,textarea{cursor:text}
 .pk-area.phys .pk-zone .mono,.pk-area.phys .pk-zone b{display:none}
 .cart{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;transform-origin:var(--ox,75%) 92%}
 .cart.back{z-index:0}.cart.front{z-index:6}
-.cart .bk{fill:color-mix(in srgb,var(--chip) 80%,transparent);stroke:var(--ink);stroke-width:3;stroke-linejoin:round}
-.cart .gr{stroke:var(--ink);stroke-width:1.6;opacity:.32;fill:none}
-.cart .rim{stroke:var(--ink);stroke-width:4;stroke-linecap:round;fill:none}
-.cart .fr{stroke:var(--ink);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;fill:none}
-.cart .wh{fill:var(--ink)}.cart .hub{fill:var(--board)}
-.cart .hd{fill:var(--accent)}
+.cart .red{fill:#D7263D}.cart .red2{fill:#B01C30}
+.cart .fur{fill:#FFFFFF;stroke:#E4E1DC;stroke-width:1.5}
+.cart .pom{fill:#FFFFFF;stroke:#E4E1DC;stroke-width:1.5}
+.cart .shade{fill:#000;opacity:.12}
 .pk-area.bump .cart{animation:cart-bump .5s cubic-bezier(.3,1.6,.5,1)}
+.pk-area.leaving{overflow:visible}
+.santa{position:absolute;left:0;bottom:-4px;width:250px;height:330px;z-index:8;pointer-events:none;display:none;will-change:transform}
+.pk-area.phys .santa{display:block}
+.santa svg{width:100%;height:100%;overflow:visible}
+.santa-say{position:absolute;left:50%;top:-6px;transform:translateX(-50%);white-space:nowrap;background:#fff;color:#101217;border:1.5px solid #101217;border-radius:14px;padding:6px 12px;font-size:13px;font-weight:600;opacity:0;transition:opacity .25s}
+.santa.talk .santa-say{opacity:1}
+.santa-say{transform:translateX(-50%) scaleX(var(--f,1))}
 @keyframes cart-bump{0%{transform:none}30%{transform:rotate(-2.2deg) translateY(3px)}60%{transform:rotate(1.2deg)}100%{transform:none}}
 .cart-badge{position:absolute;z-index:7;display:none;align-items:center;gap:8px;pointer-events:none;font-weight:600;font-size:14px;background:var(--ink);color:var(--board);border-radius:999px;padding:6px 12px 6px 8px;transform:translate(-50%,-50%)}
 .cart-badge b{display:grid;place-items:center;min-width:24px;height:24px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-size:13px;padding:0 6px}
@@ -827,7 +832,7 @@ footer{padding-block:28px 48px}
 <nav class="dock" id="dock" aria-label="Bölümler">
   <a href="#top" style="--c:var(--ink);--t:var(--board)"><span>Giriş</span></a>
   <a href="#hizmetler" style="--c:#2E43FF"><span>Hizmetler</span></a>
-  <a href="#paket" style="--c:#0C9F63"><span>Sepetini doldur</span></a>
+  <a href="#paket" style="--c:#0C9F63"><span>Şapkayı doldur</span></a>
   <a href="#dene" style="--c:#D9306F"><span>Markanızı deneyin</span></a>
   <a href="#bot" style="--c:#7044F2"><span>WhatsApp asistanı</span></a>
   <a href="#kareler" style="--c:#E39A12;--t:#101217"><span>İşler</span></a>
@@ -1032,8 +1037,8 @@ footer{padding-block:28px 48px}
   <div class="wrap pk">
     <div class="pk-side">
       <div class="eyebrow">Paketini kur</div>
-      <h2>Sepetinizi doldurun.</h2>
-      <p>İşleri sepete fırlatın ya da üstüne tıklayın, kendileri uçsun. Aradığınız listede yoksa yazın: o da sepete uçar ve doğru başlığa yerleşir.</p>
+      <h2>Şapkayı doldurun.</h2>
+      <p>İşleri şapkaya fırlatın ya da üstüne tıklayın, kendileri uçsun. Listede yoksa yazın, o da şapkaya uçar. İşiniz bitince aşağı kaydırın: Noel Baba şapkayı alıp götürür.</p>
       <form class="add" id="addForm" autocomplete="off">
         <label for="addIn" class="sr">Listede olmayan iş</label>
         <input id="addIn" type="text" placeholder="Örn. menü tasarımı, podcast, TikTok…" maxlength="40">
@@ -1041,21 +1046,21 @@ footer{padding-block:28px 48px}
       </form>
       <div class="toast" id="toast" aria-live="polite"></div>
       <div class="sum" id="sum">
-        <div class="sum-top"><b>Sepetiniz</b><span class="mono" id="sumCount">0 iş</span></div>
+        <div class="sum-top"><b>Şapkadakiler</b><span class="mono" id="sumCount">0 iş</span></div>
         <ul id="sumList"></ul>
-        <div class="empty" id="sumEmpty">Sepet boş. Birkaç iş atın.</div>
-        <a class="btn accent" href="#iletisim" id="sendPk">Bu sepetle yazın</a>
+        <div class="empty" id="sumEmpty">Şapka boş. Birkaç iş atın.</div>
+        <a class="btn accent" href="#iletisim" id="sendPk">Bu işlerle yazın</a>
       </div>
     </div>
     <div class="pk-area" id="pkArea">
       <div class="pk-pool" id="pkPool"></div>
       <div class="pk-zone" id="pkZone">
-        <span class="mono">SEPET</span>
+        <span class="mono">ŞAPKA</span>
         <b id="zoneCount">0 iş</b>
         <div class="zlist" id="zList"></div>
       </div>
-      <div class="pk-hint mono" id="pkHint">İşleri sepete fırlatın ya da üstüne tıklayın.</div>
-      <div class="cart-badge" id="cartBadge"><b id="cartN">0</b>Sepet</div>
+      <div class="pk-hint mono" id="pkHint">İşleri şapkaya fırlatın ya da üstüne tıklayın.</div>
+      <div class="cart-badge" id="cartBadge"><b id="cartN">0</b>Şapkada</div>
     </div>
   </div>
 </section>
@@ -1160,7 +1165,7 @@ footer{padding-block:28px 48px}
           </form>
           <div class="ys-q" id="ysQ"><button type="button">Çiçekçi</button><button type="button">Diş kliniği</button><button type="button">Spor salonu</button><button type="button">Avukat</button><button type="button">Pastane</button><button type="button">Veteriner</button></div>
           <div class="ys-out" id="ysOut" aria-live="polite"></div>
-          <div class="ys-act" id="ysAct" hidden><button class="btn ghost" type="button" id="ysAdd">Sepetime ekle</button><a class="btn accent" href="#iletisim" id="ysSend">Bu işlerle yazın</a></div>
+          <div class="ys-act" id="ysAct" hidden><button class="btn ghost" type="button" id="ysAdd">Şapkaya ekle</button><a class="btn accent" href="#iletisim" id="ysSend">Bu işlerle yazın</a></div>
         </div>
         <div class="town-flat" id="tFlat"></div>
       </div>
@@ -1998,26 +2003,22 @@ function startPhysics() {
   area.prepend(back); area.appendChild(front);
   function drawCart() {
     const w = W(), h = H(), zx = zoneX();
-    const bl = zx + 26, br = w - 100, top = h * .4, fl = h - 118;
-    C = { bl, br, top, fl };
+    const bl = zx + 14, br = w - 112, top = h * .42, fl = h - 46;
+    C = { bl, br, top, fl, in: 46 };
     const vb = `0 0 ${w} ${h}`; back.setAttribute("viewBox", vb); front.setAttribute("viewBox", vb);
-    const poly = `${bl - 16},${top} ${br + 8},${top} ${br},${fl} ${bl + 12},${fl}`;
-    back.innerHTML = `<polygon class="bk" points="${poly}"/>`;
-    let g = "";
-    const cols = 7, rows = 4;
-    for (let i = 1; i < cols; i++) { const f = i / cols; g += `<line class="gr" x1="${bl - 16 + (br + 24 - bl) * f}" y1="${top}" x2="${bl + 12 + (br - bl - 12) * f}" y2="${fl}"/>`; }
-    for (let j = 1; j < rows; j++) { const f = j / rows, y = top + (fl - top) * f; g += `<line class="gr" x1="${bl - 16 + 28 * f}" y1="${y}" x2="${br + 8 - 8 * f}" y2="${y}"/>`; }
-    const wy = h - 30;
-    front.innerHTML = g + `<polyline class="fr" points="${bl - 16},${top} ${bl + 12},${fl} ${br},${fl} ${br + 8},${top}"/>
-      <line class="rim" x1="${bl - 20}" y1="${top}" x2="${br + 10}" y2="${top}"/>
-      <polyline class="fr" points="${br + 8},${top} ${br + 40},${top - 46} ${br + 64},${top - 46}"/>
-      <rect class="hd" x="${br + 52}" y="${top - 53}" width="26" height="14" rx="7"/>
-      <polyline class="fr" points="${bl + 12},${fl} ${bl + 30},${fl + 46} ${br - 6},${fl + 46} ${br},${fl}"/>
-      <line class="fr" x1="${br - 6}" y1="${fl + 46}" x2="${br + 26}" y2="${top + 10}"/>
-      <circle class="wh" cx="${bl + 46}" cy="${wy}" r="17"/><circle class="hub" cx="${bl + 46}" cy="${wy}" r="6"/>
-      <circle class="wh" cx="${br - 22}" cy="${wy}" r="17"/><circle class="hub" cx="${br - 22}" cy="${wy}" r="6"/>`;
+    // ters duran Noel Baba şapkası: kürklü ağız yukarıda, gövde aşağı daralır, sivri ucu sağa kıvrılıp ponpona iner
+    const cx = (bl + br) / 2, bw = br - bl, I = C.in;
+    back.innerHTML = `<path class="red" d="M ${bl - 18} ${top} L ${br + 18} ${top} C ${br + 14} ${top + 90}, ${br - I + 30} ${fl - 40}, ${br - I} ${fl} Q ${cx} ${fl + 22} ${bl + I} ${fl} C ${bl + I - 30} ${fl - 40}, ${bl - 14} ${top + 90}, ${bl - 18} ${top} Z"/>
+      <path class="red" d="M ${br - I - 6} ${fl - 6} C ${br + 40} ${fl - 4}, ${br + 80} ${fl - 30}, ${br + 92} ${fl - 116} C ${br + 84} ${fl - 70}, ${br + 50} ${fl - 44}, ${br - I + 4} ${fl - 46} Z"/>
+      <path class="red2" d="M ${br - I + 4} ${fl - 46} C ${br + 50} ${fl - 44}, ${br + 84} ${fl - 70}, ${br + 92} ${fl - 116} C ${br + 76} ${fl - 84}, ${br + 46} ${fl - 60}, ${br - I + 10} ${fl - 64} Z"/>
+      <path class="shade" d="M ${bl - 18} ${top} C ${bl - 14} ${top + 90}, ${bl + I - 30} ${fl - 40}, ${bl + I} ${fl} Q ${bl + I + 20} ${fl + 8} ${bl + I + 30} ${fl + 6} C ${bl + I - 10} ${fl - 60}, ${bl + 10} ${top + 90}, ${bl + 14} ${top} Z"/>`;
+    let fur = "";
+    const n = Math.max(8, Math.round((bw + 40) / 26));
+    for (let k = 0; k <= n; k++) { const x = bl - 18 + (bw + 36) * k / n; fur += `<circle class="fur" cx="${x}" cy="${top + (k % 2 ? 4 : -3)}" r="${15 + (k % 3) * 2}"/>`; }
+    front.innerHTML = `<rect class="fur" x="${bl - 26}" y="${top - 13}" width="${bw + 52}" height="26" rx="13"/>${fur}
+      <circle class="pom" cx="${br + 92}" cy="${fl - 124}" r="26"/><circle class="pom" cx="${br + 82}" cy="${fl - 136}" r="14"/><circle class="pom" cx="${br + 104}" cy="${fl - 110}" r="12"/>`;
     const ox = ((bl + br) / 2 / w * 100).toFixed(1) + "%"; back.style.setProperty("--ox", ox); front.style.setProperty("--ox", ox);
-    const bd = $("#cartBadge"); bd.style.left = ((bl + br) / 2) + "px"; bd.style.top = (top - 34) + "px";
+    const bd = $("#cartBadge"); bd.style.left = cx + "px"; bd.style.top = (top - 46) + "px";
   }
   function buildWalls() {
     Composite.remove(engine.world, walls);
@@ -2028,10 +2029,10 @@ function startPhysics() {
       Bodies.rectangle(w / 2, h + t / 2, w * 2, t, { isStatic: true }),
       Bodies.rectangle(-t / 2, h / 2, t, h * 3, { isStatic: true }),
       Bodies.rectangle(w + t / 2, h / 2, t, h * 3, { isStatic: true }),
-      seg(bl + 12, fl + 4, br, fl + 4, 10),
-      seg(bl - 16, top, bl + 12, fl, 10),
-      seg(br + 8, top, br, fl, 10),
-      Bodies.rectangle((bl + br) / 2, (fl + h) / 2 + 6, br - bl - 10, h - fl - 4, { isStatic: true })
+      seg(bl + C.in, fl + 4, br - C.in, fl + 4, 12),
+      seg(bl - 18, top, bl + C.in, fl, 12),
+      seg(br + 18, top, br - C.in, fl, 12),
+      Bodies.rectangle((bl + br) / 2, (fl + h) / 2 + 6, br - bl - 10, Math.max(8, h - fl - 4), { isStatic: true })
     ];
     Composite.add(engine.world, walls);
   }
@@ -2065,6 +2066,53 @@ function startPhysics() {
       if (hit) phys.teleport(hit.plugin.item, !hit.plugin.item.inPk);
     });
               }
+  /* Noel Baba: aşağı kaydırınca sağdan gelir, şapkayı sürükleyip götürür */
+  let hatDX = 0, hatDY = 0;
+  const santa = document.createElement("div"); santa.className = "santa"; santa.setAttribute("aria-hidden", "true");
+  santa.innerHTML = `<span class="santa-say">Bunları götürüyorum!</span><svg viewBox="0 0 160 220">
+    <g class="lg2"><rect x="88" y="150" width="20" height="44" rx="8" fill="#C21F35"/><path d="M84 188h30a10 10 0 0 1 10 10v6H84z" fill="#1B1B1F"/></g>
+    <g class="lg1"><rect x="58" y="150" width="20" height="44" rx="8" fill="#D7263D"/><path d="M54 188h30a10 10 0 0 1 10 10v6H54z" fill="#1B1B1F"/></g>
+    <path d="M44 96c0-22 18-36 38-36s38 14 38 36v52c0 12-10 18-38 18s-38-6-38-18z" fill="#D7263D"/>
+    <rect x="78" y="70" width="10" height="90" fill="#FFFFFF"/>
+    <rect x="42" y="132" width="80" height="12" rx="3" fill="#1B1B1F"/><rect x="74" y="129" width="18" height="18" rx="3" fill="none" stroke="#F6C344" stroke-width="4"/>
+    <rect x="40" y="152" width="84" height="12" rx="6" fill="#FFFFFF"/>
+    <g class="arm"><path d="M52 92 C30 104 18 116 8 124" stroke="#D7263D" stroke-width="16" stroke-linecap="round" fill="none"/><circle cx="8" cy="124" r="9" fill="#1B1B1F"/></g>
+    <path d="M110 92 C122 108 124 120 120 132" stroke="#C21F35" stroke-width="15" stroke-linecap="round" fill="none"/><circle cx="120" cy="134" r="8" fill="#1B1B1F"/>
+    <circle cx="84" cy="44" r="22" fill="#F2C29B"/>
+    <path d="M60 46c2 30 14 48 24 52 10-4 22-22 24-52-6 8-14 10-24 10s-18-2-24-10z" fill="#FFFFFF" stroke="#E4E1DC" stroke-width="1.5"/>
+    <path d="M70 52c6-5 10-4 14 0 4-4 8-5 14 0-4 6-10 6-14 2-4 4-10 4-14-2z" fill="#FFFFFF" stroke="#E4E1DC" stroke-width="1.2"/>
+    <circle cx="84" cy="47" r="4" fill="#E88C8C"/><circle cx="77" cy="38" r="2.3" fill="#1B1B1F"/><circle cx="91" cy="38" r="2.3" fill="#1B1B1F"/>
+    <path d="M60 30c4-20 18-28 34-26 14 2 22 12 26 28-6 2-14 6-20 14-8-6-24-12-40-16z" fill="#D7263D"/>
+    <path d="M118 30c10 2 18 8 22 18" stroke="#D7263D" stroke-width="12" stroke-linecap="round" fill="none"/>
+    <circle cx="142" cy="50" r="9" fill="#FFFFFF" stroke="#E4E1DC" stroke-width="1.5"/>
+    <rect x="58" y="24" width="64" height="14" rx="7" fill="#FFFFFF" stroke="#E4E1DC" stroke-width="1.5" transform="rotate(8 90 31)"/>
+  </svg>`;
+  area.appendChild(santa);
+  const sLg1 = santa.querySelector(".lg1"), sLg2 = santa.querySelector(".lg2"), sArm = santa.querySelector(".arm");
+  [sLg1, sLg2].forEach((g, k) => { g.style.transformOrigin = k ? "98px 150px" : "68px 150px"; g.style.transformBox = "view-box"; });
+  let sp = 0;
+  function santaAt(p) {
+    const ar = area.getBoundingClientRect(), offR = innerWidth - ar.left + 60, hand = 12;
+    const grabX = C.br + 110;                          // eli ponponda
+    const ease = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
+    let x, face = -1, walk = 0;
+    if (p < .32) { x = offR + 250 + (grabX - offR - 250) * ease(p / .32); walk = x; face = -1; }
+    else if (p < .42) { x = grabX; face = p < .37 ? -1 : 1; }
+    else { x = grabX + (offR + C.br - C.bl + 140 - grabX) * ease((p - .42) / .58); walk = x; face = 1; }
+    hatDX = p >= .42 ? x - grabX : 0; hatDY = p >= .42 ? -Math.abs(Math.sin(x * .05)) * 4 : 0;
+    const visible = p > .001 && x < offR + 20;
+    santa.style.opacity = visible ? 1 : 0;
+    santa.style.transform = `translateX(${x}px) scaleX(${face})`; santa.style.setProperty("--f", face);
+    santa.style.transformOrigin = `${hand}px 50%`;
+    const sw = Math.sin(walk * .06) * (p > .32 && p < .42 ? 0 : 22);
+    sLg1.style.transform = `rotate(${sw}deg)`; sLg2.style.transform = `rotate(${-sw}deg)`;
+    sArm.style.transform = p >= .37 ? "rotate(0deg)" : "rotate(-20deg)";
+    santa.classList.toggle("talk", p > .38 && p < .62);
+    area.classList.toggle("leaving", visible);
+    const tr = `translate(${hatDX}px,${hatDY}px)`; back.style.transform = tr; front.style.transform = tr; $("#cartBadge").style.translate = `${hatDX}px ${hatDY}px`;
+  }
+  window.__santaAt = santaAt; santaAt(window.__santaP || 0);
+
   phys = {
     teleport(i, toPk) {
       if (toPk) { // kavis çizerek sepete uçar
@@ -2087,8 +2135,9 @@ function startPhysics() {
     items.forEach(i => {
       if (!i.body) return; const p = i.body.position;
       if (i.flight > 0 && --i.flight === 0) i.body.collisionFilter.mask = 0xFFFFFFFF;
-      i.el.style.transform = `translate(${p.x - i.w / 2}px,${p.y - i.h / 2}px) rotate(${i.body.angle}rad)`;
-      i.inPk = p.x > C.bl - 16 && p.x < C.br + 8 && p.y > C.top - 30 && p.y < C.fl + 6;
+      const ox = i.inPk ? hatDX : 0, oy = i.inPk ? hatDY : 0;
+      i.el.style.transform = `translate(${p.x - i.w / 2 + ox}px,${p.y - i.h / 2 + oy}px) rotate(${i.body.angle}rad)`;
+      i.inPk = p.x > C.bl - 18 && p.x < C.br + 18 && p.y > C.top - 30 && p.y < C.fl + 8;
     });
     const key = items.map(i => i.inPk ? 1 : 0).join("");
     if (key !== last) {
@@ -2101,6 +2150,7 @@ function startPhysics() {
   addEventListener("resize", () => buildWalls());
 }
 // Bölüme gelince taşlar düşmeye başlar
+if (window.ScrollTrigger && !reduce && innerWidth >= 700) ScrollTrigger.create({ trigger: area, start: "center center", end: "+=90%", pin: "#paket", scrub: .5, onUpdate: s => { window.__santaP = s.progress; window.__santaAt && window.__santaAt(s.progress); } });
 const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); startPhysics(); } }, { threshold: .35 });
 io.observe(area);
 renderSummary();
@@ -2417,11 +2467,11 @@ $("#sendPk").addEventListener("click", () => {
     picked = d ? d.biz.concat(d === DEF ? [] : ["Sosyal medya"]).slice(0, 5) : DEF.biz;
     const name = (q.length > 28 ? q.slice(0, 28) + "…" : q).replace(/[<&>]/g, "");
     out.innerHTML = `<b>${name} için ilk adımlar</b><div class="ys-chips">${picked.map((p, i) => `<span style="--i:${i};--c:${col(p)}"><i></i>${p}</span>`).join("")}</div>`;
-    act.hidden = false; $("#ysAdd").textContent = "Sepetime ekle";
+    act.hidden = false; $("#ysAdd").textContent = "Şapkaya ekle";
   }
   $("#ysAdd").addEventListener("click", () => {
     picked.forEach(n => { const it = items.find(i => i.name.toLocaleLowerCase("tr") === n.toLocaleLowerCase("tr")); if (it) { if (!it.inPk) toggle(it); } else addItem(n); });
-    $("#ysAdd").textContent = "Sepete eklendi ✓";
+    $("#ysAdd").textContent = "Şapkaya eklendi ✓";
   });
   $("#ysSend").addEventListener("click", () => { if (picked.length) $("#cMsg").value = `Sektörüm: ${$("#ysIn").value.trim()}. İlgilendiğim işler: ${picked.join(", ")}.`; });
   let onAsk = (q) => { const t = q.toLocaleLowerCase("tr"); const d = DATA.find(x => x.re.test(t)); suggest(q, d || DEF); };
