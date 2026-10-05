@@ -650,7 +650,6 @@ input,textarea{cursor:text}
 .pot .fl{transform-box:fill-box;transform-origin:50% 100%;animation:flame .5s ease-in-out infinite alternate}
 .pot .fl:nth-of-type(2n){animation-duration:.37s}.pot .fl:nth-of-type(3n){animation-duration:.61s}
 @keyframes flame{from{transform:scale(1,1) skewX(-4deg)}to{transform:scale(.86,1.18) skewX(5deg)}}
-.pk-area.bump .cart.back,.pk-area.bump .cart.front{animation:cart-bump .5s cubic-bezier(.3,1.6,.5,1)}
 .pk-area.leaving{overflow:visible}
 .pk-area.boom .cart-badge{opacity:0}
 .pk-area.boom .cart{opacity:0;transform:scale(.6);transition:opacity .08s,transform .08s}
@@ -1076,7 +1075,7 @@ footer{padding-block:28px 48px}
     <div class="pk-side">
       <div class="eyebrow">Paketini kur</div>
       <h2>Sepetinizi doldurun.</h2>
-      <p>İstediğiniz kadar işi sepete fırlatın ya da üstüne tıklayın. Listede yoksa yazın, o da sepete düşer. Sepetiniz hazır olunca aşağı kaydırın.</p>
+      <p>İstediğiniz kadar işi sepete fırlatın ya da üstüne tıklayın. Listede yoksa yazın, o da sepete düşer. İşlerinizi soldaki listede görürsünüz.</p>
       <form class="add" id="addForm" autocomplete="off">
         <label for="addIn" class="sr">Listede olmayan iş</label>
         <input id="addIn" type="text" placeholder="Örn. menü tasarımı, podcast, TikTok…" maxlength="40">
@@ -2029,7 +2028,7 @@ $("#addForm").addEventListener("submit", e => { e.preventDefault(); const v = $(
 function startPhysics() {
   const M = window.Matter; if (!M || reduce || innerWidth < 700) return;
   const { Engine, Bodies, Composite, Body, Mouse, MouseConstraint, Query, Events } = M;
-  const engine = Engine.create(); engine.gravity.y = 1.1;
+  const engine = Engine.create({ positionIterations: 12, velocityIterations: 10, enableSleeping: true }); engine.gravity.y = 1.1;
   const W = () => area.clientWidth, H = () => area.clientHeight;
   let walls = [];
   const zoneX = () => zone.offsetLeft;
@@ -2185,6 +2184,7 @@ function startPhysics() {
 
   phys = {
     teleport(i, toPk) {
+      M.Sleeping.set(i.body, false);
       if (toPk) { // kavis çizerek sepete uçar
         const tx = C.cx + (Math.random() - .5) * C.rw * .55, ty = C.top - 90, p = i.body.position;
         const f = i.body.frictionAir, g = engine.gravity.y * engine.gravity.scale * (1000 / 60) ** 2, T2 = 42;
@@ -2207,7 +2207,8 @@ function startPhysics() {
       if (i.flight > 0 && --i.flight === 0) i.body.collisionFilter.mask = 0xFFFFFFFF;
       const ox = 0, oy = 0;
       i.el.style.transform = `translate(${p.x - i.w / 2 + ox}px,${p.y - i.h / 2 + oy}px) rotate(${i.body.angle}rad)`;
-      i.inPk = p.x > C.bl - 10 && p.x < C.br + 10 && p.y > C.top - 160 && p.y < C.fl + 8;
+      const inside = p.x > C.bl - 10 && p.x < C.br + 10 && p.y > C.top - 160 && p.y < C.fl + 8;
+      if (inside !== i.inPk) { i.flip = (i.flip || 0) + 1; if (i.flip > 20 || i.flight > 0) { i.inPk = inside; i.flip = 0; } } else i.flip = 0;
     });
     const key = items.map(i => i.inPk ? 1 : 0).join("");
     if (key !== last) {
@@ -2215,13 +2216,11 @@ function startPhysics() {
       $("#cartN").textContent = now;
       if (now > before) { area.classList.remove("bump"); void area.offsetWidth; area.classList.add("bump"); splash(); }
     }
-    shakePot();
     requestAnimationFrame(tick);
   })();
   addEventListener("resize", () => buildWalls());
 }
 // Bölüme gelince taşlar düşmeye başlar
-if (window.ScrollTrigger && !reduce && innerWidth >= 700) ScrollTrigger.create({ trigger: area, start: "center center", end: "+=110%", pin: "#paket", scrub: .3, onUpdate: s => { window.__santaP = s.progress; window.__brewAt && window.__brewAt(s.progress); } });
 const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { io.disconnect(); startPhysics(); } }, { threshold: .35 });
 io.observe(area);
 renderSummary();
