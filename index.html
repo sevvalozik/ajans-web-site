@@ -610,17 +610,17 @@ input,textarea{cursor:text}
   user-select:none;-webkit-user-select:none;
 }
 .pk-zone{
-  position:absolute;top:14px;right:14px;bottom:14px;width:calc(52% - 6px);border:1.5px dashed var(--line);border-radius:14px;
+  position:absolute;top:14px;right:14px;bottom:14px;width:calc(46% - 6px);border:1.5px dashed var(--line);border-radius:14px;
   display:flex;flex-direction:column;justify-content:flex-start;padding:14px;gap:4px;pointer-events:none;transition:border-color .2s,background .2s;
 }
 .pk-zone.hot{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,transparent)}
 .pk-zone .mono{color:var(--ink-3)}
 .pk-zone b{font-family:var(--f-display);font-size:26px;line-height:1}
-.pk-pool{position:absolute;inset:14px calc(52% + 28px) 14px 14px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px}
+.pk-pool{position:absolute;inset:40px calc(46% + 16px) 14px 14px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px}
 .pk-hint{position:absolute;left:18px;bottom:14px;color:var(--ink-3)}
 .chip{
-  display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
-  background:var(--board);border:1.5px solid var(--ink);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;
+  display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
+  background:var(--board);border:1.5px solid var(--ink);border-radius:999px;padding:7px 12px;font-size:13.5px;font-weight:600;
   cursor:pointer;
 }
 .chip i{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
@@ -2075,8 +2075,8 @@ function startPhysics() {
       Bodies.rectangle(w / 2, h + t / 2, w * 2, t, { isStatic: true }),
       Bodies.rectangle(-t / 2, h / 2, t, h * 3, { isStatic: true }),
       Bodies.rectangle(w + t / 2, h / 2, t, h * 3, { isStatic: true }),
-      seg(bl + 28, fl + 2, br - 28, fl + 2, 12),
-      seg(bl, top, bl + 28, fl, 12), seg(br, top, br - 28, fl, 12),
+      seg(bl + 28, fl + 6, br - 28, fl + 6, 20),
+      seg(bl, top, bl + 28, fl, 18), seg(br, top, br - 28, fl, 18),
       seg(bl - 8, top - 150, bl, top, 8), seg(br + 8, top - 150, br, top, 8)
     ];
     Composite.add(engine.world, walls);
@@ -2093,14 +2093,14 @@ function startPhysics() {
     i.w = r.width; i.h = r.height; i.body = b; b.plugin = { item: i };
     Composite.add(engine.world, b);
   }
-  items.forEach((i, k) => mk(i, start[k].x, start[k].y - 10));
+  items.forEach((i, k) => { let x = start[k].x, y = start[k].y - 10; if (y > H() - 30 || y < 20 || x > zoneX() - 20) { x = 40 + Math.random() * (zoneX() - 160); y = 40 + Math.random() * 120; } mk(i, x, y); });
   let mc = null;
   if (fine) {
     const mouse = Mouse.create(area);
     mouse.element.removeEventListener("mousewheel", mouse.mousewheel);
     mouse.element.removeEventListener("DOMMouseScroll", mouse.mousewheel);
     mouse.element.removeEventListener("wheel", mouse.mousewheel);
-    mc = MouseConstraint.create(engine, { mouse, constraint: { stiffness: .18, render: { visible: false } } });
+    mc = MouseConstraint.create(engine, { mouse, constraint: { stiffness: .3, damping: .1, render: { visible: false } } });
     Composite.add(engine.world, mc);
     let down = null;
     area.addEventListener("mousedown", e => { down = { x: e.clientX, y: e.clientY, t: performance.now() }; });
@@ -2204,6 +2204,7 @@ function startPhysics() {
     Engine.update(engine, 1000 / 60);
     items.forEach(i => {
       if (!i.body) return; const p = i.body.position;
+      if (p.y > H() + 60 || p.x < -60 || p.x > W() + 60 || p.y < -400) { Body.setPosition(i.body, { x: 40 + Math.random() * (zoneX() - 160), y: 40 }); Body.setVelocity(i.body, { x: 0, y: 0 }); M.Sleeping.set(i.body, false); }
       if (i.flight > 0 && --i.flight === 0) i.body.collisionFilter.mask = 0xFFFFFFFF;
       const ox = 0, oy = 0;
       i.el.style.transform = `translate(${p.x - i.w / 2 + ox}px,${p.y - i.h / 2 + oy}px) rotate(${i.body.angle}rad)`;
