@@ -429,11 +429,22 @@ a,button,[role=button],.chip,.tile,label[for],select,summary,.dock-t{cursor:url(
 #orbStage,#pkArea,#stGl{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M4 2.5 L21.5 12.2 L13.4 14.1 L9.6 22.6 Z' fill='%230F1012' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3,grab}
 #orbStage.drag,#pkArea:active,#stGl:active{cursor:grabbing}
 input,textarea{cursor:text}
-.cur2{position:fixed;left:0;top:0;z-index:95;pointer-events:none;display:none}
-.cur2 .cl{position:absolute;left:0;top:0;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;
-  background:var(--ink);color:var(--board);padding:4px 8px;border-radius:999px;white-space:nowrap;opacity:0;transition:opacity .15s}
-.cur2.lab .cl{opacity:1}
-@media (hover:hover) and (pointer:fine){.cur2{display:block}}
+.cx{position:fixed;left:0;top:0;z-index:96;pointer-events:none;opacity:0;transition:opacity .25s}
+.cx.on{opacity:1}
+html.cx-on,html.cx-on *{cursor:none!important}
+html.cx-on input:not([type=range]):not([type=checkbox]):not([type=radio]),html.cx-on textarea,html.cx-on [contenteditable=true]{cursor:text!important}
+.cx-dot{position:fixed;left:-3.5px;top:-3.5px;width:7px;height:7px;border-radius:50%;background:#101217;box-shadow:0 0 0 1.5px rgba(255,255,255,.85);transition:opacity .2s,scale .2s}
+.cx-ring{position:fixed;left:0;top:0;width:30px;height:30px;border-radius:15px;border:1.5px solid rgba(16,18,23,.55);box-shadow:0 0 0 1px rgba(255,255,255,.5);
+  transition:background .25s,border-color .25s,opacity .2s;display:flex;align-items:center;justify-content:center;overflow:hidden;will-change:transform,width,height}
+.cx.snap .cx-ring{background:rgba(46,67,255,.07);border-color:rgba(46,67,255,.55);box-shadow:0 8px 24px -10px rgba(46,67,255,.45)}
+.cx.snap .cx-dot{opacity:0;scale:.3}
+.cx.lab .cx-ring{background:#101217;border-color:#101217;box-shadow:0 10px 26px -10px rgba(16,18,23,.5)}
+.cx.lab .cx-dot{scale:.8}
+.cx-lab{flex:none;display:inline-flex;align-items:center;gap:7px;padding:0 13px 0 9px;white-space:nowrap;color:#fff;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:0;transition:opacity .2s}
+.cx-lab i{font-style:normal;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#FF4F8B,#9B6BFF);font-size:11px;letter-spacing:0}
+.cx.lab .cx-lab{opacity:1;transition-delay:.06s}
+.cx.txt .cx-ring,.cx.txt .cx-dot{opacity:0}
+.cx.down .cx-dot{scale:.6}
 
 /* ---------- Alt menü: kapalıyken tek küçük düğme, basınca renkli etiketler yukarı açılır ---------- */
 .topbar-in{align-items:flex-start}
@@ -975,7 +986,7 @@ footer{padding-block:28px 48px}
           </div>
         </div>
       </div>
-      <span class="hero-hint" aria-hidden="true">İmleci gezdirin</span>
+      <span class="hero-hint" aria-hidden="true">Takılardan tutun</span>
     </div>
   </div>
 </section>
@@ -1373,66 +1384,10 @@ document.addEventListener("keydown", e => {
   const t = $(id); if (lenis) lenis.scrollTo(t, { offset: -70 }); else t.scrollIntoView();
 });
 
-/* ---------- Giriş: parçacıklar şekilden şekle geçiyor ---------- */
+/* ---------- Giriş: tepeden sarkan anahtarlık; her takı bir hizmet ---------- */
 (() => {
   const panel = $("#heroPanel"), cv = $("#gl"); if (!panel || !cv) return;
   const btns = $$("#modes button");
-  const PAL = [["#3D4BFF", "#9B6BFF"], ["#0FA968", "#2ED3A0"], ["#FF2E7A", "#FF8A3D"], ["#F28A00", "#FFC93C"], ["#7B45F5", "#FF4F8B"]];
-  const S = 512, WORLD = 4.6;
-  const off = document.createElement("canvas"); off.width = off.height = S;
-  const cx = off.getContext("2d", { willReadFrequently: true });
-  const rr = (x, y, w, h, r) => { cx.beginPath(); cx.roundRect ? cx.roundRect(x, y, w, h, r) : cx.rect(x, y, w, h); };
-  function draw(i) {
-    cx.clearRect(0, 0, S, S); cx.fillStyle = "#fff"; cx.strokeStyle = "#fff"; cx.lineCap = "round"; cx.lineJoin = "round";
-    if (i === 0) { // marka: işaret + yazı
-      rr(176, 70, 160, 160, 34); cx.fill();
-      cx.globalCompositeOperation = "destination-out"; rr(256, 150, 52, 52, 8); cx.fill(); cx.globalCompositeOperation = "source-over";
-      const fam = getComputedStyle(document.documentElement).getPropertyValue("--f-display");
-      cx.font = `800 132px ${fam}`; cx.textAlign = "center"; cx.textBaseline = "alphabetic";
-      cx.fillText(CONFIG.BRAND, 256, 390, 470);
-    } else if (i === 1) { // telefon
-      cx.lineWidth = 16; rr(150, 28, 212, 456, 44); cx.stroke();
-      rr(222, 52, 68, 12, 6); cx.fill();
-      rr(182, 92, 120, 20, 10); cx.fill();
-      rr(182, 130, 148, 150, 22); cx.fill();
-      rr(182, 300, 148, 14, 7); cx.fill(); rr(182, 326, 104, 14, 7); cx.fill();
-      rr(182, 392, 148, 44, 22); cx.fill();
-    } else if (i === 2) { // video
-      cx.lineWidth = 20; cx.beginPath(); cx.arc(256, 256, 196, 0, Math.PI * 2); cx.stroke();
-      cx.lineWidth = 26; cx.beginPath(); cx.moveTo(214, 168); cx.lineTo(214, 344); cx.lineTo(358, 256); cx.closePath(); cx.fill(); cx.stroke();
-    } else if (i === 3) { // reklam ve büyüme
-      [[70, 120], [150, 180], [230, 150], [310, 250], [390, 330]].forEach(([x, h]) => { rr(x - 26, 450 - h, 52, h, 10); cx.fill(); });
-      cx.lineWidth = 16; cx.beginPath(); cx.moveTo(48, 270); cx.lineTo(150, 196); cx.lineTo(230, 226); cx.lineTo(330, 120); cx.lineTo(452, 64); cx.stroke();
-      cx.beginPath(); cx.moveTo(468, 56); cx.lineTo(414, 52); cx.lineTo(446, 104); cx.closePath(); cx.fill();
-    } else { // otomasyon ağı
-      const N = [[96, 256], [256, 110], [256, 402], [416, 180], [416, 332], [256, 256]];
-      cx.lineWidth = 10; [[0, 5], [5, 1], [5, 2], [5, 3], [5, 4], [1, 3], [2, 4], [0, 1], [0, 2]].forEach(([a, b]) => { cx.beginPath(); cx.moveTo(...N[a]); cx.lineTo(...N[b]); cx.stroke(); });
-      N.forEach(([x, y], k) => { cx.beginPath(); cx.arc(x, y, k === 5 ? 58 : 38, 0, Math.PI * 2); cx.fill(); });
-    }
-  }
-  function sample(i, n) {
-    draw(i);
-    const d = cx.getImageData(0, 0, S, S).data, pts = [];
-    for (let y = 0; y < S; y += 2) for (let x = 0; x < S; x += 2) if (d[(y * S + x) * 4 + 3] > 120) pts.push(x, y);
-    const out = new Float32Array(n * 3), m = pts.length / 2;
-    for (let k = 0; k < n; k++) {
-      const j = (Math.random() * m | 0) * 2;
-      out[k * 3] = (pts[j] / S - .5) * WORLD + (Math.random() - .5) * .012;
-      out[k * 3 + 1] = -(pts[j + 1] / S - .5) * WORLD + (Math.random() - .5) * .012;
-      out[k * 3 + 2] = (Math.random() - .5) * .42;
-    }
-    return out;
-  }
-  function colors(i, n, tgt) {
-    const a = PAL[i][0], b = PAL[i][1], c = new Float32Array(n * 3);
-    const h = s => [1, 3, 5].map(o => parseInt(s.substr(o, 2), 16) / 255);
-    const A = h(a), B = h(b);
-    for (let k = 0; k < n; k++) {
-      const y = tgt[k * 3 + 1] / WORLD + .5; const t = Math.min(1, Math.max(0, y * .9 + Math.random() * .35));
-      for (let q = 0; q < 3; q++) c[k * 3 + q] = A[q] + (B[q] - A[q]) * t;
-    }
-    return c;
-  }
   let cur = 0, sys = null, auto = null;
   function setMode(i, user) {
     cur = i; btns.forEach((b, k) => b.setAttribute("aria-current", k === i ? "true" : "false"));
@@ -1444,92 +1399,205 @@ document.addEventListener("keydown", e => {
 
   const T = window.THREE;
   let gl = null; try { gl = T && document.createElement("canvas").getContext("webgl"); } catch (e) {}
-  const start = async () => {
-    try { await document.fonts.ready; } catch (e) {}
-    const N = innerWidth < 700 ? 5200 : 10000;
-    const targets = [0, 1, 2, 3, 4].map(i => sample(i, N));
-    const tcols = targets.map((t, i) => colors(i, N, t));
-
-    if (!T || !gl || reduce) { // sade yedek: tek kare çizim
-      const c2 = cv.getContext("2d");
-      const paint = () => {
-        const w = cv.clientWidth, h = cv.clientHeight, dpr = Math.min(2, devicePixelRatio || 1);
-        cv.width = w * dpr; cv.height = h * dpr; c2.setTransform(dpr, 0, 0, dpr, 0, 0); c2.clearRect(0, 0, w, h);
-        const sc = Math.min(w, h) / WORLD * .62, ox = w > 760 ? w * .66 : w / 2, oy = w > 760 ? h * .42 : h * .36;
-        const t = targets[cur], c = tcols[cur];
-        for (let k = 0; k < N; k += 2) { c2.fillStyle = `rgb(${c[k * 3] * 255 | 0},${c[k * 3 + 1] * 255 | 0},${c[k * 3 + 2] * 255 | 0})`; c2.fillRect(ox + t[k * 3] * sc, oy - t[k * 3 + 1] * sc, 1.6, 1.6); }
-      };
-      sys = { go: paint }; paint(); addEventListener("resize", paint); return;
-    }
-
-    const renderer = new T.WebGLRenderer({ canvas: cv, alpha: true, antialias: false, powerPreference: "high-performance" });
+  const start = () => {
+    if (!T || !gl) { cv.style.display = "none"; return; }
+    const renderer = new T.WebGLRenderer({ canvas: cv, alpha: true, antialias: true, powerPreference: "high-performance" });
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
     const scene = new T.Scene();
-    const cam = new T.PerspectiveCamera(38, 1, .1, 100); cam.position.z = 9.5;
-    const pos = new Float32Array(N * 3), col = new Float32Array(N * 3), vel = new Float32Array(N * 3), k = new Float32Array(N), scat = new Float32Array(N * 3);
-    for (let i = 0; i < N; i++) {
-      const u = Math.random() * 2 - 1, th = Math.random() * Math.PI * 2, r = 5 + Math.random() * 5, s = Math.sqrt(1 - u * u);
-      scat[i * 3] = r * s * Math.cos(th); scat[i * 3 + 1] = r * u; scat[i * 3 + 2] = r * s * Math.sin(th) - 2;
-      pos[i * 3] = scat[i * 3]; pos[i * 3 + 1] = scat[i * 3 + 1]; pos[i * 3 + 2] = scat[i * 3 + 2];
-      k[i] = .018 + Math.random() * .04;
-    }
-    col.set(tcols[0]);
-    const geo = new T.BufferGeometry();
-    geo.setAttribute("position", new T.BufferAttribute(pos, 3));
-    geo.setAttribute("color", new T.BufferAttribute(col, 3));
-    const sp = document.createElement("canvas"); sp.width = sp.height = 64; const sc = sp.getContext("2d");
-    const g = sc.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, "rgba(255,255,255,1)"); g.addColorStop(.35, "rgba(255,255,255,.75)"); g.addColorStop(1, "rgba(255,255,255,0)");
-    sc.fillStyle = g; sc.fillRect(0, 0, 64, 64);
-    const mat = new T.PointsMaterial({ size: innerWidth < 700 ? .06 : .072, map: new T.CanvasTexture(sp), vertexColors: true, transparent: true, depthWrite: false, blending: T.NormalBlending, sizeAttenuation: true, opacity: .92 });
-    const pts = new T.Points(geo, mat); const grp = new T.Group(); grp.add(pts); scene.add(grp);
+    const cam = new T.PerspectiveCamera(36, 1, .1, 100); cam.position.set(0, 0, 10);
 
-    let W = 1, H = 1, wide = true;
+    // stüdyo yansımaları: yumuşak ışık kutuları
+    const pm = new T.PMREMGenerator(renderer), es = new T.Scene();
+    es.add(new T.Mesh(new T.SphereGeometry(10, 32, 16), new T.ShaderMaterial({ side: T.BackSide,
+      vertexShader: "varying vec3 p; void main(){ p = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }",
+      fragmentShader: "varying vec3 p; void main(){ float h = normalize(p).y * .5 + .5; gl_FragColor = vec4(mix(vec3(.62,.58,.72), vec3(1.,.97,.95), h), 1.); }" })));
+    const lbox = (w, h, x, y, z, c, k) => { const m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: new T.Color(c).multiplyScalar(k), side: T.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); es.add(m); };
+    lbox(7, 3, -4, 6, 4, "#FFFFFF", 3.2); lbox(3, 6, 7, 1, 3, "#FFE0EE", 2); lbox(6, 2, 0, -6, 3, "#E4DEFF", 1.4); lbox(3, 3, -7, 0, -3, "#FFFFFF", 1.8); lbox(4, 4, 3, 3, -7, "#DDEBFF", 1.6);
+    scene.environment = pm.fromScene(es, .03).texture;
+    scene.add(new T.HemisphereLight("#FFFFFF", "#D6CFEA", .5));
+    const key = new T.DirectionalLight("#FFFFFF", 1.0); key.position.set(-3, 5, 6); scene.add(key);
+
+    /* malzemeler ve şekiller */
+    const chrome = new T.MeshStandardMaterial({ color: "#EDEDF2", metalness: 1, roughness: .14 });
+    const lin = c => new T.Color(c).convertSRGBToLinear();
+    const enamel = c => new T.MeshPhysicalMaterial({ color: lin(c), roughness: .24, clearcoat: 1, clearcoatRoughness: .06, emissive: lin(c), emissiveIntensity: 0, envMapIntensity: .6 });
+    const white = new T.MeshPhysicalMaterial({ color: "#FFFFFF", roughness: .25, clearcoat: 1, clearcoatRoughness: .1 });
+    const rrect = (w, h, r) => { const s = new T.Shape(), x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s; };
+    const ext = (shape, d, bv = .03) => { const g = new T.ExtrudeGeometry(shape, { depth: d, bevelEnabled: true, bevelThickness: bv, bevelSize: bv, bevelSegments: 5, curveSegments: 28 }); g.center(); return g; };
+    const jring = y => { const m = new T.Mesh(new T.TorusGeometry(.075, .02, 10, 28), chrome); m.position.y = y; m.rotation.y = Math.PI / 2; return m; };
+    const tex = (w, h, f) => { const c = document.createElement("canvas"); c.width = w; c.height = h; f(c.getContext("2d"), w, h); const t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; t.anisotropy = 4; return t; };
+    const rr2 = (x, c, a, b, w, h, r) => { x.beginPath(); x.roundRect ? x.roundRect(a, b, w, h, r) : x.rect(a, b, w, h); x.fillStyle = c; x.fill(); };
+
+    /* takılar: kanca noktası (0,0,0), gövde aşağı sarkar */
+    function cTag() {
+      const g = new T.Group(), s = rrect(.62, 1.02, .16); const hole = new T.Path(); hole.absarc(0, .38, .065, 0, Math.PI * 2, true); s.holes.push(hole);
+      const m = new T.MeshPhysicalMaterial({ color: lin("#FF9CC8"), roughness: .08, clearcoat: 1, transparent: true, opacity: .85, emissive: lin("#FF8FC0"), emissiveIntensity: 0, envMapIntensity: .7 });
+      const b = new T.Mesh(ext(s, .05, .02), m); b.position.y = -.42; g.add(b);
+      const tt = tex(256, 420, (x, w, h) => { x.clearRect(0, 0, w, h); x.fillStyle = "#14121A"; x.textAlign = "center"; x.textBaseline = "middle";
+        x.save(); x.translate(w / 2, h * .6); x.rotate(-Math.PI / 2); let fs = 120; const fam = getComputedStyle(document.documentElement).getPropertyValue("--f-display") || "sans-serif";
+        x.font = `800 ${fs}px ${fam}`; while (x.measureText(CONFIG.BRAND).width > h * .62 && fs > 30) { fs -= 6; x.font = `800 ${fs}px ${fam}`; } x.fillText(CONFIG.BRAND, 0, 0); x.restore(); });
+      const tp = new T.Mesh(new T.PlaneGeometry(.62, 1.02), new T.MeshBasicMaterial({ map: tt, transparent: true })); tp.position.set(0, -.42, .051); g.add(tp);
+      g.add(jring(.0)); return { g, h: 1.0, r: .36, m };
+    }
+    function cMarka() {
+      const g = new T.Group(), m = enamel("#2433E8"); const b = new T.Mesh(ext(rrect(.74, .74, .2), .12), m); b.position.y = -.5; g.add(b);
+      const w = new T.Mesh(ext(rrect(.2, .26, .04), .04, .012), white); w.position.set(.13, -.5, .1); g.add(w);
+      g.add(jring(-.06)); return { g, h: .9, r: .43, m };
+    }
+    function cMobil() {
+      const g = new T.Group(), m = enamel("#079A5C"); const b = new T.Mesh(ext(rrect(.5, .9, .12), .08), m); b.position.y = -.58; g.add(b);
+      const t2 = tex(160, 288, (x, w, h) => {
+        const gr = x.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, "#E9FFF4"); gr.addColorStop(1, "#FFFFFF"); x.fillStyle = gr; x.fillRect(0, 0, w, h);
+        rr2(x, "#101217", 56, 10, 48, 10, 5); rr2(x, "#2ED3A0", 14, 36, 132, 70, 14); rr2(x, "#FFB3D4", 14, 116, 62, 62, 12); rr2(x, "#C9B8FF", 84, 116, 62, 62, 12);
+        rr2(x, "#DDE3EA", 14, 190, 132, 12, 6); rr2(x, "#DDE3EA", 14, 210, 96, 12, 6); rr2(x, "#101217", 14, 240, 132, 32, 16); });
+      const sc = new T.Mesh(new T.PlaneGeometry(.42, .78), new T.MeshStandardMaterial({ map: t2, emissive: "#FFFFFF", emissiveMap: t2, emissiveIntensity: .45, roughness: .15 })); sc.position.set(0, -.58, .071); g.add(sc);
+      g.add(jring(-.08)); return { g, h: 1.05, r: .36, m };
+    }
+    function cVideo() {
+      const g = new T.Group(), m = enamel("#FF2E7A"); const d = new T.Mesh(new T.CylinderGeometry(.4, .4, .12, 56), m); d.rotation.x = Math.PI / 2; d.position.y = -.5; g.add(d);
+      const rim = new T.Mesh(new T.TorusGeometry(.4, .028, 10, 56), chrome); rim.position.y = -.5; g.add(rim);
+      const tr = new T.Shape(); tr.moveTo(-.1, .16); tr.lineTo(.17, 0); tr.lineTo(-.1, -.16); tr.closePath();
+      const pl = new T.Mesh(ext(tr, .04, .02), white); pl.position.set(.02, -.5, .08); g.add(pl);
+      g.add(jring(-.06)); return { g, h: .92, r: .44, m };
+    }
+    function cReklam() {
+      const g = new T.Group(), m = enamel("#EE7A00"), mg = new T.Group(); mg.position.set(0, -.44, 0); mg.rotation.z = .45; g.add(mg);
+      const bell = new T.Mesh(new T.CylinderGeometry(.13, .34, .5, 48, 1, true), m); bell.material.side = T.DoubleSide; bell.rotation.z = -Math.PI / 2; bell.position.x = .14; mg.add(bell);
+      const rim = new T.Mesh(new T.TorusGeometry(.34, .03, 10, 48), white); rim.rotation.y = Math.PI / 2; rim.position.x = .39; mg.add(rim);
+      const back = new T.Mesh(new T.CylinderGeometry(.13, .13, .2, 32), white); back.rotation.z = Math.PI / 2; back.position.x = -.2; mg.add(back);
+      const hd = new T.Mesh(new T.BoxGeometry(.08, .22, .1), m); hd.position.set(-.06, -.2, 0); mg.add(hd);
+      const top = new T.Mesh(new T.TorusGeometry(.06, .018, 8, 20), chrome); top.position.set(-.2, .15, 0); top.rotation.y = Math.PI / 2; mg.add(top);
+      return { g, h: .85, r: .42, m };
+    }
+    function cOto() {
+      const g = new T.Group(), m = enamel("#6A33EE"), s = new T.Shape(), n = 10;
+      for (let i = 0; i < n * 4; i++) { const a = i / (n * 4) * Math.PI * 2, r = (i % 4 < 2) ? .42 : .33; s[i ? "lineTo" : "moveTo"](Math.cos(a) * r, Math.sin(a) * r); } s.closePath();
+      const h = new T.Path(); h.absarc(0, 0, .13, 0, Math.PI * 2, true); s.holes.push(h);
+      const b = new T.Mesh(ext(s, .1, .02), m); b.position.y = -.5; g.add(b);
+      const hub = new T.Mesh(new T.TorusGeometry(.13, .03, 10, 36), chrome); hub.position.y = -.5; g.add(hub);
+      g.add(jring(-.06)); return { g, h: .92, r: .44, m };
+    }
+    // halka sırası: soldan sağa (mod numarası: -1 = marka etiketi)
+    const DEF = [[cTag, -1, 1.15, -.14], [cMarka, 0, .7, .12], [cMobil, 1, 1.05, -.1], [cVideo, 2, .55, .16], [cReklam, 3, .95, -.12], [cOto, 4, .62, .1]];
+
+    const root = new T.Group(); scene.add(root);
+    // halka, şerit, kilit
+    const RING_R = .6;
+    const ring = new T.Mesh(new T.TorusGeometry(RING_R, .05, 16, 96), chrome); root.add(ring);
+    const clasp = new T.Group(); root.add(clasp);
+    const cb = new T.Mesh(new T.CylinderGeometry(.07, .07, .32, 24), chrome); cb.position.y = .1; clasp.add(cb);
+    const hook = new T.Mesh(new T.TorusGeometry(.11, .028, 10, 32, Math.PI * 1.6), chrome); hook.position.y = -.12; hook.rotation.set(0, Math.PI / 2, Math.PI * .7); clasp.add(hook);
+    const strapT = tex(64, 1024, (x, w, h) => { const gr = x.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, "#9B7BFF"); gr.addColorStop(.5, "#FF8FC7"); gr.addColorStop(1, "#FFB27A"); x.fillStyle = gr; x.fillRect(0, 0, w, h);
+      x.fillStyle = "rgba(255,255,255,.85)"; x.font = "700 34px sans-serif"; x.textAlign = "center"; x.save(); x.translate(w / 2, 0); x.rotate(Math.PI / 2);
+      for (let y = 40; y < h; y += 190) x.fillText(CONFIG.BRAND, y, 12); x.restore(); });
+    strapT.wrapT = T.RepeatWrapping;
+    const strap = new T.Mesh(new T.BoxGeometry(.24, 1, .025), new T.MeshPhysicalMaterial({ map: strapT, roughness: .55, sheen: .6, sheenColor: new T.Color("#FFFFFF") })); root.add(strap);
+    const strapLoop = new T.Mesh(new T.TorusGeometry(.12, .03, 10, 24), chrome); root.add(strapLoop);
+
+    const charms = DEF.map(([fn, mode, L, zo], i) => {
+      const c = fn(); root.add(c.g);
+      const links = [0, 1, 2].map(k => { const l = new T.Mesh(new T.TorusGeometry(.05, .014, 8, 20), chrome); l.scale.set(1, 1.5, 1); root.add(l); return l; });
+      c.g.traverse(o => { if (o.isMesh) o.userData.ci = i; });
+      const th = (-.62 + i / (DEF.length - 1) * 1.24);
+      return Object.assign(c, { mode, L, zo, th, links, p: new T.Vector3(), q: new T.Vector3(), tw: (Math.random() - .5) * .6, twv: 0, sc: 1, glow: 0, link: L * .5 + .12 });
+    });
+
+    /* fizik: Verlet noktaları */
+    const A = new T.Vector3(), R = new T.Vector3(), Rq = new T.Vector3(); let Ls = 2.6, vh = 6.5, vw = 10, wide = true, s0 = 1;
+    let W = 1, H = 1;
     function size() {
       W = panel.clientWidth; H = panel.clientHeight; wide = W > 760;
       renderer.setSize(W, H, false); cam.aspect = W / H; cam.updateProjectionMatrix();
-      const vh = 2 * cam.position.z * Math.tan(cam.fov * Math.PI / 360), vw = vh * cam.aspect;
-      if (wide) { grp.position.set(vw * .19, vh * .08, 0); grp.scale.setScalar(Math.min(.82, vh / 8)); }
-      else { grp.position.set(0, vh * .15, 0); grp.scale.setScalar(Math.min(.72, vw / 6.2)); }
+      vh = 2 * cam.position.z * Math.tan(cam.fov * Math.PI / 360); vw = vh * cam.aspect;
+      s0 = wide ? Math.min(1.05, vh / 6.4) : Math.min(.8, vw / 5.2);
+      root.scale.setScalar(s0); root.position.set(wide ? vw * .1 : vw * .08, 0, 0);
+      Ls = (vh / 2 + .4) / s0 - (wide ? vh * .27 : vh * .2) / s0;
     }
     size(); new ResizeObserver(size).observe(panel);
+    const topY = () => (vh / 2) / s0 + .4;
+    A.set(0, topY() + 6, 0); R.set(.3, A.y - Ls, 0); Rq.copy(R);
+    const attach = (c, out) => { const ang = Math.atan2(R.x - A.x, A.y - R.y); const cx = R.x + Math.sin(ang) * RING_R, cy = R.y - Math.cos(ang) * RING_R;
+      const a2 = c.th + ang; return out.set(cx + Math.sin(a2) * RING_R, cy - Math.cos(a2) * RING_R, c.zo); };
+    const tmp = new T.Vector3();
+    charms.forEach(c => { attach(c, tmp); c.p.set(tmp.x, tmp.y - c.L - c.h * .5, c.zo); c.q.copy(c.p); });
 
-    let mx = 0, my = 0, mIn = false; const mw = new T.Vector3(99, 99, 0), ray = new T.Vector3();
-    panel.addEventListener("pointermove", e => {
-      const r = panel.getBoundingClientRect(); mx = (e.clientX - r.left) / r.width * 2 - 1; my = -((e.clientY - r.top) / r.height * 2 - 1); mIn = true;
-    }, { passive: true });
-    panel.addEventListener("pointerleave", () => { mIn = false; });
-    let scroll = 0, intro = 1, running = true;
+    // fare
+    let mIn = false, drag = -1, hov = -1; const M = new T.Vector3(), Mq = new T.Vector3(), Mv = new T.Vector3(), ndc = new T.Vector2(), ray = new T.Raycaster();
+    const picks = []; charms.forEach(c => c.g.traverse(o => { if (o.isMesh) picks.push(o); }));
+    function toWorld(cx, cy) { const r = panel.getBoundingClientRect(); ndc.set((cx - r.left) / r.width * 2 - 1, -((cy - r.top) / r.height * 2 - 1)); ray.setFromCamera(ndc, cam); const d = -cam.position.z / ray.ray.direction.z; const w = cam.position.clone().addScaledVector(ray.ray.direction, d); return w.sub(root.position).divideScalar(s0); }
+    function pick() { const h = ray.intersectObjects(picks, false)[0]; return h ? h.object.userData.ci : -1; }
+    let lastMove = 0;
+    panel.addEventListener("pointermove", e => { M.copy(toWorld(e.clientX, e.clientY)); mIn = true; lastMove = performance.now();
+      if (drag < 0 && e.pointerType === "mouse") { hov = pick(); if (hov >= 0) panel.dataset.cursor = "Tut"; else delete panel.dataset.cursor; } }, { passive: true });
+    panel.addEventListener("pointerleave", () => { mIn = false; hov = -1; delete panel.dataset.cursor; });
+    panel.addEventListener("pointerdown", e => {
+      if (e.target.closest("a,button,input")) return;
+      M.copy(toWorld(e.clientX, e.clientY)); Mq.copy(M); const i = pick(); if (i < 0) return;
+      const c = charms[i]; if (c.mode >= 0) setMode(c.mode, true);
+      if (e.pointerType === "mouse") { drag = i; panel.dataset.cursor = "Fırlat"; panel.setPointerCapture(e.pointerId); e.preventDefault(); }
+      else { c.q.x -= (Math.random() - .5) * .25; c.q.y -= .18; c.twv += (Math.random() < .5 ? -1 : 1) * 14; }
+    });
+    const endDrag = () => { if (drag >= 0) { drag = -1; if (hov >= 0) panel.dataset.cursor = "Tut"; else delete panel.dataset.cursor; } };
+    panel.addEventListener("pointerup", endDrag); panel.addEventListener("pointercancel", endDrag);
+
+    let scroll = 0, svel = 0, lastS = 0, running = true;
     if (ST) ST.create({ trigger: panel, start: "top top", end: "bottom top", onUpdate: s => { scroll = s.progress; } });
     new IntersectionObserver(es => { running = es[0].isIntersecting; }, { threshold: 0 }).observe(panel);
-    if (G) G.to({ v: 1 }, { v: 0, duration: 2.2, ease: "power3.out", delay: .2, onUpdate() { intro = this.targets()[0].v; } }); else intro = 0;
+    let introT = 0;
 
-    let tgt = targets[0], tc = tcols[0], t = 0;
-    sys = { go(i) { tgt = targets[i]; tc = tcols[i]; for (let q = 0; q < N * 3; q++) vel[q] += (Math.random() - .5) * .09; } };
-    const inv = new T.Matrix4();
+    sys = { go(i) { charms.forEach(c => { if (c.mode === i) { c.q.y -= .09; c.q.z -= .05; c.twv += 9; } }); } };
+
+    let t = 0, last = performance.now();
+    const G_ = -6.2;
     (function loop() {
-      requestAnimationFrame(loop);
-      if (!running) return;
-      t += .016;
-      // fareyi dünya düzlemine taşı, sonra grubun yerel koordinatına çevir
-      if (mIn) { ray.set(mx, my, .5).unproject(cam).sub(cam.position).normalize(); const d = -cam.position.z / ray.z; mw.copy(cam.position).addScaledVector(ray, d); grp.updateMatrixWorld(); inv.copy(grp.matrixWorld).invert(); mw.applyMatrix4(inv); }
-      const mix = Math.max(scroll * 1.15, intro), R2 = .55;
-      for (let i = 0; i < N; i++) {
-        const a = i * 3, b = a + 1, c = a + 2;
-        const tx = tgt[a] + (scat[a] - tgt[a]) * mix + Math.sin(t * .9 + i) * .006;
-        const ty = tgt[b] + (scat[b] - tgt[b]) * mix + Math.cos(t * .7 + i * 1.3) * .006;
-        const tz = tgt[c] + (scat[c] - tgt[c]) * mix;
-        vel[a] += (tx - pos[a]) * k[i]; vel[b] += (ty - pos[b]) * k[i]; vel[c] += (tz - pos[c]) * k[i];
-        if (mIn) {
-          const dx = pos[a] - mw.x, dy = pos[b] - mw.y, dd = dx * dx + dy * dy;
-          if (dd < R2) { const f = (1 - dd / R2) * .05; const l = Math.sqrt(dd) + 1e-4; vel[a] += dx / l * f; vel[b] += dy / l * f; vel[c] += f * .6; }
+      requestAnimationFrame(loop); const now = performance.now(), dt = Math.min(.1, (now - last) / 1000); last = now; if (!running) return; t += dt;
+      // tepe noktası: girişte yukarıdan iner, kaydırınca yukarı çekilir
+      if (!introT) introT = now; const ip = Math.min(1, (now - introT) / 1600); const ie = 1 - Math.pow(1 - ip, 3);
+      svel += ((scroll - lastS) * 60 - svel) * .2; lastS = scroll;
+      A.set(Math.sin(t * .4) * .05, topY() + (1 - ie) * 6 + scroll * (vh / s0) * 1.25, 0);
+      Mv.copy(M).sub(Mq).divideScalar(Math.max(dt, .001)); Mq.copy(M); if (now - lastMove > 80) Mv.set(0, 0, 0);
+      const SUB = Math.max(2, Math.min(9, Math.ceil(dt * 120))), h = dt / SUB;
+      for (let s = 0; s < SUB; s++) {
+        // halka
+        const rv = R.clone().sub(Rq).multiplyScalar(.985); Rq.copy(R); R.add(rv); R.y += G_ * h * h; R.x += Math.sin(t * .7) * .00002 + svel * .0004 * (Math.random() - .5);
+        charms.forEach(c => {
+          const v = c.p.clone().sub(c.q).multiplyScalar(.982); c.q.copy(c.p); c.p.add(v); c.p.y += G_ * h * h;
+          c.p.x += Math.sin(t * .9 + c.th * 3) * .000035; c.p.z += (c.zo - c.p.z) * .02;
+          if (mIn && drag < 0) { const dx = c.p.x - M.x, dy = c.p.y - M.y, d = Math.hypot(dx, dy); if (d < c.r + .3 && Mv.lengthSq() > .5) { const f = (1 - d / (c.r + .3)); c.p.addScaledVector(Mv, h * .5 * f); c.twv += Mv.x * f * .9; } }
+        });
+        for (let it = 0; it < 4; it++) {
+          // şerit: ip gibi (sadece gerilir)
+          tmp.copy(R).sub(A); let d = tmp.length(); if (d > Ls) R.copy(A).addScaledVector(tmp, Ls / d);
+          charms.forEach((c, i) => {
+            if (drag === i) { c.p.lerp(M, .5); c.p.z = c.zo + .3; }
+            attach(c, tmp); const dv = c.p.clone().sub(tmp), dd = dv.length(), Lc = c.link + c.h * .55;
+            if (dd > Lc) { const k = (dd - Lc) / dd; if (drag === i) R.addScaledVector(dv, k * .6); else { c.p.addScaledVector(dv, -k * .88); R.addScaledVector(dv, k * .12); } }
+          });
+          for (let i = 0; i < charms.length; i++) for (let j = i + 1; j < charms.length; j++) {
+            const a = charms[i], b = charms[j]; const dx = b.p.x - a.p.x, dy = b.p.y - a.p.y, dz = (b.p.z - a.p.z) * .6, d2 = Math.hypot(dx, dy, dz), mn = (a.r + b.r) * .82;
+            if (d2 < mn && d2 > 1e-5) { const k = (mn - d2) / d2 * .5; if (drag !== i) { a.p.x -= dx * k; a.p.y -= dy * k; } if (drag !== j) { b.p.x += dx * k; b.p.y += dy * k; } a.twv -= dx * 3; b.twv += dx * 3; }
+          }
         }
-        vel[a] *= .86; vel[b] *= .86; vel[c] *= .86;
-        pos[a] += vel[a]; pos[b] += vel[b]; pos[c] += vel[c];
-        col[a] += (tc[a] - col[a]) * .05; col[b] += (tc[b] - col[b]) * .05; col[c] += (tc[c] - col[c]) * .05;
       }
-      geo.attributes.position.needsUpdate = true; geo.attributes.color.needsUpdate = true;
-      const ry = (mIn ? mx * .45 : 0) + Math.sin(t * .3) * .18, rx = (mIn ? -my * .25 : 0) + Math.cos(t * .23) * .06;
-      grp.rotation.y += (ry - grp.rotation.y) * .05; grp.rotation.x += (rx - grp.rotation.x) * .05;
+      // görseller
+      const ang = Math.atan2(R.x - A.x, A.y - R.y);
+      ring.position.set(R.x + Math.sin(ang) * RING_R, R.y - Math.cos(ang) * RING_R, 0); ring.rotation.set(0, Math.sin(t * .5) * .25, -ang);
+      clasp.position.copy(R).add(new T.Vector3(-Math.sin(ang) * .2, Math.cos(ang) * .2, 0)); clasp.rotation.z = -ang;
+      const top = new T.Vector3(A.x, A.y, 0), bot = clasp.position.clone().add(new T.Vector3(-Math.sin(ang) * .28, Math.cos(ang) * .28, 0));
+      const sd = top.clone().sub(bot), sl = sd.length(); strap.position.copy(bot).addScaledVector(sd, .5); strap.scale.y = sl; strap.rotation.z = -Math.atan2(sd.x, sd.y); strapT.repeat.y = sl / 4;
+      strapLoop.position.copy(bot); strapLoop.rotation.set(0, Math.PI / 2, -ang);
+      charms.forEach((c, i) => {
+        attach(c, tmp); const dir = c.p.clone().sub(tmp).normalize();
+        c.twv += (-c.tw * 7 + Math.sin(t * 1.3 + i) * .4) * dt; c.twv *= Math.pow(.25, dt); c.tw += c.twv * dt;
+        const hookP = tmp.clone().addScaledVector(dir, c.link); c.g.position.copy(hookP);
+        const qa = new T.Quaternion().setFromUnitVectors(new T.Vector3(0, -1, 0), dir), qt = new T.Quaternion().setFromAxisAngle(new T.Vector3(0, 1, 0), c.tw);
+        c.g.quaternion.copy(qa).multiply(qt);
+        const act = c.mode === cur ? 1 : 0, hv = hov === i || drag === i ? 1 : 0;
+        c.sc += ((1 + act * .1 + hv * .06) - c.sc) * Math.min(1, dt * 8); c.g.scale.setScalar(c.sc);
+        c.glow += (act * .12 - c.glow) * Math.min(1, dt * 5); c.m.emissiveIntensity = c.glow;
+        c.links.forEach((l, k) => { l.position.copy(tmp).addScaledVector(dir, c.link * (k + .5) / 3); l.quaternion.copy(qa); if (k % 2) l.rotateY(Math.PI / 2); });
+      });
       renderer.render(scene, cam);
     })();
   };
@@ -1834,22 +1902,52 @@ $$(".btn").forEach(b => {
   })();
 })();
 
-/* ---------- İmleç etiketi: bazı alanlarda okun yanında küçük ipucu ---------- */
+/* ---------- İmleç: nokta + halka; butona yapışıp şeklini alır, alana göre etikete dönüşür ---------- */
 (() => {
   if (!fine) return;
-  const c = document.createElement("div"); c.className = "cur2"; c.setAttribute("aria-hidden", "true");
-  c.innerHTML = `<span class="cl"></span>`; document.body.appendChild(c);
-  const lab = c.querySelector(".cl");
-  const AUTO = [["#orbStage", "Sürükle"], ["#pkArea", "Fırlat"], ["#gl", "Dağıt"], ["#stGl", "Çevir"]];
-  addEventListener("pointermove", e => { lab.style.transform = `translate3d(${e.clientX + 20}px,${e.clientY + 18}px,0)`; }, { passive: true });
-  document.addEventListener("pointerover", e => {
-    const t = e.target;
-    const hit = t.closest("a,button,input,textarea,select,.chip") ? null : (t.closest("[data-cursor]") || AUTO.map(([sel, w]) => t.closest(sel) && { dataset: { cursor: w } }).find(Boolean));
-    c.classList.toggle("lab", !!hit); if (hit) lab.textContent = hit.dataset.cursor;
-  });
-  document.addEventListener("pointerleave", () => c.classList.remove("lab"));
+  const root = document.createElement("div"); root.className = "cx"; root.setAttribute("aria-hidden", "true");
+  root.innerHTML = `<div class="cx-ring"><span class="cx-lab"><i></i><b></b></span></div><div class="cx-dot"></div>`;
+  document.body.appendChild(root); document.documentElement.classList.add("cx-on");
+  const ring = root.querySelector(".cx-ring"), dot = root.querySelector(".cx-dot"), lab = root.querySelector(".cx-lab b"), ico = root.querySelector(".cx-lab i");
+  const AUTO = [["#orbStage", "Sürükle"], ["#pkArea", "Fırlat"], ["#stGl", "Çevir"]];
+  const ICON = { "Sürükle": "↔", "Fırlat": "↗", "Çevir": "↻", "Kaydır": "↓", "Tut": "✦", "Fırlat ": "↗" };
+  const SNAP = "a,button,[role=button],.chip,label[for],select,summary,.dock-t";
+  let x = -100, y = -100, rx = -100, ry = -100, rw = 30, rh = 30, rr = 15, seen = false, down = false;
+  let snapEl = null, label = null, textMode = false;
+  addEventListener("pointermove", e => {
+    if (e.pointerType !== "mouse") return;
+    x = e.clientX; y = e.clientY; dot.style.transform = `translate3d(${x}px,${y}px,0)`;
+    if (!seen) { seen = true; rx = x; ry = y; root.classList.add("on"); }
+    const t = e.target instanceof Element ? e.target : null; if (!t) return;
+    textMode = !!t.closest("input:not([type=range]):not([type=checkbox]):not([type=radio]),textarea,[contenteditable=true]");
+    const s = textMode ? null : t.closest(SNAP);
+    snapEl = s && s.offsetWidth < 420 && s.offsetHeight < 140 ? s : null;
+    const d = (!snapEl && !textMode) ? (t.closest("[data-cursor]") || null) : null;
+    let l = d ? d.dataset.cursor : null;
+    if (!l && !snapEl && !textMode) { const hit = AUTO.find(([sel]) => t.closest(sel)); if (hit) l = hit[1]; }
+    if (l !== label) { label = l; if (l) { lab.textContent = l; ico.textContent = ICON[l] || "•"; } }
+    root.classList.toggle("snap", !!snapEl); root.classList.toggle("lab", !!label); root.classList.toggle("txt", textMode);
+  }, { passive: true });
+  document.addEventListener("pointerleave", () => root.classList.remove("on"));
+  document.addEventListener("pointerenter", () => { if (seen) root.classList.add("on"); });
+  addEventListener("pointerdown", () => { down = true; root.classList.add("down"); });
+  addEventListener("pointerup", () => { down = false; root.classList.remove("down"); });
+  (function loop() {
+    requestAnimationFrame(loop); if (!seen) return;
+    let tx = x, ty = y, tw = 30, th = 30, tr = 15;
+    if (snapEl && document.contains(snapEl)) {
+      const r = snapEl.getBoundingClientRect(), cs = getComputedStyle(snapEl), br = parseFloat(cs.borderTopLeftRadius) || 8;
+      tw = r.width + 12; th = r.height + 12; tr = Math.min(th / 2, br + 6);
+      tx = r.left + r.width / 2 + (x - (r.left + r.width / 2)) * .12; ty = r.top + r.height / 2 + (y - (r.top + r.height / 2)) * .12;
+    } else if (label) { tw = lab.parentNode.offsetWidth + 2; th = 34; tr = 17; tx = x + tw / 2 + 14; ty = y + 22; }
+    const k = snapEl ? .3 : .26;
+    rx += (tx - rx) * k; ry += (ty - ry) * k; rw += (tw - rw) * .28; rh += (th - rh) * .28; rr += (tr - rr) * .28;
+    const sc = down ? .86 : 1;
+    ring.style.transform = `translate3d(${(rx - rw / 2).toFixed(1)}px,${(ry - rh / 2).toFixed(1)}px,0) scale(${sc})`;
+    ring.style.width = rw.toFixed(1) + "px"; ring.style.height = rh.toFixed(1) + "px"; ring.style.borderRadius = rr.toFixed(1) + "px";
+  })();
   $$(".btn").forEach(b => {
-    b.addEventListener("pointermove", e => { const r = b.getBoundingClientRect(); b.style.translate = `${(e.clientX - r.left - r.width / 2) * .12}px ${(e.clientY - r.top - r.height / 2) * .18}px`; });
+    b.addEventListener("pointermove", e => { const r = b.getBoundingClientRect(); b.style.translate = `${(e.clientX - r.left - r.width / 2) * .14}px ${(e.clientY - r.top - r.height / 2) * .2}px`; });
     b.addEventListener("pointerleave", () => { b.style.translate = ""; });
   });
 })();
