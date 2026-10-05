@@ -682,30 +682,70 @@ a:hover .roll > span,button:hover .roll > span,a:focus-visible .roll > span{tran
   .sb-name{flex:1 1 100%}
 }
 
-/* ---------- İşler: derinlikte kartlar ---------- */
-.works-stage{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-.wcard{
-  background:var(--board);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;min-width:0;
-}
-.wcard .vis{aspect-ratio:16/9;position:relative;background:var(--v)}
-.wcard .vis .mono{position:absolute;left:12px;top:12px;background:rgba(255,255,255,.88);color:#101217;padding:2px 7px;border-radius:5px;font-size:10.5px}
+/* ---------- Sektörler: koridorda kartlar, öne gelen kart vakaya açılır ---------- */
+.works-stage{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.wcard{background:var(--board);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;min-width:0;position:relative}
+.wcard .vis{aspect-ratio:16/10;position:relative;background:var(--chip) var(--img) center/cover no-repeat}
+.wcard .vis .mono{position:absolute;left:12px;top:12px;background:rgba(255,255,255,.9);color:#101217;padding:3px 8px;border-radius:6px;font-size:10.5px}
 .wcard .bd{padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px}
-.wcard h3{font-size:30px; 85;line-height:1}
+.wcard h3{font-size:28px;line-height:1.05}
 .wcard ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
 .wcard li{font-size:13px;background:var(--chip);border-radius:999px;padding:3px 10px;color:var(--ink-2)}
-.wcard.you{border:1.5px dashed var(--ink-3);background:transparent}
-.wcard.you .vis{background:repeating-linear-gradient(45deg,transparent 0 10px,color-mix(in srgb,var(--ink-3) 18%,transparent) 10px 11px)}
+.wcard.you{border:1.5px dashed var(--ink-3)}
+.wcard.you .vis{display:none}
+
+/* vaka sahnesi */
+.scene{position:absolute;inset:0;z-index:2;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:0;background:var(--board);opacity:0;pointer-events:none}
+.scene .sv{position:relative;overflow:hidden;background:#0B0C10}
+.scene .sv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;will-change:opacity,transform}
+.scene .sv .cnt{position:absolute;left:18px;bottom:16px;z-index:2;font-family:var(--f-mono);font-size:11px;color:#fff;background:rgba(11,12,16,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:5px 10px;border-radius:999px}
+.scene .sv .dots{position:absolute;right:18px;bottom:20px;z-index:2;display:flex;gap:5px}
+.scene .sv .dots i{width:22px;height:3px;border-radius:2px;background:rgba(255,255,255,.35);overflow:hidden;position:relative}
+.scene .sv .dots i b{position:absolute;inset:0;background:#fff;transform-origin:left;transform:scaleX(0)}
+.scene .sx{display:flex;flex-direction:column;justify-content:space-between;gap:20px;padding:clamp(22px,3vw,40px);min-width:0}
+.scene .sx .lab{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.scene .sx .lab i{width:10px;height:10px;border-radius:3px;background:var(--sc)}
+.scene .sx h3{font-size:clamp(32px,3.6vw,56px);line-height:1;letter-spacing:-.045em;margin-top:14px}
+.scene .sx ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.scene .sx ol li{display:flex;align-items:baseline;gap:14px;padding:11px 0;border-top:1px solid var(--line);font-size:16px;background:none;border-radius:0;color:var(--ink);opacity:.25;transform:translateX(-8px);transition:opacity .4s,transform .5s cubic-bezier(.2,.8,.2,1)}
+.scene .sx ol li span{font-family:var(--f-mono);font-size:11px;color:var(--ink-3);min-width:22px}
+.scene .sx ol li.on{opacity:1;transform:none}
+.scene .sx .ft{font-size:13.5px;color:var(--ink-2)}
+
 .works.is-3d .works-pin{height:100vh;overflow:hidden;display:flex;flex-direction:column}
-.works.is-3d .works-head{padding-top:110px}
-.works.is-3d .works-stage{flex:1;position:relative;display:block;perspective:1100px;perspective-origin:50% 40%}
-.works.is-3d .wcard{position:absolute;left:50%;top:44%;width:min(420px,40vw);margin-left:calc(min(420px,40vw) / -2);transform-style:preserve-3d;will-change:transform,opacity;box-shadow:var(--shadow)}
-.works.is-3d .wcard{translate:0 -50%}
+.works.is-3d .works-head{padding-top:96px}
+.works.is-3d .works-pin > .wrap{width:100%}
+.works.is-3d .works-stage{flex:1;position:relative;display:block;perspective:1200px;perspective-origin:50% 45%}
+.works.is-3d .wcard{position:absolute;left:50%;top:50%;width:400px;transform-style:preserve-3d;will-change:transform,opacity,width,height;box-shadow:var(--shadow)}
 .works-count{font-family:var(--f-mono);font-size:12px;color:var(--ink-2)}
 .wprog{display:none}
-.works.is-3d .wprog{display:flex;width:100%;justify-content:space-between;gap:16px;padding-block:18px 26px;font-family:var(--f-mono);font-size:12px;color:var(--ink-2)}
+.works.is-3d .wprog{display:flex;width:100%;justify-content:space-between;gap:16px;padding-block:16px 22px;padding-left:150px;font-family:var(--f-mono);font-size:12px;color:var(--ink-2)}
 .wprog b{font-weight:500;color:var(--ink)}
 .wbar{flex:1;min-width:80px;height:2px;background:var(--line);align-self:center;position:relative}
 .wbar i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);width:0}
+
+/* sizin sektörünüz */
+.ys{justify-content:center;gap:14px}
+.ys h3{font-size:clamp(28px,3vw,48px)}
+.ys-p{color:var(--ink-2);max-width:46ch}
+.ys-f{display:flex;gap:8px;max-width:560px}
+.ys-f input{flex:1;min-width:0;background:var(--canvas);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:16px}
+.ys-f input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.ys-q{display:flex;flex-wrap:wrap;gap:6px}
+.ys-q button{border:1px solid var(--line);background:var(--board);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;color:var(--ink-2)}
+.ys-q button:hover{color:var(--ink);border-color:var(--ink-3)}
+.ys-out{display:flex;flex-direction:column;gap:12px}
+.ys-out:empty{display:none}
+.ys-out b{font-size:15px}
+.ys-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ys-chips span{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--ink);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;background:var(--board);animation:ys-in .5s cubic-bezier(.2,1.3,.4,1) both;animation-delay:calc(var(--i) * 70ms)}
+.ys-chips span i{width:9px;height:9px;border-radius:50%;background:var(--c)}
+@keyframes ys-in{from{opacity:0;transform:translateY(12px) scale(.9)}to{opacity:1;transform:none}}
+.ys-act{display:flex;flex-wrap:wrap;gap:8px}
+.works.is-3d .wcard.you .bd{position:absolute;inset:0;padding:clamp(24px,4vw,56px);overflow:auto}
+
+@media (max-width:760px){.scene{display:none}}
+@media (prefers-reduced-motion: reduce){.ys-chips span{animation:none}}
 
 /* ---------- Süreç ---------- */
 .steps{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;padding-top:44px}
@@ -1077,38 +1117,49 @@ footer{padding-block:28px 48px}
     <div class="wrap works-head sec" style="padding-bottom:28px">
       <div class="sec-head" style="margin-bottom:0">
         <h2>Hangi sektör olursa</h2>
-        <p>Müşterilerimizin adını vermiyoruz, yaptığımız işi gösteriyoruz. Her kart bir sektör ve o sektörde üstlendiğimiz işler. <span class="works-count" id="wcount"></span></p>
+        <p>Müşterilerimizin adını vermiyoruz, yaptığımız işi gösteriyoruz. Kaydırdıkça her sektörün kartı açılır ve o işin içinden kareler görürsünüz. En sonda sıra sizin sektörünüzde.</p>
       </div>
     </div>
     <div class="wrap" style="flex:1;display:flex;flex-direction:column;min-height:0">
       <div class="works-stage" id="stage">
-        <article class="wcard" style="--v:radial-gradient(80% 120% at 20% 20%,color-mix(in srgb,var(--c-tasarim) 85%,var(--board)),transparent 70%),radial-gradient(60% 80% at 90% 90%,color-mix(in srgb,var(--c-kod) 75%,var(--board)),var(--board))">
+        <article class="wcard" data-imgs="s-a1,s-a2,s-a3,s-a4" data-c="var(--c-tasarim)">
           <div class="vis"><span class="mono">Sağlık ve danışmanlık</span></div>
           <div class="bd"><h3>Bir danışmanlık merkezi</h3><ul><li>Hikâye anlatan scroll sitesi</li><li>Uzman profil sistemi</li><li>Sosyal medya serisi</li><li>Tanıtım filmi</li><li>Pazarlama ve SEO denetimi</li></ul></div>
         </article>
-        <article class="wcard" style="--v:radial-gradient(90% 120% at 80% 10%,color-mix(in srgb,var(--c-video) 85%,var(--board)),transparent 70%),radial-gradient(70% 90% at 10% 90%,color-mix(in srgb,var(--c-reklam) 75%,var(--board)),var(--board))">
+        <article class="wcard" data-imgs="s-b1,s-b2,s-b3,s-b4" data-c="var(--c-video)">
           <div class="vis"><span class="mono">Kozmetik</span></div>
           <div class="bd"><h3>Bir cilt bakımı markası</h3><ul><li>Web stratejisi ve yeni site planı</li><li>Ürün sunumu</li><li>Yapay zekâ ile ürün videoları</li><li>Aylık içerik takvimi</li><li>Instagram önizleme</li></ul></div>
         </article>
-        <article class="wcard" style="--v:radial-gradient(90% 120% at 50% 0%,color-mix(in srgb,var(--c-reklam) 90%,var(--board)),transparent 70%),linear-gradient(160deg,var(--board),color-mix(in srgb,var(--ink) 18%,var(--board)))">
+        <article class="wcard" data-imgs="s-c1,s-c2,s-c3" data-c="var(--c-reklam)">
           <div class="vis"><span class="mono">Otomotiv</span></div>
           <div class="bd"><h3>Bir ekspertiz firması</h3><ul><li>Aylık post seti</li><li>Video planı</li><li>Yerel içerik takvimi</li></ul></div>
         </article>
-        <article class="wcard" style="--v:repeating-linear-gradient(90deg,color-mix(in srgb,var(--c-kod) 30%,var(--board)) 0 2px,transparent 2px 22px),radial-gradient(80% 100% at 30% 30%,color-mix(in srgb,var(--c-kod) 70%,var(--board)),var(--board))">
+        <article class="wcard" data-imgs="s-d1,s-d2,s-d3,s-d4" data-c="var(--c-kod)">
           <div class="vis"><span class="mono">Teknoloji</span></div>
           <div class="bd"><h3>Bir teknoloji şirketi</h3><ul><li>Kurumsal katalog</li><li>Web sitesi</li></ul></div>
         </article>
-        <article class="wcard" style="--v:radial-gradient(70% 90% at 70% 40%,color-mix(in srgb,var(--c-otomasyon) 85%,var(--board)),transparent 70%),radial-gradient(60% 80% at 10% 80%,color-mix(in srgb,var(--c-tasarim) 65%,var(--board)),var(--board))">
+        <article class="wcard" data-imgs="s-e1,s-e2,s-e3" data-c="var(--c-otomasyon)">
           <div class="vis"><span class="mono">Dernek</span></div>
           <div class="bd"><h3>Bir üye derneği</h3><ul><li>Mobil uygulama</li><li>Web uygulaması</li><li>Üye ağı</li></ul></div>
         </article>
-        <article class="wcard" style="--v:conic-gradient(from 200deg at 60% 60%,color-mix(in srgb,var(--c-tasarim) 70%,var(--board)),color-mix(in srgb,var(--c-video) 65%,var(--board)),color-mix(in srgb,var(--c-reklam) 65%,var(--board)),color-mix(in srgb,var(--c-tasarim) 70%,var(--board)))">
+        <article class="wcard" data-imgs="s-f1,s-f2,s-f3" data-c="var(--ink)">
           <div class="vis"><span class="mono">Girişim</span></div>
           <div class="bd"><h3>Yeni kurulan bir girişim</h3><ul><li>Marka brief'i</li><li>Konumlandırma</li></ul></div>
         </article>
         <article class="wcard you">
           <div class="vis"><span class="mono">Sizin sektörünüz</span></div>
-          <div class="bd"><h3>Buraya sizin işiniz gelecek</h3><p style="color:var(--ink-2)">Sektör fark etmez. Anlatın, başlayalım.</p><a class="btn" href="#iletisim" style="align-self:flex-start">Konuşalım</a></div>
+          <div class="bd ys">
+            <h3>Sıra sizin sektörünüzde.</h3>
+            <p class="ys-p">Ne iş yaptığınızı yazın, sizin için ilk adımları çıkaralım.</p>
+            <form class="ys-f" id="ysForm" autocomplete="off">
+              <label for="ysIn" class="sr">Sektörünüz</label>
+              <input id="ysIn" type="text" placeholder="Örn. diş kliniği, pastane, butik…" maxlength="40">
+              <button class="btn" type="submit">Göster</button>
+            </form>
+            <div class="ys-q" id="ysQ"><button type="button">Diş kliniği</button><button type="button">Pastane</button><button type="button">Butik</button><button type="button">Oto galeri</button><button type="button">Emlak</button><button type="button">Kurs</button></div>
+            <div class="ys-out" id="ysOut" aria-live="polite"></div>
+            <div class="ys-act" id="ysAct" hidden><button class="btn ghost" type="button" id="ysAdd">Paketime ekle</button><a class="btn accent" href="#iletisim" id="ysSend">Bu işlerle yazın</a></div>
+          </div>
         </article>
       </div>
       <div class="wprog" aria-hidden="true"><span id="wNow"><b>1 / 7</b> · Sağlık ve danışmanlık</span><span class="wbar"><i id="wBar"></i></span><span>Kaydırın</span></div>
@@ -1873,12 +1924,12 @@ $$(".btn").forEach(b => {
 
 /* ---------- Paketini kur ---------- */
 const CATS = {
-  marka: { ad: "Marka", c: "--c-tasarim", k: ["logo", "kimlik", "marka", "ambalaj", "etiket", "katalog", "kartvizit", "broşür", "brosur", "afiş", "afis", "baskı", "baski", "tabela", "menü", "menu", "isim", "font", "renk", "kurumsal"] },
-  dijital: { ad: "Dijital ürün", c: "--c-kod", k: ["site", "web", "e-ticaret", "eticaret", "e ticaret", "uygulama", "app", "mobil", "panel", "shopify", "wordpress", "landing", "sayfa", "ios", "android", "oyun"] },
+  marka: { ad: "Marka", c: "--c-tasarim", k: ["logo", "kimlik", "marka", "ambalaj", "etiket", "katalog", "kartvizit", "broşür", "brosur", "afiş", "afis", "baskı", "baski", "tabela", "menü", "menu", "isim", "font", "renk"] },
+  dijital: { ad: "Dijital ürün", c: "--c-kod", k: ["site", "web", "e-ticaret", "eticaret", "e ticaret", "uygulama", "mobil", "panel", "shopify", "wordpress", "landing", "sayfa", "ios", "android", "oyun"] },
   icerik: { ad: "İçerik ve prodüksiyon", c: "--c-video", k: ["video", "reels", "post", "içerik", "icerik", "sosyal", "instagram", "tiktok", "youtube", "film", "fotoğraf", "fotograf", "çekim", "cekim", "metin", "blog", "podcast", "animasyon", "görsel", "gorsel", "story", "linkedin", "müzik", "muzik", "seslendirme"] },
   buyume: { ad: "Büyüme", c: "--c-reklam", k: ["seo", "reklam", "ads", "google", "meta", "analiz", "rapor", "büyüme", "buyume", "kampanya", "influencer", "pazarlama", "e-posta", "eposta", "mail", "bülten", "bulten", "harita"] },
   strateji: { ad: "Strateji ve sunum", c: "--c-strateji", k: ["sunum", "strateji", "araştırma", "arastirma", "yatırım", "yatirim", "hibe", "tübitak", "tubitak", "iş planı", "is plani", "eğitim", "egitim", "danışmanlık", "danismanlik", "fuar", "etkinlik", "lansman"] },
-  otomasyon: { ad: "Otomasyon ve teknoloji", c: "--c-otomasyon", k: ["otomasyon", "bot", "crm", "entegrasyon", "n8n", "yazılım", "yazilim", "veri", "dashboard", "pano", "randevu", "form", "yapay", "ai", "erp", "excel", "api", "sistem"] }
+  otomasyon: { ad: "Otomasyon ve teknoloji", c: "--c-otomasyon", k: ["whatsapp", "otomasyon", "bot", "crm", "entegrasyon", "n8n", "yazılım", "yazilim", "veri", "dashboard", "pano", "randevu", "form", "yapay", "ai", "erp", "excel", "api", "sistem"] }
 };
 const STARTERS = [
   ["Logo", "marka"], ["Marka kimliği", "marka"], ["Ambalaj", "marka"],
@@ -2291,37 +2342,104 @@ $("#sendPk").addEventListener("click", () => {
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => update(false));
 })();
 
-/* ---------- İşler: derinlikte kartlar ---------- */
+/* ---------- Sektörler: koridor + vakaya açılan kart + sizin sektörünüz ---------- */
 (() => {
-  const sec = $("#isler"), stage = $("#stage"), cards = $$(".wcard", stage);
-  $("#wcount").textContent = `${cards.length - 1} sektör, açık bir kart.`;
+  const sec = $("#isler"), stage = $("#stage"); if (!sec) return;
+  const cards = $$(".wcard", stage), N = cards.length;
+  // kart görselleri ve vaka sahneleri
+  cards.forEach(c => {
+    const imgs = (c.dataset.imgs || "").split(",").filter(Boolean);
+    if (!imgs.length) return;
+    c.querySelector(".vis").style.setProperty("--img", `url(work/${imgs[0]}.jpg)`);
+    const lab = c.querySelector(".vis .mono").textContent, h = c.querySelector("h3").textContent;
+    const li = $$("li", c).map(x => x.textContent);
+    const sc = document.createElement("div"); sc.className = "scene"; sc.setAttribute("aria-hidden", "true");
+    sc.style.setProperty("--sc", c.dataset.c || "var(--accent)");
+    sc.innerHTML = `<div class="sv">${imgs.map(s => `<img src="work/${s}.jpg" alt="" loading="lazy" decoding="async">`).join("")}<span class="cnt">1 / ${imgs.length}</span><span class="dots">${imgs.map(() => "<i><b></b></i>").join("")}</span></div>
+      <div class="sx"><div><div class="lab"><i></i>${lab}</div><h3>${h}</h3></div><ol>${li.map((x, k) => `<li><span>${String(k + 1).padStart(2, "0")}</span>${x}</li>`).join("")}</ol><div class="ft">Müşteri adı gizli · ${imgs.length} kare</div></div>`;
+    c.appendChild(sc);
+    c._sc = { el: sc, imgs: $$("img", sc), dots: $$(".dots b", sc), cnt: $(".cnt", sc), li: $$("ol li", sc), last: -1 };
+  });
+
+  /* sizin sektörünüz */
+  const SECT = [
+    [/diş|klinik|doktor|hekim|hastane|sağlık|saglik|psikolog|terapi|fizyo|diyet|veteriner|eczane|estetik/, ["Kurumsal site", "Randevu sistemi", "Google İşletme Profili", "Sosyal medya", "Tanıtım filmi", "WhatsApp asistanı"]],
+    [/kafe|cafe|kahve|restoran|lokanta|pastane|fırın|firin|tatlı|tatli|yemek|bar|burger|pizza|döner/, ["Logo", "Menü tasarımı", "Reels seti", "Google İşletme Profili", "Sipariş için WhatsApp asistanı", "Ambalaj"]],
+    [/kozmetik|güzellik|guzellik|kuaför|kuafor|berber|salon|spa|nail|cilt|parfüm/, ["Marka kimliği", "Ambalaj", "Yapay zekâ ile ürün görseli", "Reels seti", "E-ticaret", "Meta reklamları"]],
+    [/butik|giyim|moda|mağaza|magaza|ayakkabı|takı|taki|aksesuar|e-ticaret|eticaret|online/, ["E-ticaret", "Yapay zekâ ile ürün görseli", "Instagram serisi", "Meta reklamları", "Google Ads", "Kargo takip asistanı"]],
+    [/oto|galeri|araç|arac|ekspertiz|servis|lastik|kiralama/, ["Web sitesi", "Google İşletme Profili", "Reels seti", "Google Ads", "Randevu sistemi", "WhatsApp asistanı"]],
+    [/emlak|gayrimenkul|inşaat|insaat|mimar|iç mimar|dekor|mobilya|proje/, ["Kurumsal site", "Proje sunumu", "Drone çekimi", "Tanıtım filmi", "Meta reklamları", "CRM entegrasyonu"]],
+    [/kurs|eğitim|egitim|okul|dershane|akademi|koç|koc|öğretmen|ogretmen|dil/, ["Web sitesi", "Kayıt formu", "Eğitim videosu", "Sosyal medya", "Google Ads", "WhatsApp asistanı"]],
+    [/yazılım|yazilim|teknoloji|saas|girişim|girisim|startup|uygulama|ajans/, ["Marka kimliği", "Landing sayfası", "Yatırımcı sunumu", "Ürün videosu", "SEO", "İş akışı otomasyonu"]],
+    [/dernek|vakıf|vakif|sivil|federasyon|oda|birlik/, ["Web sitesi", "Üye uygulaması", "Bülten", "Etkinlik tanıtımı", "Proje ve hibe dosyası", "Sosyal medya"]],
+    [/avukat|hukuk|muhasebe|mali|danışman|danisman|sigorta|finans/, ["Kurumsal site", "Marka kimliği", "LinkedIn içerikleri", "SEO", "Randevu sistemi", "Kurumsal sunum"]]
+  ];
+  const DEF = ["Marka kimliği", "Web sitesi", "Sosyal medya", "Google İşletme Profili", "Reklam yönetimi", "WhatsApp asistanı"];
+  let picked = [];
+  const out = $("#ysOut"), act = $("#ysAct");
+  function show(q) {
+    q = q.trim(); if (!q) return;
+    const t = q.toLocaleLowerCase("tr"); const hit = SECT.find(([re]) => re.test(t));
+    picked = hit ? hit[1] : DEF;
+    const col = n => { const k = typeof catOf === "function" ? catOf(n) : "ozel"; return k === "ozel" || !CATS[k] ? "var(--ink-3)" : `var(${CATS[k].c})`; };
+    const name = q.length > 28 ? q.slice(0, 28) + "…" : q;
+    out.innerHTML = `<b>${name.replace(/[<&>]/g, "")} için ilk adımlar</b><div class="ys-chips">${picked.map((p, i) => `<span style="--i:${i};--c:${col(p)}"><i></i>${p}</span>`).join("")}</div>`;
+    act.hidden = false;
+  }
+  $("#ysForm").addEventListener("submit", e => { e.preventDefault(); show($("#ysIn").value); });
+  $$("#ysQ button").forEach(b => b.addEventListener("click", () => { $("#ysIn").value = b.textContent; show(b.textContent); }));
+  $("#ysAdd").addEventListener("click", () => {
+    picked.forEach(n => { const it = items.find(i => i.name.toLocaleLowerCase("tr") === n.toLocaleLowerCase("tr")); if (it) { if (!it.inPk) toggle(it); } else addItem(n); });
+    $("#ysAdd").textContent = "Pakete eklendi ✓";
+  });
+  $("#ysSend").addEventListener("click", () => { if (picked.length) $("#cMsg").value = `Sektörüm: ${$("#ysIn").value.trim()}. İlgilendiğim işler: ${picked.join(", ")}.`; });
+
   if (!motion || innerWidth < 760) return;
   sec.classList.add("is-3d");
-  const D = 760, N = cards.length;
-  const xs = cards.map((_, i) => (i % 2 ? 1 : -1) * Math.min(innerWidth * .2, 300) * (i === N - 1 ? 0 : 1));
+
+  /* koridor */
+  const D = 900, BW = 400;
+  cards.forEach(c => { c.style.width = BW + "px"; c._h = c.classList.contains("you") ? 300 : c.offsetHeight; c.style.height = c._h + "px"; });
+  const xs = cards.map((_, i) => (i % 2 ? 1 : -1) * Math.min(innerWidth * .2, 300));
   const ys = cards.map((_, i) => [0, -30, 20, -10, 30, -20, 0][i % 7]);
-  function place(p) {
-    const cam = p * (N - 1) * D;
-    cards.forEach((c, i) => {
-      const z = cam - i * D;
-      let o = 1;
-      if (z > 120) o = Math.max(0, 1 - (z - 120) / 380);
-      else if (z < -3 * D) o = 0; else if (z < -D) o = .35 + .65 * (1 + (z + D) / (2 * D));
-      c.style.transform = `translate3d(${xs[i]}px,${ys[i]}px,${z}px)`;
-      c.style.opacity = o.toFixed(3);
-      c.style.pointerEvents = o > .6 ? "auto" : "none";
-      c.style.zIndex = String(1000 + Math.round(z));
-    });
-  }
+  const sm = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
+  let SW = 1, SH = 1; const meas = () => { SW = stage.clientWidth; SH = stage.clientHeight; }; meas(); addEventListener("resize", meas);
   const labels = cards.map(c => c.querySelector(".vis .mono").textContent);
   let lastI = -1;
-  function prog(p) {
-    const i = Math.min(N - 1, Math.round(p * (N - 1)));
+  function place(p) {
+    const u = Math.min(N - 1, p * (N - .55) - .55);
+    cards.forEach((c, i) => {
+      const t = u - i, last = i === N - 1;
+      const eIn = sm((t + .42) / .22), eOut = last ? 0 : sm((t - .2) / .22), e = eIn * (1 - eOut);
+      let z = t < -.2 ? (t + .2) * D * 1.25 : (t > .2 && !last) ? (t - .2) * D * 1.7 : 0;
+      let o = 1;
+      if (z > 0) o = Math.max(0, 1 - z / 420);
+      else if (z < -3 * D) o = 0; else if (z < -D) o = .3 + .7 * (1 + (z + D) / (2 * D));
+      const x = xs[i] * Math.max(0, Math.min(1, -t * 1.2)) * (1 - e), y = ys[i] * (1 - e);
+      const w = BW + (SW - BW) * e, h = c._h + (SH - c._h) * e;
+      c.style.width = w + "px"; c.style.height = h + "px";
+      c.style.transform = `translate3d(${x - w / 2}px,${y - h / 2}px,${z}px)`;
+      c.style.opacity = o.toFixed(3);
+      c.style.zIndex = String(1000 + Math.round(z) + (e > .01 ? 500 : 0));
+      c.style.pointerEvents = (e > .9 || (o > .6 && z > -200)) ? "auto" : "none";
+      c.style.borderRadius = (20 + e * 8) + "px";
+      const S = c._sc; if (!S) return;
+      S.el.style.opacity = sm((e - .35) / .5).toFixed(3);
+      if (e > .02) {
+        const n = S.imgs.length, s = Math.max(0, Math.min(1, (t + .2) / .4)) * (n - .001), cur = Math.floor(s);
+        S.imgs.forEach((im, j) => { const d = s - j; im.style.opacity = (j === 0 ? 1 : Math.max(0, Math.min(1, (d + .2) * 4))).toFixed(3); im.style.transform = `scale(${(1.1 - Math.max(0, Math.min(1, d + .2)) * .1).toFixed(4)})`; });
+        S.dots.forEach((b, j) => b.style.transform = `scaleX(${Math.max(0, Math.min(1, s - j)).toFixed(3)})`);
+        if (cur !== S.last) { S.last = cur; S.cnt.textContent = `${cur + 1} / ${n}`; }
+        const lp = Math.max(0, Math.min(1, (t + .25) / .35));
+        S.li.forEach((l, j) => l.classList.toggle("on", lp * S.li.length > j));
+      }
+    });
+    const ci = Math.max(0, Math.min(N - 1, Math.round(u)));
     $("#wBar").style.width = (p * 100).toFixed(1) + "%";
-    if (i !== lastI) { lastI = i; $("#wNow").innerHTML = `<b>${i + 1} / ${N}</b> · ${labels[i]}`; }
+    if (ci !== lastI) { lastI = ci; $("#wNow").innerHTML = `<b>${ci + 1} / ${N}</b> · ${labels[ci]}`; }
   }
-  place(0); prog(0);
-  ST.create({ trigger: sec, pin: ".works-pin", start: "top top", end: () => `+=${(N - 1) * 55}%`, scrub: .6, onUpdate: s => { place(s.progress); prog(s.progress); }, invalidateOnRefresh: true });
+  place(0);
+  ST.create({ trigger: sec, pin: ".works-pin", start: "top top", end: () => `+=${N * 95}%`, scrub: .6, onUpdate: s => place(s.progress), onRefresh: () => { meas(); }, invalidateOnRefresh: true });
 })();
 
 /* ---------- Süreç çizgisi ---------- */
