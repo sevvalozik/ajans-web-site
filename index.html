@@ -1425,7 +1425,7 @@ input,textarea,[contenteditable=true]{cursor:text}
       <div class="sy-head">
         <span class="sy-eb">Sektörler</span>
         <h2>Hangi sektör <em>olursa</em></h2>
-        <p>Her sektörden bir deneyim küresi. Kaydırın, borudan sırayla düşsünler.</p>
+        <p>Her sektörden bir deneyim küresi. Kaydırın, borunun ağzına gelen küre açılsın ve düşsün.</p>
       </div>
       <div class="sy-prog" aria-hidden="true"><span id="tCount">0 / 5 sektör</span><span class="tbar"><i id="tBar"></i></span></div>
       <div class="sy-end" id="tEnd">
@@ -2997,115 +2997,116 @@ $("#sendPk").addEventListener("click", () => {
     gr.addColorStop(0, "rgba(255,255,255,0)"); gr.addColorStop(.45, "rgba(255,255,255,0)"); gr.addColorStop(.5, "rgba(255,255,255,1)"); gr.addColorStop(.62, "rgba(255,255,255,0)"); gr.addColorStop(1, "rgba(255,255,255,0)"); g.fillStyle = gr; g.fillRect(0, 0, 256, 8);
     const t = new T.CanvasTexture(c); t.wrapS = T.RepeatWrapping; return t; })();
   const flowM = new T.MeshBasicMaterial({ color: "#C8B6FF", map: flowTex, transparent: true, opacity: .9, depthWrite: false });
-  const shelfM = new T.MeshStandardMaterial({ color: "#E9E1FF", roughness: .25, metalness: .1, transparent: true, opacity: .85 });
   let tube = null, flow = null, rims = [], shelf = null, shelfEdge = null, curve = null, Lt = 1, R = .5, BR = .4, slots = [], exitP = new T.Vector3(), shelfY = 0, cups = [];
   const shadowTex = (() => { const c = document.createElement("canvas"); c.width = c.height = 64; const g = c.getContext("2d"); const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, "rgba(60,40,110,.35)"); gr.addColorStop(1, "rgba(60,40,110,0)"); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); return new T.CanvasTexture(c); })();
 
   const balls = [];
   function makeBall(d, i, extra) {
     const u = { uTime: { value: 0 }, uType: { value: d.type }, uGlow: { value: 0 }, uA: { value: new T.Color(d.a) }, uB: { value: new T.Color(d.b) } };
-    const m = new T.Mesh(new T.SphereGeometry(1, 48, 32), new T.ShaderMaterial({ uniforms: u, vertexShader: VS, fragmentShader: FS })); root.add(m);
-    const sh = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false, opacity: 0 })); root.add(sh);
+    const m = new T.Mesh(new T.SphereGeometry(1, 48, 32), new T.ShaderMaterial({ uniforms: u, vertexShader: VS, fragmentShader: FS })); m.renderOrder = 1; root.add(m);
     const pop = document.createElement("div"); pop.className = "mx-pop"; pop.style.setProperty("--c", d.a);
     pop.innerHTML = `<b>${d.ad.replace(/[<&>]/g, "")}</b><span>${d.biz.slice(0, 3).map(x => `<em>${x}</em>`).join("")}</span>`; panel.appendChild(pop);
-    const lab = document.createElement("span"); lab.className = "mx-lab"; lab.textContent = d.ad; panel.appendChild(lab);
-    const b = { d, i, m, u, sh, pop, lab, extra: !!extra, s: 0, landed: false, roll: 0, pos: new T.Vector3(), prev: new T.Vector3(), t0: 0 };
+    const b = { d, i, m, u, pop, extra: !!extra, roll: 0, pos: new T.Vector3(), prev: new T.Vector3(), t0: 0, show: 0 };
     balls.push(b); return b;
   }
   SEC.forEach((d, i) => makeBall(d, i));
 
-  let W = 1, H = 1, narrow = false;
+  let W = 1, H = 1, narrow = false, vh = 8, vw = 14, SPC = .6;
+  // yılan gibi kıvrılan boru: yukarıdan girer, sağa sola dönerek iner, ağzı altta
+  function snake(x0, x1, yTop, yBot, rows) {
+    // düz koşular + yarım daire dönüşler: kıvrımlar yumuşak ve düzenli
+    const dy = (yTop - yBot) / rows, rr = dy / 2, pts = [], step = .14;
+    const add = (x, y) => pts.push(new T.Vector3(x, y, 0));
+    const xa = x0 + rr, xb = x1 - rr;
+    for (let k = 0; k <= 8; k++) add(xb, yTop + vh * .35 - k * vh * .35 / 8);         // tepeden giriş
+    // girişten ilk koşuya çeyrek dönüş
+    for (let k = 1; k <= 8; k++) { const a = k / 8 * Math.PI / 2; add(xb - rr + Math.cos(a) * rr - 0, yTop - Math.sin(a) * rr + rr * 0); }
+    let y = yTop - rr, x = xb - rr, dir = -1;
+    for (let r = 0; r < rows; r++) {
+      const xe = dir < 0 ? xa : xb, sl = dy * .12, n = Math.max(2, Math.ceil(Math.abs(xe - x) / step));
+      for (let k = 1; k <= n; k++) add(x + (xe - x) * k / n, y - sl * k / n);
+      x = xe; y -= sl;
+      if (r === rows - 1) break;
+      const cx = x, cy = y - rr; // yarım daire: aşağı döner
+      for (let k = 1; k <= 14; k++) { const a = k / 14 * Math.PI; add(cx + dir * Math.sin(a) * rr, cy + Math.cos(a) * rr); }
+      y = cy - rr; dir *= -1;
+    }
+    // son koşudan aşağı: ağız
+    for (let k = 1; k <= 8; k++) { const a = k / 8 * Math.PI / 2; add(x + dir * Math.sin(a) * rr * .9, y - (1 - Math.cos(a)) * rr * .9); }
+    const lx = pts[pts.length - 1].x, ly = pts[pts.length - 1].y; for (let k = 1; k <= 4; k++) add(lx, ly - k * rr * .25);
+    return pts;
+  }
   function layout() {
     W = panel.clientWidth; H = panel.clientHeight; narrow = W < 760;
     renderer.setSize(W, H, false); cam.aspect = W / H; cam.fov = narrow ? 50 : 35; cam.updateProjectionMatrix();
-    const vh = 2 * cam.position.z * Math.tan(cam.fov * Math.PI / 360), vw = vh * cam.aspect;
-    R = narrow ? .32 : .36; BR = R * .8;
-    // kıvrımlı yol: tepeden girer, S çizerek iner, rafın başında biter
-    const P = narrow
-      ? [[.62, .3], [.32, .29], [.02, .24], [-.3, .16], [-.14, .05], [.28, .0], [.22, -.09], [-.22, -.12], [-.36, -.2]]
-      : [[.36, .62], [.36, .4], [.28, .3], [.12, .32], [.03, .2], [.08, .09], [.28, .06], [.33, -.04], [.22, -.12], [-.02, -.12], [-.1, -.22]];
-    const pts = P.map(([x, y]) => new T.Vector3(x * vw, y * vh, 0));
-    curve = new T.CatmullRomCurve3(pts, false, "catmullrom", .45); Lt = curve.getLength();
-    [tube, flow, shelf, shelfEdge, ...rims, ...cups].forEach(o => { if (o) { root.remove(o); o.geometry.dispose(); } }); rims = []; cups = [];
-    tube = new T.Mesh(new T.TubeGeometry(curve, 360, R, 36, false), glassM); tube.renderOrder = 5; root.add(tube);
-    flow = new T.Mesh(new T.TubeGeometry(curve, 360, R * .08, 8, false), flowM); flow.renderOrder = 4; flowTex.repeat.set(Math.max(2, Lt / 3), 1); root.add(flow);
-    [0, 1].forEach(k => { const p = curve.getPointAt(k), tg = curve.getTangentAt(k); const r = new T.Mesh(new T.TorusGeometry(R * 1.04, R * .12, 12, 48), rimM); r.position.copy(p); r.lookAt(p.clone().add(tg)); root.add(r); rims.push(r); });
-    // raf: borunun ağzından sağa uzanır; sektör sayısı artarsa ikinci sıra açılır
-    exitP.copy(curve.getPointAt(1)); shelfY = exitP.y - R - .1;
-    const x0 = exitP.x + BR * 1.8, gap = BR * (narrow ? 3.0 : 3.9), perRow = Math.max(3, Math.floor(((narrow ? .44 : .44) * vw - x0) / gap) + 1);
-    slots = []; const total = Math.max(N + 3, balls.length);
-    for (let k = 0; k < total; k++) { const row = Math.floor(k / perRow), col2 = k % perRow; slots.push(new T.Vector3(x0 + col2 * gap, shelfY - row * (BR * 2.9) + BR, 0)); }
-    const rows = Math.ceil(Math.min(total, balls.length + 1) / perRow) || 1, len = (Math.min(perRow, total) - 1) * gap + BR * 3.4;
-    shelf = new T.Group(); shelfEdge = { geometry: { dispose() {} } };
-    for (let r2 = 0; r2 < rows; r2++) { const y = shelfY - r2 * (BR * 2.9); const pl = new T.Mesh(new T.BoxGeometry(len, .09, BR * 2.6), shelfM); pl.position.set(x0 - BR * 1.2 + len / 2 - BR * .5, y - .035, 0); shelf.add(pl);
-      const ed = new T.Mesh(new T.BoxGeometry(len, .035, .035), new T.MeshStandardMaterial({ color: "#8E72F2", roughness: .3 })); ed.position.set(pl.position.x, y + .01, BR * 1.3); shelf.add(ed); }
-    shelf.geometry = { dispose() {} }; root.add(shelf);
-    slots.forEach((s2, k) => { if (k >= balls.length + 1) return; const c2 = new T.Mesh(new T.TorusGeometry(BR * .55, .025, 8, 32), rimM); c2.rotation.x = Math.PI / 2; c2.position.set(s2.x, s2.y - BR + .02, 0); c2.geometry = c2.geometry; root.add(c2); cups.push(c2); });
-    balls.forEach(b => { b.m.scale.setScalar(BR); b.sh.scale.set(BR * 2.4, BR * 1.1, 1); });
+    vh = 2 * cam.position.z * Math.tan(cam.fov * Math.PI / 360); vw = vh * cam.aspect;
+    R = narrow ? .3 : .34; BR = R * .82; SPC = BR * 2.04;
+    const pts = narrow ? snake(-vw * .4, vw * .4, vh * .28, -vh * .2, 4) : snake(vw * .0, vw * .42, vh * .4, -vh * .2, 5);
+    curve = new T.CatmullRomCurve3(pts, false, "catmullrom", .2); Lt = curve.getLength();
+    [tube, flow, ...rims].forEach(o => { if (o) { root.remove(o); o.geometry.dispose(); } }); rims = [];
+    tube = new T.Mesh(new T.TubeGeometry(curve, 900, R, 36, false), glassM); tube.renderOrder = 5; root.add(tube);
+    flow = new T.Mesh(new T.TubeGeometry(curve, 900, R * .07, 8, false), flowM); flow.renderOrder = 4; flowTex.repeat.set(Math.max(2, Lt / 3), 1); root.add(flow);
+    [1].forEach(k => { const p = curve.getPointAt(k), tg = curve.getTangentAt(k); const r = new T.Mesh(new T.TorusGeometry(R * 1.05, R * .13, 12, 48), rimM); r.position.copy(p); r.lookAt(p.clone().add(tg)); root.add(r); rims.push(r); });
+    exitP.copy(curve.getPointAt(1));
+    balls.forEach(b => b.m.scale.setScalar(BR));
   }
   layout(); let rt = 0; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(layout, 120); }).observe(panel);
 
-  // küre yolu: boru boyunca, sonra raf üstünde yuvarlanarak yerine
-  const tmp = new T.Vector3();
-  function placeAt(b, s) {
-    const slot = slots[b.i + (b.extra ? N : 0)] || slots[slots.length - 1]; b.slot = slot;
-    const Ls = Math.abs(slot.x - exitP.x) + Math.abs(slot.y - (shelfY + BR)) + .4;
-    const d = s * (Lt + Ls);
-    if (d <= Lt) { b.pos.copy(curve.getPointAt(Math.min(1, d / Lt))); b.onShelf = false; }
-    else { const k = Math.min(1, (d - Lt) / Ls), e = 1 - Math.pow(1 - k, 2.2);
-      const from = tmp.set(exitP.x + BR * .4, shelfY + BR, 0); b.pos.set(from.x + (slot.x - from.x) * e, 0, 0);
-      const drop = Math.max(0, 1 - k * 3); b.pos.y = slot.y + (exitP.y - slot.y) * drop * drop + Math.abs(Math.sin(k * Math.PI * 3)) * (1 - k) * BR * .5; b.onShelf = true; }
-  }
-
   let prog = 0, running = false;
-  ST.create({ trigger: sec, pin: ".sy-pin", start: "top top", end: () => `+=${N * 70 + 120}%`, scrub: .5, onUpdate: s => { prog = s.progress; }, invalidateOnRefresh: true });
+  ST.create({ trigger: sec, pin: ".sy-pin", start: "top top", end: () => `+=${N * 80 + 120}%`, scrub: .5, onUpdate: s => { prog = s.progress; }, invalidateOnRefresh: true });
   new IntersectionObserver(es => { running = es[0].isIntersecting; }).observe(panel);
 
-  const P0 = .06, P1 = .9, seg = (P1 - P0) / N;
-  let active = null, endOn = false, t = 0, last = performance.now(), hl = null, hlT = 0;
+  const P0 = .05, P1 = .92, HOLD = .58;
+  const ease = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+  // ağızdan uzaklığa göre borudaki yer
+  const onTube = (dist, out) => out.copy(curve.getPointAt(Math.max(0, Math.min(1, 1 - dist / Lt))));
+  let endOn = false, t = 0, last = performance.now(), hl = null, hlT = 0;
   onAsk = (q) => {
     const tl = q.toLocaleLowerCase("tr"); const hit = SEC.findIndex(x => x.re.test(tl));
-    if (hit >= 0) { hl = balls[hit]; hlT = 0; suggest(q, SEC[hit]); return; }
-    const ex = balls.filter(b => b.extra); if (ex.length >= 3) { suggest(q, DEF); return; }
-    const pal = [["#FF5C9A", "#FFE0EC"], ["#00B3A4", "#D6FFF9"], ["#F9A825", "#FFF4CC"]][ex.length % 3];
-    const d = { ad: q.trim().slice(0, 22).replace(/^./, c => c.toLocaleUpperCase("tr")), type: [0, 2, 5][ex.length % 3], a: pal[0], b: pal[1], biz: DEF.biz.slice(0, 3) };
-    const b = makeBall(d, ex.length, true); b.t0 = performance.now(); layout(); hl = b; hlT = 0; suggest(q, DEF);
+    const ex = balls.filter(b => b.extra);
+    let d;
+    if (hit >= 0) d = Object.assign({}, SEC[hit]);
+    else { const pal = [["#FF5C9A", "#FFE0EC"], ["#00B3A4", "#D6FFF9"], ["#F9A825", "#FFF4CC"]][ex.length % 3];
+      d = { ad: q.trim().slice(0, 22).replace(/^./, c => c.toLocaleUpperCase("tr")), type: [0, 2, 5][ex.length % 3], a: pal[0], b: pal[1], biz: DEF.biz.slice(0, 3) }; }
+    ex.forEach(b => { b.gone = true; });
+    const b = makeBall(d, 0, true); b.t0 = performance.now(); b.m.scale.setScalar(BR); suggest(q, hit >= 0 ? SEC[hit] : DEF);
   };
 
   (function loop() {
     requestAnimationFrame(loop); const now = performance.now(), dt = Math.min(.05, (now - last) / 1000); last = now; if (!running) return; t += dt;
-    const p = prog, endS = p > P1;
+    const p = prog, u = Math.max(0, (p - P0) / (P1 - P0)) * N, j = Math.min(N, Math.floor(u)), f = u - j;
+    const shift = j < N ? ease(Math.max(0, (f - HOLD) / (1 - HOLD))) : 0;
     flowTex.offset.x -= dt * .35;
-    let newest = null, landed = 0;
-    balls.forEach(b => {
-      let s;
-      if (b.extra) s = Math.min(1, (now - b.t0) / 3600);
-      else { const k = Math.max(0, Math.min(1, (p - P0 - b.i * seg) / (seg * .92))); s = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; }
-      b.prev.copy(b.pos); placeAt(b, s); b.s = s;
-      const vis = s > .001; b.m.visible = vis;
-      b.m.position.copy(b.pos); b.m.position.z = b.onShelf ? 0 : 0;
-      b.roll += (b.pos.x - b.prev.x) / BR; b.m.rotation.z = -b.roll; b.m.rotation.y += dt * .3;
-      b.u.uTime.value = t;
-      const isL = s >= .999; if (isL) { landed += b.extra ? 0 : 1; newest = (!newest || (b.extra ? 1e9 + b.t0 : b.i) > (newest.extra ? 1e9 + newest.t0 : newest.i)) ? b : newest; }
-      b.sh.visible = vis && b.onShelf; b.sh.position.set(b.pos.x, b.slot.y - BR + .03, -.01); b.sh.material.opacity = b.onShelf ? .8 : 0;
+    let shown = 0;
+    balls.forEach((b, i) => {
+      b.prev.copy(b.pos); let vis = true, card = false;
+      if (b.extra) { // yazılan sektör: tepeden girer, ağza kadar iner
+        if (b.gone) { b.fall = (b.fall || 0) + dt; b.pos.copy(exitP); b.pos.y -= b.fall * b.fall * 14; vis = b.pos.y > -vh * .8; }
+        else { const k = Math.min(1, (now - b.t0) / 3200); onTube((1 - ease(k)) * Lt, b.pos); card = k >= 1; }
+      } else if (i < j || (i === j && j < N && f >= HOLD)) { // ağızdan aşağı düşer
+        const k = i < j ? 1 : (f - HOLD) / (1 - HOLD), fall = k * k;
+        b.pos.set(exitP.x + k * BR * .8, exitP.y - fall * vh * .75, 0); vis = k < .999;
+      } else { // sırada bekler: alttaki ağızda, diğerleri üst üste
+        const q = i - j - (i > j ? shift : 0); onTube(q * SPC, b.pos);
+        card = i === j && p > P0 && f < HOLD && !endOn;
+      }
+      if (hl === b) card = true;
+      b.m.visible = vis; b.m.position.copy(b.pos);
+      const mv = b.pos.distanceTo(b.prev); b.roll += mv / BR; b.m.rotation.set(0, t * .2, -b.roll);
+      b.u.uTime.value = t; b.show += ((card ? 1 : 0) - b.show) * Math.min(1, dt * 6); b.u.uGlow.value = b.show;
+      b.m.scale.setScalar(BR * (1 + b.show * .1));
+      if (card) shown++;
+      if (!vis) { b.pop.classList.remove("on"); return; }
+      tmp.copy(b.pos).project(cam); const x = (tmp.x + 1) / 2 * W, y = (1 - tmp.y) / 2 * H;
+      b.pop.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`; b.pop.classList.toggle("on", card);
     });
     if (hl) { hlT += dt; if (hlT > 4) hl = null; }
-    active = hl && hl.s >= .999 ? hl : newest;
-    // açılır kart ve isim etiketleri
-    balls.forEach(b => {
-      const isA = active === b && b.s >= .999 && (!endS || hl === b || b.extra);
-      b.u.uGlow.value += ((isA ? 1 : 0) - b.u.uGlow.value) * Math.min(1, dt * 5);
-      b.m.scale.setScalar(BR * (1 + b.u.uGlow.value * .12 + (b.s < 1 && b.s > 0 && !b.onShelf ? 0 : 0)));
-      if (!b.m.visible) { b.pop.classList.remove("on"); b.lab.classList.remove("on"); return; }
-      tmp.copy(b.pos).add(root.position).project(cam); const x = (tmp.x + 1) / 2 * W, y = (1 - tmp.y) / 2 * H;
-      b.pop.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`; b.pop.classList.toggle("on", isA);
-      b.lab.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`; b.lab.classList.toggle("on", b.s >= .999 && !isA);
-    });
-    tCount.textContent = `${landed} / ${N} sektör`; tBar.style.width = (landed / N * 100) + "%";
-    if (endS !== endOn) { endOn = endS; tEnd.classList.toggle("on", endS); $(".sy-prog").style.opacity = endS ? 0 : 1; }
-    const ho = endOn ? "0" : "1"; if (head.style.opacity !== ho) head.style.opacity = ho;
+    const done = Math.min(N, j + (f >= HOLD ? 1 : 0)); tCount.textContent = `${Math.min(N, j + (p > P0 ? 1 : 0))} / ${N} sektör`; tBar.style.width = (Math.min(N, j + (p > P0 ? 1 : 0)) / N * 100) + "%";
+    const eo = p > P1; if (eo !== endOn) { endOn = eo; tEnd.classList.toggle("on", eo); $(".sy-prog").style.opacity = eo ? 0 : 1; }
+    head.style.opacity = endOn ? "0" : "1";
     renderer.render(scene, cam);
   })();
+  const tmp = new T.Vector3();
 })();
 
 /* ---------- Gezgin hayalet: sitede kendi kendine dolaşan tek bir dost ---------- */
