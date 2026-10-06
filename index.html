@@ -846,6 +846,18 @@ html.cx-on input:not([type=range]):not([type=checkbox]):not([type=radio]),html.c
 .sy-chips em{font-style:normal;font-size:14px;font-weight:600;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.8);border:1px solid rgba(16,18,23,.07);box-shadow:0 10px 22px -16px rgba(60,40,120,.45);display:inline-flex;align-items:center;gap:8px;
   animation:ys-in .5s cubic-bezier(.2,1.3,.4,1) both;animation-delay:calc(var(--i) * 90ms + .25s)}
 .sy-chips em::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pc,#7B5CFF)}
+.mx-pop{position:absolute;left:0;top:0;z-index:4;pointer-events:none;width:max-content;max-width:250px;opacity:0;--dy:44px;translate:-50% calc(-100% - var(--dy));scale:.6;transform-origin:50% 100%;
+  border-radius:18px;background:rgba(255,255,255,.94);box-shadow:0 20px 40px -20px rgba(60,40,110,.45),inset 0 0 0 1px rgba(16,18,23,.05);padding:14px 16px;
+  transition:opacity .25s,scale .45s cubic-bezier(.2,1.5,.4,1)}
+.mx-pop.on{opacity:1;scale:1}
+.mx-pop::after{content:"";position:absolute;left:50%;bottom:-7px;width:14px;height:14px;margin-left:-7px;background:inherit;transform:rotate(45deg);border-radius:0 0 4px 0;box-shadow:3px 3px 6px -3px rgba(60,40,110,.25)}
+.mx-pop b{display:block;font-size:20px;letter-spacing:-.03em;line-height:1.05}
+.mx-pop b::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:9px;vertical-align:2px;box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 22%,transparent)}
+.mx-pop span{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.mx-pop em{font-style:normal;font-size:12px;font-weight:600;padding:4px 9px;border-radius:999px;background:color-mix(in srgb,var(--c) 14%,#fff);color:#101217}
+.mx-lab{position:absolute;left:0;top:0;z-index:3;pointer-events:none;translate:-50% 30px;font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(16,18,23,.7);white-space:nowrap;opacity:0;transition:opacity .3s}
+.mx-lab.on{opacity:1}
+@media (max-width:760px){.mx-lab{display:none!important}.mx-pop{--dy:34px;max-width:200px;padding:11px 13px}.mx-pop b{font-size:16px}.mx-lab{font-size:9px;translate:-50% 24px}}
 .sy-moon{position:absolute;left:0;top:0;z-index:2;pointer-events:none;font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#101217;background:rgba(255,255,255,.88);padding:3px 8px;border-radius:999px;margin:-26px 0 0 8px;white-space:nowrap;opacity:0;transition:opacity .3s;box-shadow:0 6px 14px -8px rgba(60,40,120,.45)}
 .sy-moon.on{opacity:1}
 .sy-tip{position:absolute;left:0;top:0;z-index:4;pointer-events:none;background:#101217;color:#fff;font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:999px;opacity:0;transition:opacity .2s;white-space:nowrap}
@@ -876,6 +888,10 @@ html.cx-on input:not([type=range]):not([type=checkbox]):not([type=radio]),html.c
 .sy.flat .sy-flat b{display:block;font-size:16px}
 .sy.flat .sy-flat span{display:block;font-size:12.5px;color:rgba(16,18,23,.6);margin-top:2px}
 .sy.flat .sy-end{position:static;transform:none;opacity:1;pointer-events:auto;width:auto}
+@media (min-width:761px){
+  .sy-end{left:var(--gx);top:clamp(300px,44vh,420px);bottom:auto;width:min(440px,34vw);transform:translateY(16px)}
+  .sy-end.on{transform:none}
+}
 @media (max-width:760px){
   .sy-head{top:84px;left:18px;right:18px}
   .sy-head p{display:none}
@@ -1399,21 +1415,19 @@ footer{padding-block:28px 48px}
 <section class="sy" id="isler">
   <div class="sy-pin">
     <div class="sy-panel" id="syPanel">
-      <canvas id="syGl" aria-label="Merkezde ajansımız, yörüngelerde sektör gezegenleri; kaydırdıkça her biri taranır" role="img"></canvas>
+      <canvas id="syGl" aria-label="Kıvrımlı cam bir borudan sırayla raflara düşen sektör küreleri" role="img"></canvas>
       <div class="sy-head">
-        <span class="sy-eb">Sektör taraması</span>
+        <span class="sy-eb">Sektörler</span>
         <h2>Hangi sektör <em>olursa</em></h2>
-        <p>Merkezde biz varız. Kaydırdıkça her sektörü tarıyor, neye ihtiyacı olduğunu çıkarıyoruz.</p>
+        <p>Her sektörden bir deneyim küresi. Kaydırın, borudan sırayla düşsünler.</p>
       </div>
-      <div class="sy-info" id="syInfo" aria-live="polite"><span class="sy-k"><span id="syNum"><b>01</b> / 12</span><i id="syState">taranıyor</i></span><h3 id="syName"></h3><div class="sy-chips" id="syChips"></div></div>
-      <span class="sy-tip" id="syTip" aria-hidden="true"></span>
-      <div class="sy-prog" aria-hidden="true"><span id="tCount">0 / 12 sektör tarandı</span><span class="tbar"><i id="tBar"></i></span></div>
+      <div class="sy-prog" aria-hidden="true"><span id="tCount">0 / 5 sektör</span><span class="tbar"><i id="tBar"></i></span></div>
       <div class="sy-end" id="tEnd">
-          <h3 id="tEndH">Sizinki hangisi? Yazın, yörüngeye ekleyelim.</h3>
+          <h3 id="tEndH">Sizinki hangisi? Yazın, küresi borudan gelsin.</h3>
           <form class="ys-f" id="ysForm" autocomplete="off">
             <label for="ysIn" class="sr">Sektörünüz</label>
             <input id="ysIn" type="text" placeholder="Ne iş yapıyorsunuz? Örn. çiçekçi, avukat, otel…" maxlength="40">
-            <button class="btn" type="submit">Tara</button>
+            <button class="btn" type="submit">Ekle</button>
           </form>
           <div class="ys-q" id="ysQ"><button type="button">Çiçekçi</button><button type="button">Diş kliniği</button><button type="button">Spor salonu</button><button type="button">Avukat</button><button type="button">Pastane</button><button type="button">Veteriner</button></div>
           <div class="ys-out" id="ysOut" aria-live="polite"></div>
@@ -2885,45 +2899,20 @@ $("#sendPk").addEventListener("click", () => {
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => update(false));
 })();
 
-/* ---------- Sektör sistemi: merkezde biz, yörüngelerde sektör gezegenleri; kaydırdıkça tek tek taranır ---------- */
+/* ---------- Sektör küreleri: kıvrımlı cam borudan raflara düşen parlak küreler ---------- */
 (() => {
   const sec = $("#isler"), panel = $("#syPanel"), cv = $("#syGl"); if (!sec || !panel) return;
-  const DATA = [
-    { id: "pastane", nm: "Pembe Fırın", ad: "Pastane", c: "#F48FB1", re: /pasta|tatlı|tatli|fırın|firin|börek|borek|pastane|kurabiye/,
-      gel: "Instagram'da ve haritalarda yakındaki pastaneyi arıyor.", eks: "Özel gün pastası için hızlı fiyat ve online sipariş yok.", biz: ["Ürün fotoğrafları", "Reels", "WhatsApp'tan sipariş"] },
-    { id: "kafe", nm: "Köşe Kahve", ad: "Kafe", c: "#C8875A", re: /kafe|cafe|kahve|restoran|lokanta|bistro|bar|burger|pizza|döner|doner|yemek/,
-      gel: "Haritalardaki puanlara ve fotoğraflara bakıp geliyor.", eks: "İşletme profili bakımsız, menü güncel değil.", biz: ["Google İşletme Profili", "Menü tasarımı", "Reels"] },
-    { id: "oto", nm: "Hızlı Ekspertiz", ad: "Oto ekspertiz", c: "#E53935", re: /oto|araba|araç|arac|galeri|ekspertiz|servis|lastik|kiralama|yıkama/,
-      gel: "Araç alırken “yakınımdaki ekspertiz” diye arıyor.", eks: "Online randevu ve örnek rapor sayfası yok.", biz: ["Randevu sistemi", "Google Ads", "WhatsApp asistanı"] },
-    { id: "hastane", nm: "Şifa Polikliniği", ad: "Sağlık", c: "#4FC3F7", re: /hastane|poliklinik|doktor|hekim|sağlık|saglik|tıp|tip|fizyo|psikolog|terapi|diyet|veteriner|klinik/,
-      gel: "Bölüm ve hekim adıyla arama yapıyor.", eks: "Hekim profilleri eksik, randevu adımları uzun.", biz: ["Kurumsal site", "Uzman profilleri", "Randevu sistemi"] },
-    { id: "dis", nm: "Gülüş Diş", ad: "Diş kliniği", c: "#80DEEA", re: /diş|dis |dişçi|disci|ortodonti|implant/,
-      gel: "Tedavi adı ve şehirle arıyor, hekimi tanımak istiyor.", eks: "Tedaviyi anlatan sayfalar yok, süreç belirsiz.", biz: ["Tedavi sayfaları ve SEO", "Tanıtım videosu", "Randevu asistanı"] },
-    { id: "butik", nm: "Lila Butik", ad: "Butik", c: "#F06292", re: /butik|giyim|moda|mağaza|magaza|ayakkabı|takı|taki|aksesuar|tekstil|e-ticaret|eticaret/,
-      gel: "Instagram keşfetten geliyor, fiyatı DM'den soruyor.", eks: "DM'de kaybolan siparişler, kendi satış sitesi yok.", biz: ["E-ticaret", "Yapay zekâ ile ürün çekimi", "Meta reklamları"] },
-    { id: "kuafor", nm: "Makas Salon", ad: "Kuaför ve berber", c: "#5C6BC0", re: /kuaför|kuafor|berber|güzellik|guzellik|salon|tırnak|nail|spa|cilt|kozmetik|estetik/,
-      gel: "Önceki işlere Instagram'dan bakıp telefonla arıyor.", eks: "Randevular telefonda, gelmeyen müşteri çok.", biz: ["Online randevu", "Hatırlatma mesajı", "Reels"] },
-    { id: "egitim", nm: "Kalem Akademi", ad: "Eğitim ve kurs", c: "#66BB6A", re: /kurs|eğitim|egitim|okul|dershane|akademi|öğretmen|ogretmen|koç|koc|dil|anaokul|kreş/,
-      gel: "Veliler birkaç kurumu yan yana karşılaştırıyor.", eks: "Kayıt formu ve program bilgisi dağınık.", biz: ["Web sitesi ve kayıt formu", "Dönemsel Google Ads", "WhatsApp bilgilendirme"] },
-    { id: "otel", nm: "Mavi Pansiyon", ad: "Otel ve pansiyon", c: "#7E57C2", re: /otel|pansiyon|konaklama|apart|tatil|turizm|bungalov|kamp/,
-      gel: "Rezervasyon sitelerinden ve Instagram'dan buluyor.", eks: "Doğrudan rezervasyon yok, her satışta komisyon ödeniyor.", biz: ["Rezervasyon sitesi", "Fotoğraf ve video", "Meta reklamları"] },
-    { id: "emlak", nm: "Anahtar Emlak", ad: "Emlak", c: "#FFB300", re: /emlak|gayrimenkul|inşaat|insaat|müteahhit|mimar|konut|arsa/,
-      gel: "İlan portallarında görüyor, sonra ofisi araştırıyor.", eks: "Kendi markası zayıf, her şey portala bağlı.", biz: ["Site ve ilan sistemi", "Drone ve video çekimi", "Müşteri takibi (CRM)"] },
-    { id: "fabrika", nm: "Demir Üretim", ad: "Üretim ve sanayi", c: "#78909C", re: /fabrika|üretim|uretim|sanayi|imalat|makine|lojistik|toptan|ihracat/,
-      gel: "Fuarda, katalogda ve LinkedIn'de tanışıyor.", eks: "Katalog eski, site yabancı dilde yok.", biz: ["Kurumsal katalog", "Çok dilli site", "LinkedIn içerikleri"] },
-    { id: "tekno", nm: "Piksel Yazılım", ad: "Teknoloji", c: "#26A69A", re: /yazılım|yazilim|teknoloji|saas|girişim|girisim|startup|uygulama|bilişim|bilisim|ajans/,
-      gel: "Önce demoya ve referanslara bakıyor.", eks: "Ürünü tek bakışta anlatan sayfa yok.", biz: ["Landing sayfası", "Ürün videosu", "Yatırımcı sunumu"] }
+  // yeni sektör eklemek için listeye bir satır eklemek yeterli; küre borunun tepesinden girip rafta sıradaki yere oturur
+  const SEC = [
+    { ad: "Teknoloji", type: 6, a: "#14B8A6", b: "#CCFFF6", biz: ["Landing sayfası", "Ürün videosu", "Yatırımcı sunumu"], re: /yazılım|yazilim|teknoloji|saas|girişim|girisim|startup|uygulama|bilişim|bilisim|ajans|tech/ },
+    { ad: "Siber güvenlik", type: 3, a: "#3DFFA2", b: "#16324A", biz: ["Kurumsal site", "Teknik içerik ve SEO", "LinkedIn içerikleri"], re: /siber|güvenlik|guvenlik|security|network|veri güven|pentest/ },
+    { ad: "Sağlık", type: 2, a: "#4FB8F0", b: "#F2FAFF", biz: ["Randevu sistemi", "Uzman profilleri", "Tanıtım filmi"], re: /sağlık|saglik|klinik|hastane|doktor|hekim|diş|dis |psikolog|terapi|diyet|veteriner|eczane|fizyo/ },
+    { ad: "Eğitim", type: 0, a: "#7B5CFF", b: "#FFD3E6", biz: ["Site ve kayıt formu", "Eğitim videoları", "Dönemsel reklam"], re: /eğitim|egitim|kurs|okul|akademi|dershane|öğretmen|ogretmen|koç|koc|dil |anaokul/ },
+    { ad: "Sivil toplum", type: 5, a: "#FF8A3D", b: "#FFE3A3", biz: ["Üye uygulaması", "Etkinlik tanıtımı", "Bağış sayfası"], re: /dernek|vakıf|vakif|stk|sivil|federasyon|birlik|gönüllü|gonullu|bağış|bagis/ }
   ];
-  const DEF = { gel: "Önce internette arıyor, sonra yorumlara ve fotoğraflara bakıyor.", eks: "Dijitaldeki görünümü dağınık.", biz: ["Marka kimliği", "Web sitesi", "Sosyal medya", "Google İşletme Profili", "WhatsApp asistanı"] };
-  const N = DATA.length;
-  // gezegen türleri (Mooday'deki gibi): 0 gaz bantlı, 1 kayalık, 2 buz girdabı, 3 lav, 4 okyanus, 5 nebula, 6 teknoloji ızgarası
-  const LOOK = {
-    pastane: [0, "#FF8FB8", "#FFE3C4", 0], kafe: [0, "#B5764A", "#F2D6AE", 0], oto: [3, "#FF5A3C", "#3B2230", 0], hastane: [2, "#4FB8F0", "#E6F6FF", 0],
-    dis: [2, "#7EE0E6", "#FFFFFF", 0], butik: [5, "#F06292", "#C9A6FF", 1], kuafor: [5, "#8A5CF5", "#FFC3DA", 0], egitim: [4, "#3FA9F5", "#7BD389", 0],
-    otel: [4, "#3D5AFE", "#B9A7FF", 1], emlak: [1, "#F2B544", "#B98A62", 0], fabrika: [1, "#90A4AE", "#55636D", 1], tekno: [6, "#14B8A6", "#C8FFF4", 0]
-  };
-  const tEnd = $("#tEnd"), tCount = $("#tCount"), tBar = $("#tBar");
-  const info = $("#syInfo"), iNum = $("#syNum"), iName = $("#syName"), iChips = $("#syChips"), iState = $("#syState"), head = $(".sy-head"), tip = $("#syTip");
+  const DEF = { biz: ["Marka kimliği", "Web sitesi", "Sosyal medya", "Google İşletme Profili", "WhatsApp asistanı"] };
+  const N = SEC.length;
+  const tEnd = $("#tEnd"), tCount = $("#tCount"), tBar = $("#tBar"), head = $(".sy-head");
 
   /* sizin sektörünüz: öneriler + sepet + iletişim */
   let picked = [];
@@ -2940,7 +2929,7 @@ $("#sendPk").addEventListener("click", () => {
     $("#ysAdd").textContent = "Sepete eklendi ✓";
   });
   $("#ysSend").addEventListener("click", () => { if (picked.length) $("#cMsg").value = `Sektörüm: ${$("#ysIn").value.trim()}. İlgilendiğim işler: ${picked.join(", ")}.`; });
-  let onAsk = (q) => { const t = q.toLocaleLowerCase("tr"); const d = DATA.find(x => x.re.test(t)); suggest(q, d || DEF); };
+  let onAsk = (q) => { const t = q.toLocaleLowerCase("tr"); const d = SEC.find(x => x.re.test(t)); suggest(q, d || DEF); };
   $("#ysForm").addEventListener("submit", e => { e.preventDefault(); const v = $("#ysIn").value.trim(); if (v) onAsk(v); });
   $$("#ysQ button").forEach(b => b.addEventListener("click", () => { $("#ysIn").value = b.textContent; onAsk(b.textContent); }));
 
@@ -2948,16 +2937,24 @@ $("#sendPk").addEventListener("click", () => {
   try { ok = !!(T && document.createElement("canvas").getContext("webgl")); } catch (e) {}
   if (!ok || reduce || !ST) {
     sec.classList.add("flat");
-    $("#syFlat").innerHTML = DATA.map(d => `<article><i style="background:${LOOK[d.id][1]}"></i><div><b>${d.ad}</b><span>${d.biz.join(" · ")}</span></div></article>`).join("");
+    $("#syFlat").innerHTML = SEC.map(d => `<article><i style="background:radial-gradient(circle at 35% 30%,#fff,${d.a} 60%)"></i><div><b>${d.ad}</b><span>${d.biz.join(" · ")}</span></div></article>`).join("");
     tEnd.classList.add("on"); return;
   }
 
   /* ---------- sahne ---------- */
   const renderer = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.outputEncoding = T.sRGBEncoding;
   const scene = new T.Scene();
-  const cam = new T.PerspectiveCamera(38, 1, .1, 200);
-  const lin = c => new T.Color(c);
+  const cam = new T.PerspectiveCamera(35, 1, .1, 100); cam.position.set(0, 0, 14);
+  // cam için yumuşak stüdyo yansımaları
+  { const pm = new T.PMREMGenerator(renderer), es = new T.Scene();
+    es.add(new T.Mesh(new T.SphereGeometry(10, 32, 16), new T.ShaderMaterial({ side: T.BackSide, vertexShader: "varying vec3 p; void main(){ p = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }",
+      fragmentShader: "varying vec3 p; void main(){ float h = normalize(p).y * .5 + .5; gl_FragColor = vec4(mix(vec3(.85,.8,.95), vec3(1.), h), 1.); }" })));
+    [[7, 2, -3, 5, 4, 3], [2, 6, 6, 1, 3, 2], [5, 2, 0, -6, 3, 1.4]].forEach(([w, h, x, y, z, k]) => { const m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: new T.Color(k, k, k), side: T.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); es.add(m); });
+    scene.environment = pm.fromScene(es, .03).texture; }
+  scene.add(new T.HemisphereLight("#FFFFFF", "#D8D0EC", .9));
+  const key = new T.DirectionalLight("#FFFFFF", .8); key.position.set(-4, 6, 8); scene.add(key);
+
   const NOISE = `
     vec4 permute(vec4 x){ return mod(((x*34.0)+1.0)*x, 289.0); }
     vec4 taylorInvSqrt(vec4 r){ return 1.79284291400159 - 0.85373472095314 * r; }
@@ -2982,176 +2979,149 @@ $("#sendPk").addEventListener("click", () => {
     }`;
   const VS = `varying vec3 vP; varying vec3 vN; varying vec3 vW;
     void main(){ vP = position; vN = normalize(mat3(modelMatrix) * normal); vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`;
-  const planetFS = `uniform float uTime; uniform float uType; uniform float uScan; uniform float uSweep; uniform float uHi; uniform vec3 uA; uniform vec3 uB;
+  // parlayan küre: içinde sektörün rengi ve dokusu döner, kenarı ışır
+  const FS = `uniform float uTime; uniform float uType; uniform float uGlow; uniform vec3 uA; uniform vec3 uB;
     varying vec3 vP; varying vec3 vN; varying vec3 vW; ${NOISE}
     void main(){
       vec3 p = normalize(vP); float t = uTime; vec3 c;
-      if (uType < .5) { float b = sin(p.y * 9.0 + snoise(p * 2.0 + t * .05) * 1.7 + t * .12) * .5 + .5; b += snoise(p * vec3(1.0, 7.0, 1.0) + t * .06) * .22; c = mix(uA, uB, clamp(b, 0.0, 1.0)); }
-      else if (uType < 1.5) { float n = snoise(p * 2.6) * .5 + .5; float cr = smoothstep(.62, .78, snoise(p * 5.5 + 3.0) * .5 + .5); c = mix(uB, uA, n * .8) * (1.0 - cr * .25); }
-      else if (uType < 2.5) { float s = snoise(vec3(p.x * 2.0 + sin(p.y * 3.0 + t * .2), p.y * 4.0, p.z * 2.0) + t * .04) * .5 + .5; c = mix(uA, uB, s); c = mix(c, vec3(1.0), smoothstep(.7, .95, s) * .45); }
-      else if (uType < 3.5) { float n = abs(snoise(p * 3.0 + t * .05)); float cr = smoothstep(.0, .13, n); c = mix(uA * 1.25, uB, cr); }
-      else if (uType < 4.5) { float land = smoothstep(.05, .22, snoise(p * 1.8 + 1.0)); c = mix(uA, uB, land); float cl = smoothstep(.45, .75, snoise(p * 3.0 + vec3(t * .04, 0.0, 0.0)) * .5 + .5); c = mix(c, vec3(1.0), cl * .6); }
-      else if (uType < 5.5) { float n1 = snoise(p * 2.0 + t * .07) * .5 + .5; float n2 = snoise(p * 4.0 - t * .05 + 50.0) * .5 + .5; c = mix(uB, uA, n1); c = mix(c, uA * 1.2 + .1, n2 * n1 * .55); }
-      else { vec3 g = abs(fract(p * 5.0 + vec3(0.0, t * .05, 0.0)) - .5); float ln = 1.0 - smoothstep(.0, .045, min(min(g.x, g.y), g.z)); c = mix(uA, uB, .45 + .45 * snoise(p * 2.0 + t * .08)); c = mix(c, vec3(1.0), ln * .55); }
-      vec3 L = normalize(-vW); float dif = max(dot(vN, L), 0.0);
-      float dif2 = max(dot(vN, normalize(vec3(.3, .7, 1.0))), 0.0);
-      vec3 V = normalize(cameraPosition - vW); float fr = pow(1.0 - max(dot(V, vN), 0.0), 2.4);
-      float gr = dot(c, vec3(.299, .587, .114));
-      vec3 base = mix(vec3(gr * .35 + .52), c, uScan);
-      vec3 col = base * (.5 + dif * .45 + dif2 * .3) + mix(vec3(.9), uA, uScan) * fr * (.35 + uHi * .45);
-      float band = exp(-pow((p.y - uSweep) * 12.0, 2.0)); col += vec3(1.0) * band * .9;
-      col = mix(col, col * 1.08, uHi);
+      if (uType < .5) { float b = sin(p.y * 9.0 + snoise(p * 2.0 + t * .1) * 1.8 + t * .3) * .5 + .5; c = mix(uA, uB, b); }
+      else if (uType < 2.5) { float s = snoise(vec3(p.x * 2.0 + sin(p.y * 3.0 + t * .4), p.y * 4.0, p.z * 2.0) + t * .1) * .5 + .5; c = mix(uA, uB, s); }
+      else if (uType < 3.5) { float n = abs(snoise(p * 3.2 + t * .12)); float cr = smoothstep(.0, .1, n); c = mix(uA * 1.2, uB, cr); }
+      else if (uType < 5.5) { float n1 = snoise(p * 2.0 + t * .15) * .5 + .5; float n2 = snoise(p * 4.0 - t * .1 + 50.0) * .5 + .5; c = mix(uB, uA, n1); c = mix(c, uA * 1.15 + .1, n2 * n1 * .6); }
+      else { vec3 g = abs(fract(p * 5.0 + vec3(0.0, t * .12, 0.0)) - .5); float ln = 1.0 - smoothstep(.0, .05, min(min(g.x, g.y), g.z)); c = mix(uA, uB, .45 + .45 * snoise(p * 2.0 + t * .15)); c = mix(c, vec3(1.0), ln * .55); }
+      vec3 V = normalize(cameraPosition - vW); float fr = pow(1.0 - max(dot(V, vN), 0.0), 2.2);
+      float dif = max(dot(vN, normalize(vec3(-.4, .7, .6))), 0.0);
+      vec3 col = c * (.78 + dif * .32) + mix(uB, vec3(1.0), .5) * fr * (.55 + uGlow * .6);
+      float spec = pow(max(dot(reflect(-normalize(vec3(-.4, .7, .6)), vN), V), 0.0), 40.0); col += vec3(spec) * .7;
       gl_FragColor = vec4(col, 1.0);
     }`;
-  const coreFS = `uniform float uTime; uniform vec3 uA; uniform vec3 uB; uniform float uPulse;
-    varying vec3 vP; varying vec3 vN; varying vec3 vW; ${NOISE}
-    void main(){
-      vec3 p = normalize(vP); vec3 V = normalize(cameraPosition - vW); float fr = pow(1.0 - max(dot(V, vN), 0.0), 2.2);
-      float n1 = snoise(p * 2.0 + uTime * .1) * .5 + .5, n2 = snoise(p * 4.0 - uTime * .08 + 50.0) * .5 + .5, n3 = snoise(p * 8.0 + uTime * .15 + 100.0) * .5 + .5;
-      vec3 c = mix(uB * .85, mix(uA, uB, n1), n2); c = mix(c, uA * 1.25 + .1, n3 * n1 * .6);
-      float au = smoothstep(.3, .8, sin(p.y * 8.0 + uTime * .4 + snoise(p * 3.0) * 2.0)); c = mix(c, vec3(1.0, .85, .95), au * .18);
-      c += vec3(1.0) * fr * .55 + uA * uPulse * .25;
-      gl_FragColor = vec4(c, 1.0);
-    }`;
 
-  const sys = new T.Group(); scene.add(sys);
-  // merkez: biz
-  const coreU = { uTime: { value: 0 }, uA: { value: lin("#FF5C9A") }, uB: { value: lin("#7B5CFF") }, uPulse: { value: 0 } };
-  const core = new T.Mesh(new T.SphereGeometry(1.05, 96, 64), new T.ShaderMaterial({ uniforms: coreU, vertexShader: VS, fragmentShader: coreFS })); scene.add(core);
-  const halo = (() => { const c = document.createElement("canvas"); c.width = c.height = 256; const g = c.getContext("2d"); const gr = g.createRadialGradient(128, 128, 30, 128, 128, 128);
-    gr.addColorStop(0, "rgba(255,120,190,.55)"); gr.addColorStop(.45, "rgba(160,120,255,.22)"); gr.addColorStop(1, "rgba(160,120,255,0)"); g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
-    const sp = new T.Sprite(new T.SpriteMaterial({ map: new T.CanvasTexture(c), transparent: true, depthWrite: false })); sp.scale.setScalar(5.2); scene.add(sp); return sp; })();
-  // yörüngeler
-  const ORB = [3.0, 4.35, 5.7];
-  const orbitLines = ORB.map(r => { const pts = []; for (let i = 0; i <= 160; i++) { const a = i / 160 * Math.PI * 2; pts.push(new T.Vector3(Math.cos(a) * r, 0, Math.sin(a) * r)); }
-    const l = new T.Line(new T.BufferGeometry().setFromPoints(pts), new T.LineBasicMaterial({ color: "#5B4F8A", transparent: true, opacity: .22 })); sys.add(l); return l; });
-  // tarama dalgası
-  const wave = new T.Mesh(new T.RingGeometry(.96, 1.0, 128), new T.MeshBasicMaterial({ color: "#8B6BFF", transparent: true, opacity: 0, side: T.DoubleSide, depthWrite: false }));
-  wave.rotation.x = -Math.PI / 2; scene.add(wave); let waveT = 9;
-  // ışın
-  const beam = new T.Mesh(new T.CylinderGeometry(.018, .05, 1, 12, 1, true), new T.MeshBasicMaterial({ color: "#9B6BFF", transparent: true, opacity: 0, depthWrite: false }));
-  scene.add(beam);
-  // arka plan tozu
-  { const n = 420, pp = new Float32Array(n * 3); for (let i = 0; i < n; i++) { const r = 8 + Math.random() * 22, a = Math.random() * Math.PI * 2, y = (Math.random() - .5) * 18; pp.set([Math.cos(a) * r, y, Math.sin(a) * r - 6], i * 3); }
-    const g = new T.BufferGeometry(); g.setAttribute("position", new T.BufferAttribute(pp, 3));
-    scene.add(new T.Points(g, new T.PointsMaterial({ color: "#8F84B8", size: .05, transparent: true, opacity: .55, depthWrite: false }))); }
+  /* boru, raf ve küreler: düzen ekran oranına göre kurulur */
+  const root = new T.Group(); scene.add(root);
+  // cam: ortası şeffaf, kenarları lila ışıltılı, üstünde ince parlama çizgisi
+  const glassM = new T.ShaderMaterial({ transparent: true, depthWrite: false, side: T.DoubleSide, uniforms: { uTint: { value: new T.Color("#8E72F2") } },
+    vertexShader: "varying vec3 vN; varying vec3 vW; void main(){ vN = normalize(mat3(modelMatrix) * normal); vec4 w = modelMatrix * vec4(position,1.); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }",
+    fragmentShader: `uniform vec3 uTint; varying vec3 vN; varying vec3 vW;
+      void main(){ vec3 V = normalize(cameraPosition - vW); vec3 N = normalize(vN); if (!gl_FrontFacing) N = -N;
+        float f = 1.0 - abs(dot(V, N)); vec3 L = normalize(vec3(-.35, .7, .6));
+        float sp = pow(max(dot(reflect(-L, N), V), 0.0), 26.0);
+        float a = pow(f, 2.2) * .55 + .05 + sp * .8;
+        vec3 c = mix(uTint, vec3(1.0), sp * .9 + (1.0 - f) * .3);
+        gl_FragColor = vec4(c, a); }` });
+  const rimM = new T.MeshStandardMaterial({ color: "#F4F1FA", metalness: .9, roughness: .2 });
+  const flowTex = (() => { const c = document.createElement("canvas"); c.width = 256; c.height = 8; const g = c.getContext("2d"); const gr = g.createLinearGradient(0, 0, 256, 0);
+    gr.addColorStop(0, "rgba(255,255,255,0)"); gr.addColorStop(.45, "rgba(255,255,255,0)"); gr.addColorStop(.5, "rgba(255,255,255,1)"); gr.addColorStop(.62, "rgba(255,255,255,0)"); gr.addColorStop(1, "rgba(255,255,255,0)"); g.fillStyle = gr; g.fillRect(0, 0, 256, 8);
+    const t = new T.CanvasTexture(c); t.wrapS = T.RepeatWrapping; return t; })();
+  const flowM = new T.MeshBasicMaterial({ color: "#C8B6FF", map: flowTex, transparent: true, opacity: .9, depthWrite: false });
+  const shelfM = new T.MeshStandardMaterial({ color: "#E9E1FF", roughness: .25, metalness: .1, transparent: true, opacity: .85 });
+  let tube = null, flow = null, rims = [], shelf = null, shelfEdge = null, curve = null, Lt = 1, R = .5, BR = .4, slots = [], exitP = new T.Vector3(), shelfY = 0, cups = [];
+  const shadowTex = (() => { const c = document.createElement("canvas"); c.width = c.height = 64; const g = c.getContext("2d"); const gr = g.createRadialGradient(32, 32, 0, 32, 32, 32); gr.addColorStop(0, "rgba(60,40,110,.35)"); gr.addColorStop(1, "rgba(60,40,110,0)"); g.fillStyle = gr; g.fillRect(0, 0, 64, 64); return new T.CanvasTexture(c); })();
 
-  // gezegenler
-  const moonM = ["#FFFFFF", "#FFE7F1", "#ECE6FF"].map(c => new T.MeshStandardMaterial({ color: c, roughness: .35, metalness: .05 }));
-  scene.add(new T.HemisphereLight("#FFFFFF", "#CFC6E6", 1.0)); const pl = new T.PointLight("#FFF1F7", 1.2, 30); scene.add(pl);
-  function makePlanet(d, i, look, orbit, ang, size) {
-    const [type, ca, cb, ring] = look;
-    const u = { uTime: { value: 0 }, uType: { value: type }, uScan: { value: 0 }, uSweep: { value: -9 }, uHi: { value: 0 }, uA: { value: lin(ca) }, uB: { value: lin(cb) } };
-    const g = new T.Group(); sys.add(g);
-    const m = new T.Mesh(new T.SphereGeometry(1, 64, 48), new T.ShaderMaterial({ uniforms: u, vertexShader: VS, fragmentShader: planetFS })); m.scale.setScalar(size); g.add(m); m.userData.pi = i;
-    let rg = null;
-    if (ring) { rg = new T.Mesh(new T.RingGeometry(size * 1.35, size * 1.85, 96), new T.MeshBasicMaterial({ color: ca, transparent: true, opacity: 0, side: T.DoubleSide, depthWrite: false })); rg.rotation.x = -Math.PI / 2 + .45; g.add(rg); }
-    const moons = (d.biz || []).slice(0, 3).map((name, k) => { const mm = new T.Mesh(new T.SphereGeometry(.075 + k * .012, 24, 16), moonM[k % 3]); mm.scale.setScalar(.001); g.add(mm); return { mm, name, r: size + .32 + k * .2, a: k * 2.1, sp: .9 - k * .18, tilt: .35 - k * .2 }; });
-    return { d, i, g, m, u, rg, moons, orbit, ang, size, scan: 0, sweep: -9, fired: false, hi: 0, look };
+  const balls = [];
+  function makeBall(d, i, extra) {
+    const u = { uTime: { value: 0 }, uType: { value: d.type }, uGlow: { value: 0 }, uA: { value: new T.Color(d.a) }, uB: { value: new T.Color(d.b) } };
+    const m = new T.Mesh(new T.SphereGeometry(1, 48, 32), new T.ShaderMaterial({ uniforms: u, vertexShader: VS, fragmentShader: FS })); root.add(m);
+    const sh = new T.Mesh(new T.PlaneGeometry(1, 1), new T.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false, opacity: 0 })); root.add(sh);
+    const pop = document.createElement("div"); pop.className = "mx-pop"; pop.style.setProperty("--c", d.a);
+    pop.innerHTML = `<b>${d.ad.replace(/[<&>]/g, "")}</b><span>${d.biz.slice(0, 3).map(x => `<em>${x}</em>`).join("")}</span>`; panel.appendChild(pop);
+    const lab = document.createElement("span"); lab.className = "mx-lab"; lab.textContent = d.ad; panel.appendChild(lab);
+    const b = { d, i, m, u, sh, pop, lab, extra: !!extra, s: 0, landed: false, roll: 0, pos: new T.Vector3(), prev: new T.Vector3(), t0: 0 };
+    balls.push(b); return b;
   }
-  const planets = DATA.map((d, i) => makePlanet(d, i, LOOK[d.id], i % 3, i * 2.399 + (i % 3) * .7, .34 + ((i * 7) % 5) * .045));
-  const extra = [];
+  SEC.forEach((d, i) => makeBall(d, i));
 
-  let W = 1, H = 1;
-  const size = () => { W = panel.clientWidth; H = panel.clientHeight; renderer.setSize(W, H, false); cam.aspect = W / H; cam.fov = W < 760 ? 52 : 38; cam.updateProjectionMatrix(); };
-  size(); new ResizeObserver(size).observe(panel);
+  let W = 1, H = 1, narrow = false;
+  function layout() {
+    W = panel.clientWidth; H = panel.clientHeight; narrow = W < 760;
+    renderer.setSize(W, H, false); cam.aspect = W / H; cam.fov = narrow ? 50 : 35; cam.updateProjectionMatrix();
+    const vh = 2 * cam.position.z * Math.tan(cam.fov * Math.PI / 360), vw = vh * cam.aspect;
+    R = narrow ? .32 : .36; BR = R * .8;
+    // kıvrımlı yol: tepeden girer, S çizerek iner, rafın başında biter
+    const P = narrow
+      ? [[.62, .3], [.32, .29], [.02, .24], [-.3, .16], [-.14, .05], [.28, .0], [.22, -.09], [-.22, -.12], [-.36, -.2]]
+      : [[.36, .62], [.36, .4], [.28, .3], [.12, .32], [.03, .2], [.08, .09], [.28, .06], [.33, -.04], [.22, -.12], [-.02, -.12], [-.1, -.22]];
+    const pts = P.map(([x, y]) => new T.Vector3(x * vw, y * vh, 0));
+    curve = new T.CatmullRomCurve3(pts, false, "catmullrom", .45); Lt = curve.getLength();
+    [tube, flow, shelf, shelfEdge, ...rims, ...cups].forEach(o => { if (o) { root.remove(o); o.geometry.dispose(); } }); rims = []; cups = [];
+    tube = new T.Mesh(new T.TubeGeometry(curve, 360, R, 36, false), glassM); tube.renderOrder = 5; root.add(tube);
+    flow = new T.Mesh(new T.TubeGeometry(curve, 360, R * .08, 8, false), flowM); flow.renderOrder = 4; flowTex.repeat.set(Math.max(2, Lt / 3), 1); root.add(flow);
+    [0, 1].forEach(k => { const p = curve.getPointAt(k), tg = curve.getTangentAt(k); const r = new T.Mesh(new T.TorusGeometry(R * 1.04, R * .12, 12, 48), rimM); r.position.copy(p); r.lookAt(p.clone().add(tg)); root.add(r); rims.push(r); });
+    // raf: borunun ağzından sağa uzanır; sektör sayısı artarsa ikinci sıra açılır
+    exitP.copy(curve.getPointAt(1)); shelfY = exitP.y - R - .1;
+    const x0 = exitP.x + BR * 1.8, gap = BR * (narrow ? 3.0 : 3.9), perRow = Math.max(3, Math.floor(((narrow ? .44 : .44) * vw - x0) / gap) + 1);
+    slots = []; const total = Math.max(N + 3, balls.length);
+    for (let k = 0; k < total; k++) { const row = Math.floor(k / perRow), col2 = k % perRow; slots.push(new T.Vector3(x0 + col2 * gap, shelfY - row * (BR * 2.9) + BR, 0)); }
+    const rows = Math.ceil(Math.min(total, balls.length + 1) / perRow) || 1, len = (Math.min(perRow, total) - 1) * gap + BR * 3.4;
+    shelf = new T.Group(); shelfEdge = { geometry: { dispose() {} } };
+    for (let r2 = 0; r2 < rows; r2++) { const y = shelfY - r2 * (BR * 2.9); const pl = new T.Mesh(new T.BoxGeometry(len, .09, BR * 2.6), shelfM); pl.position.set(x0 - BR * 1.2 + len / 2 - BR * .5, y - .035, 0); shelf.add(pl);
+      const ed = new T.Mesh(new T.BoxGeometry(len, .035, .035), new T.MeshStandardMaterial({ color: "#8E72F2", roughness: .3 })); ed.position.set(pl.position.x, y + .01, BR * 1.3); shelf.add(ed); }
+    shelf.geometry = { dispose() {} }; root.add(shelf);
+    slots.forEach((s2, k) => { if (k >= balls.length + 1) return; const c2 = new T.Mesh(new T.TorusGeometry(BR * .55, .025, 8, 32), rimM); c2.rotation.x = Math.PI / 2; c2.position.set(s2.x, s2.y - BR + .02, 0); c2.geometry = c2.geometry; root.add(c2); cups.push(c2); });
+    balls.forEach(b => { b.m.scale.setScalar(BR); b.sh.scale.set(BR * 2.4, BR * 1.1, 1); });
+  }
+  layout(); let rt = 0; new ResizeObserver(() => { clearTimeout(rt); rt = setTimeout(layout, 120); }).observe(panel);
+
+  // küre yolu: boru boyunca, sonra raf üstünde yuvarlanarak yerine
+  const tmp = new T.Vector3();
+  function placeAt(b, s) {
+    const slot = slots[b.i + (b.extra ? N : 0)] || slots[slots.length - 1]; b.slot = slot;
+    const Ls = Math.abs(slot.x - exitP.x) + Math.abs(slot.y - (shelfY + BR)) + .4;
+    const d = s * (Lt + Ls);
+    if (d <= Lt) { b.pos.copy(curve.getPointAt(Math.min(1, d / Lt))); b.onShelf = false; }
+    else { const k = Math.min(1, (d - Lt) / Ls), e = 1 - Math.pow(1 - k, 2.2);
+      const from = tmp.set(exitP.x + BR * .4, shelfY + BR, 0); b.pos.set(from.x + (slot.x - from.x) * e, 0, 0);
+      const drop = Math.max(0, 1 - k * 3); b.pos.y = slot.y + (exitP.y - slot.y) * drop * drop + Math.abs(Math.sin(k * Math.PI * 3)) * (1 - k) * BR * .5; b.onShelf = true; }
+  }
 
   let prog = 0, running = false;
-  ST.create({ trigger: sec, pin: ".sy-pin", start: "top top", end: () => `+=${N * 55 + 160}%`, scrub: .6, onUpdate: s => { prog = s.progress; }, invalidateOnRefresh: true });
+  ST.create({ trigger: sec, pin: ".sy-pin", start: "top top", end: () => `+=${N * 70 + 120}%`, scrub: .5, onUpdate: s => { prog = s.progress; }, invalidateOnRefresh: true });
   new IntersectionObserver(es => { running = es[0].isIntersecting; }).observe(panel);
 
-  // ayın yazıları (sadece odaktaki gezegen)
-  const P0 = .06, P1 = .9, SPOT = 1.05;
-  const sm = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
-  const wrap = a => { a = (a + Math.PI) % (Math.PI * 2); if (a < 0) a += Math.PI * 2; return a - Math.PI; };
-  let rotY = 0, t = 0, last = performance.now(), focus = -1, shownInfo = -2, endOn = false, endFocus = null;
-  const camP = new T.Vector3(0, 6, 15), camL = new T.Vector3(), tmp = new T.Vector3(), tmp2 = new T.Vector3();
-  const worldOf = (pl2, out) => pl2.g.getWorldPosition(out);
-  function setInfo(pl2, n) {
-    if (!pl2) { info.classList.remove("on"); shownInfo = -1; return; }
-    const key = pl2.extra ? "x" + pl2.i : pl2.i; if (shownInfo === key) return; shownInfo = key;
-    info.style.setProperty("--pc", pl2.look[1]);
-    iNum.innerHTML = pl2.extra ? "<b>Yeni sektör</b>" : `<b>${String(pl2.i + 1).padStart(2, "0")}</b> / ${N}`; iName.textContent = pl2.d.ad;
-    iChips.innerHTML = pl2.moons.map((m, k) => `<em style="--i:${k}">${m.name}</em>`).join("");
-    info.classList.remove("on"); void info.offsetWidth; info.classList.add("on");
-  }
-  function fire(pl2) { pl2.fired = true; pl2.sweepT = 0; waveT = 0; coreU.uPulse.value = 1; }
-
-  // kendi sektörünü yazınca: varsa o gezegene gider, yoksa merkezden yeni gezegen doğar
+  const P0 = .06, P1 = .9, seg = (P1 - P0) / N;
+  let active = null, endOn = false, t = 0, last = performance.now(), hl = null, hlT = 0;
   onAsk = (q) => {
-    const tl = q.toLocaleLowerCase("tr"); const hit = DATA.findIndex(x => x.re.test(tl));
-    if (hit >= 0) { endFocus = planets[hit]; fire(endFocus); suggest(q, DATA[hit]); return; }
-    if (extra.length >= 3) { const o = extra.shift(); sys.remove(o.g); }
-    const name = q.trim().slice(0, 22).replace(/^./, c => c.toLocaleUpperCase("tr"));
-    const pal = [["#FF7A59", "#FFD6A5"], ["#00BFA6", "#CFFAF3"], ["#7C4DFF", "#FFC1E3"], ["#F9A825", "#FFF3C4"]][(q.length + extra.length) % 4];
-    const d = { ad: name, biz: DEF.biz.slice(0, 3) };
-    const np = makePlanet(d, extra.length, [(q.length * 3) % 7, pal[0], pal[1], q.length % 2], 2, Math.PI * .5, .42);
-    np.extra = true; np.born = 0; np.g.position.set(0, 0, 0); np.g.scale.setScalar(.01); extra.push(np);
-    endFocus = np; fire(np); suggest(q, DEF);
+    const tl = q.toLocaleLowerCase("tr"); const hit = SEC.findIndex(x => x.re.test(tl));
+    if (hit >= 0) { hl = balls[hit]; hlT = 0; suggest(q, SEC[hit]); return; }
+    const ex = balls.filter(b => b.extra); if (ex.length >= 3) { suggest(q, DEF); return; }
+    const pal = [["#FF5C9A", "#FFE0EC"], ["#00B3A4", "#D6FFF9"], ["#F9A825", "#FFF4CC"]][ex.length % 3];
+    const d = { ad: q.trim().slice(0, 22).replace(/^./, c => c.toLocaleUpperCase("tr")), type: [0, 2, 5][ex.length % 3], a: pal[0], b: pal[1], biz: DEF.biz.slice(0, 3) };
+    const b = makeBall(d, ex.length, true); b.t0 = performance.now(); layout(); hl = b; hlT = 0; suggest(q, DEF);
   };
-
-  // üstüne gelince küçük etiket
-  const ray = new T.Raycaster(), ndc = new T.Vector2(); let hq = null, hov = null;
-  panel.addEventListener("pointermove", e => { if (e.pointerType !== "mouse") return; const r = panel.getBoundingClientRect(); hq = { x: e.clientX - r.left, y: e.clientY - r.top }; }, { passive: true });
-  panel.addEventListener("pointerleave", () => { hq = null; hov = null; tip.classList.remove("on"); delete panel.dataset.cursor; });
-  panel.addEventListener("click", e => { if (!endOn || !hov || e.target.closest("form,button,a,input")) return; endFocus = hov; if (!hov.fired) fire(hov); });
 
   (function loop() {
     requestAnimationFrame(loop); const now = performance.now(), dt = Math.min(.05, (now - last) / 1000); last = now; if (!running) return; t += dt;
-    const p = prog, narrow = W < 760;
-    const u = (p - P0) / (P1 - P0) * N, f = p < P0 ? -1 : Math.min(N - 1, Math.floor(u)), endS = sm((p - P1) / (1 - P1 - .02));
-    if (endS < .5) endFocus = null;
-    // tarama tetikleme (geri kaydırınca gezegen yeniden grileşir)
-    planets.forEach((pl2, i) => { if (u >= i + .12 && !pl2.fired) fire(pl2); if (u < i - .05 && pl2.fired && !endOn) { pl2.fired = false; pl2.sweepT = undefined; } });
-    focus = endS > .5 ? -1 : f;
-    const fp = endFocus || (focus >= 0 ? planets[focus] : null);
-    // sistem dönüşü: odaktaki gezegen öne-sağa gelir
-    const allP = planets.concat(extra);
-    allP.forEach(pl2 => { pl2.ang += dt * (.03 / (pl2.orbit + 1)); });
-    if (fp && !fp.extra) { const tgt = fp.ang - SPOT; rotY += wrap(tgt - rotY) * Math.min(1, dt * 2.2); } else rotY += dt * .04;
-    sys.rotation.y = rotY;
-    allP.forEach(pl2 => {
-      const r = ORB[pl2.orbit] + (pl2.extra ? 1.4 : 0);
-      if (pl2.extra) { pl2.born = Math.min(1, pl2.born + dt * .5); const b = sm(pl2.born); pl2.g.position.set(Math.cos(pl2.ang) * r * b, Math.sin(b * Math.PI) * 1.2, Math.sin(pl2.ang) * r * b); pl2.g.scale.setScalar(Math.max(.01, b)); }
-      else pl2.g.position.set(Math.cos(pl2.ang) * r, 0, Math.sin(pl2.ang) * r);
-      // tarama animasyonu
-      if (pl2.sweepT !== undefined) { pl2.sweepT += dt / 1.1; pl2.u.uSweep.value = -1.25 + Math.min(1, pl2.sweepT) * 2.5; if (pl2.sweepT > 1.05) pl2.u.uSweep.value = -9; }
-      const sTgt = pl2.fired ? Math.min(1, (pl2.sweepT || 0) * 1.1) : 0; pl2.scan += (sTgt - pl2.scan) * Math.min(1, dt * 6);
-      pl2.u.uScan.value = pl2.scan; pl2.u.uTime.value = t;
-      const isF = fp === pl2, isH = hov === pl2; pl2.hi += ((isF ? 1 : isH ? .6 : 0) - pl2.hi) * Math.min(1, dt * 5); pl2.u.uHi.value = pl2.hi;
-      pl2.m.scale.setScalar(pl2.size * (1 + pl2.hi * .18)); pl2.m.rotation.y += dt * .15;
-      if (pl2.rg) { pl2.rg.material.opacity = .45 * pl2.scan; pl2.rg.rotation.z += dt * .05; }
-      pl2.moons.forEach((m, k) => { m.a += dt * m.sp; const ms = sm((pl2.scan - .5 - k * .12) * 3); m.mm.scale.setScalar(Math.max(.001, ms * (isF ? 1.25 : 1)));
-        const rr = m.r * (1 + pl2.hi * .18); m.mm.position.set(Math.cos(m.a) * rr, Math.sin(m.a) * rr * m.tilt, Math.sin(m.a) * rr); });
+    const p = prog, endS = p > P1;
+    flowTex.offset.x -= dt * .35;
+    let newest = null, landed = 0;
+    balls.forEach(b => {
+      let s;
+      if (b.extra) s = Math.min(1, (now - b.t0) / 3600);
+      else { const k = Math.max(0, Math.min(1, (p - P0 - b.i * seg) / (seg * .92))); s = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; }
+      b.prev.copy(b.pos); placeAt(b, s); b.s = s;
+      const vis = s > .001; b.m.visible = vis;
+      b.m.position.copy(b.pos); b.m.position.z = b.onShelf ? 0 : 0;
+      b.roll += (b.pos.x - b.prev.x) / BR; b.m.rotation.z = -b.roll; b.m.rotation.y += dt * .3;
+      b.u.uTime.value = t;
+      const isL = s >= .999; if (isL) { landed += b.extra ? 0 : 1; newest = (!newest || (b.extra ? 1e9 + b.t0 : b.i) > (newest.extra ? 1e9 + newest.t0 : newest.i)) ? b : newest; }
+      b.sh.visible = vis && b.onShelf; b.sh.position.set(b.pos.x, b.slot.y - BR + .03, -.01); b.sh.material.opacity = b.onShelf ? .8 : 0;
     });
-    // çekirdek, dalga, ışın
-    coreU.uTime.value = t; coreU.uPulse.value *= Math.pow(.15, dt); core.rotation.y += dt * .08; halo.scale.setScalar(5.2 + Math.sin(t * 1.3) * .2 + coreU.uPulse.value * 1.2);
-    if (waveT < 1.4) { waveT += dt; const k = waveT / 1.4; wave.scale.setScalar(1.1 + k * 7); wave.material.opacity = .45 * (1 - k); } else wave.material.opacity = 0;
-    if (fp && fp.sweepT !== undefined && fp.sweepT < 1.3) { worldOf(fp, tmp); const len = tmp.length(); beam.position.copy(tmp).multiplyScalar(.5); beam.scale.set(1, len, 1); beam.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), tmp.clone().normalize()); beam.material.opacity = .55 * Math.sin(Math.min(1, fp.sweepT / 1.3) * Math.PI); } else beam.material.opacity = 0;
-
-    // kamera
-    const ovP = narrow ? v3(0, 10.5, 17.5) : v3(0, 6.2, 15.5), ovL = narrow ? v3(0, -.6, 0) : v3(1.2, -.3, 0);
-    let cP = ovP, cL = ovL;
-    if (fp) { // kamera gezegenin dış tarafından bakar: gezegen önde, merkez arkada
-      worldOf(fp, tmp); const out = v3(tmp.x, 0, tmp.z).normalize(), side = v3(out.z, 0, -out.x);
-      if (narrow) { cL = tmp.clone().multiplyScalar(.7).add(v3(0, -1.5, 0)); cP = tmp.clone().addScaledVector(out, 6.2).add(v3(0, 3.4, 0)); }
-      else { cL = tmp.clone().multiplyScalar(.55).addScaledVector(side, -1.4); cP = tmp.clone().addScaledVector(out, 5.2).add(v3(0, 2.3, 0)).addScaledVector(side, -2.6); } }
-    if (p < P0) { cP = ovP; cL = ovL; }
-    camP.lerp(cP, Math.min(1, dt * 2.2)); camL.lerp(cL, Math.min(1, dt * 2.6)); cam.position.copy(camP); cam.lookAt(camL);
-    pl.position.copy(cam.position).multiplyScalar(.3);
-
-    // bilgi paneli
-    setInfo(fp && fp.scan > .25 ? fp : null);
-    if (fp) iState.textContent = fp.scan < .95 ? "taranıyor" : "hazır";
-    const done = planets.filter(x => x.scan > .5).length; tCount.textContent = `${done} / ${N} sektör tarandı`; tBar.style.width = (done / N * 100) + "%";
-    // üstüne gelme
-    if (hq) { ndc.set(hq.x / W * 2 - 1, -(hq.y / H) * 2 + 1); ray.setFromCamera(ndc, cam); const h2 = ray.intersectObjects(allP.map(x => x.m), false)[0]; hov = h2 ? allP.find(x => x.m === h2.object) : null;
-      if (hov) { tip.textContent = hov.d.ad; tip.style.transform = `translate(${hq.x + 16}px,${hq.y - 34}px)`; tip.classList.add("on"); if (endOn) panel.dataset.cursor = "Tara"; } else { tip.classList.remove("on"); delete panel.dataset.cursor; } }
-    const eo = endS > .82; if (eo !== endOn) { endOn = eo; tEnd.classList.toggle("on", eo); $(".sy-prog").style.opacity = eo ? 0 : 1; }
-    const ho = p < P0 + .02 && !endOn ? "1" : "0"; if (head.style.opacity !== ho) head.style.opacity = ho;
+    if (hl) { hlT += dt; if (hlT > 4) hl = null; }
+    active = hl && hl.s >= .999 ? hl : newest;
+    // açılır kart ve isim etiketleri
+    balls.forEach(b => {
+      const isA = active === b && b.s >= .999 && (!endS || hl === b || b.extra);
+      b.u.uGlow.value += ((isA ? 1 : 0) - b.u.uGlow.value) * Math.min(1, dt * 5);
+      b.m.scale.setScalar(BR * (1 + b.u.uGlow.value * .12 + (b.s < 1 && b.s > 0 && !b.onShelf ? 0 : 0)));
+      if (!b.m.visible) { b.pop.classList.remove("on"); b.lab.classList.remove("on"); return; }
+      tmp.copy(b.pos).add(root.position).project(cam); const x = (tmp.x + 1) / 2 * W, y = (1 - tmp.y) / 2 * H;
+      b.pop.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`; b.pop.classList.toggle("on", isA);
+      b.lab.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`; b.lab.classList.toggle("on", b.s >= .999 && !isA);
+    });
+    tCount.textContent = `${landed} / ${N} sektör`; tBar.style.width = (landed / N * 100) + "%";
+    if (endS !== endOn) { endOn = endS; tEnd.classList.toggle("on", endS); $(".sy-prog").style.opacity = endS ? 0 : 1; }
+    const ho = endOn ? "0" : "1"; if (head.style.opacity !== ho) head.style.opacity = ho;
     renderer.render(scene, cam);
   })();
-  function v3(x, y, z) { return new T.Vector3(x, y, z); }
 })();
 
 /* ---------- Gezgin hayalet: sitede kendi kendine dolaşan tek bir dost ---------- */
