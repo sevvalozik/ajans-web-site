@@ -435,8 +435,11 @@ a,button,[role=button],.chip,.tile,label[for],select,summary,.dock-t{cursor:url(
 #orbStage,#pkArea,#stGl,#heroPanel[data-cursor],#syPanel[data-cursor]{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 34 34'%3E%3Ccircle cx='17' cy='17' r='12.5' fill='rgba%28255,255,255,.55%29' stroke='%23FFFFFF' stroke-width='3.5'/%3E%3Ccircle cx='17' cy='17' r='12.5' fill='none' stroke='%23241F2C' stroke-width='1.6'/%3E%3Ccircle cx='17' cy='17' r='3' fill='%23241F2C'/%3E%3C/svg%3E") 17 17,grab}
 #orbStage.drag,#pkArea:active,#stGl:active,#heroPanel[data-cursor="Fırlat"]{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 34 34'%3E%3Ccircle cx='17' cy='17' r='9' fill='%23241F2C' stroke='%23FFFFFF' stroke-width='3'/%3E%3Ccircle cx='17' cy='17' r='2.6' fill='%23FFFFFF'/%3E%3C/svg%3E") 17 17,grabbing}
 input,textarea,[contenteditable=true]{cursor:text}
-/* menü ve WhatsApp sekmeleri: özel imleç yok, tarayıcının kendi imleci */
-.dock,.dock *,#btabs,#btabs *{cursor:default!important}
+/* menü ve WhatsApp sekmeleri: imleç görseli yok, imleç butonun şeklini alır (eski hâli) */
+@media (hover:hover) and (pointer:fine){.dock-t,.dock-t *,.dock a,.dock a *,#btabs button,#btabs button *{cursor:none!important}}
+.snapx{position:fixed;left:0;top:0;z-index:97;pointer-events:none;opacity:0;border-radius:15px;border:1.5px solid rgba(46,67,255,.55);background:rgba(46,67,255,.07);
+  box-shadow:0 8px 24px -10px rgba(46,67,255,.45);transition:opacity .2s;will-change:transform,width,height}
+.snapx.on{opacity:1}
 .cur2{position:fixed;left:0;top:0;z-index:96;pointer-events:none}
 .cur2 .cl{position:absolute;left:0;top:0;display:inline-flex;align-items:center;gap:7px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
   background:#241F2C;color:#fff;padding:6px 11px 6px 8px;border-radius:999px;white-space:nowrap;opacity:0;scale:.8;transition:opacity .18s,scale .25s cubic-bezier(.2,1.5,.4,1);box-shadow:0 10px 24px -10px rgba(36,31,44,.5)}
@@ -2172,6 +2175,26 @@ $$(".btn").forEach(b => {
     b.addEventListener("pointermove", e => { const r = b.getBoundingClientRect(); b.style.translate = `${(e.clientX - r.left - r.width / 2) * .14}px ${(e.clientY - r.top - r.height / 2) * .2}px`; });
     b.addEventListener("pointerleave", () => { b.style.translate = ""; });
   });
+})();
+
+/* ---------- Menü ve WhatsApp sekmeleri: imleç butonun etrafını sarar ---------- */
+(() => {
+  if (!fine) return;
+  const r = document.createElement("div"); r.className = "snapx"; r.setAttribute("aria-hidden", "true"); document.body.appendChild(r);
+  const SEL = ".dock-t,.dock a,#btabs button";
+  let el = null, x = 0, y = 0, w = 30, h = 30, rr = 15, mx = 0, my = 0, init = false;
+  addEventListener("pointermove", e => { if (e.pointerType !== "mouse") return; mx = e.clientX; my = e.clientY;
+    const t = e.target instanceof Element ? e.target.closest(SEL) : null;
+    if (t !== el) { el = t; r.classList.toggle("on", !!el); if (el && !init) { const b = el.getBoundingClientRect(); x = mx; y = my; w = 30; h = 30; init = true; } if (!el) init = false; } }, { passive: true });
+  document.addEventListener("pointerleave", () => { el = null; r.classList.remove("on"); init = false; });
+  (function loop() { requestAnimationFrame(loop); if (!el) return;
+    const b = el.getBoundingClientRect(); if (!b.width) return;
+    const br = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 8;
+    const tw = b.width + 12, th = b.height + 12, tr = Math.min(th / 2, br + 6);
+    const tx = b.left + b.width / 2 + (mx - (b.left + b.width / 2)) * .12, ty = b.top + b.height / 2 + (my - (b.top + b.height / 2)) * .12;
+    x += (tx - x) * .3; y += (ty - y) * .3; w += (tw - w) * .28; h += (th - h) * .28; rr += (tr - rr) * .28;
+    r.style.transform = `translate3d(${(x - w / 2).toFixed(1)}px,${(y - h / 2).toFixed(1)}px,0)`; r.style.width = w.toFixed(1) + "px"; r.style.height = h.toFixed(1) + "px"; r.style.borderRadius = rr.toFixed(1) + "px";
+  })();
 })();
 
 /* ---------- Alt menü: tıklayınca açılır, dışarı tıklayınca / bölüm seçince kapanır ---------- */
