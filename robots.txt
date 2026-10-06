@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sevvalozik.github.io/ajans-web-site/sitemap.xml

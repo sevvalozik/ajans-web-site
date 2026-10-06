@@ -1,0 +1,34 @@
+{
+  "_not": "SEO/GEO için tek karar noktası. Başlık, açıklama, canonical, robots, JSON-LD, SSS küpü, footer hizmetleri, robots.txt, sitemap.xml ve llms dosyaları buradan üretilir: python3 tools/build.py",
+  "brand": "sayfa",
+  "brand_display": "Sayfa",
+  "legal_name": "❓ doğrulanacak",
+  "site_url": "https://sevvalozik.github.io/ajans-web-site/",
+  "indexable": false,
+  "_indexable_not": "Gerçek alan adı ve ajans adı netleşene kadar false. Geçici github.io adresinin ve yer tutucu adın Google'a girmesini engeller.",
+  "lang": "tr-TR",
+  "title": "Sayfa | Marka, web, içerik ve reklam ajansı",
+  "description": "Marka kimliği, web sitesi, uygulama, sosyal medya içeriği, reklam ve WhatsApp otomasyonu tek ekipte. Ne lazımsa yazın, paketinizi birlikte kuralım.",
+  "summary": "Sayfa; marka kimliği, web sitesi ve uygulama, sosyal medya içeriği, reklam ve iş otomasyonunu tek ekipte yapan bir ajanstır. Müşteri tek bir kişiyle konuşur, tasarım, yazılım, içerik ve reklam aynı takvimle ilerler.",
+  "location": "❓ doğrulanacak",
+  "email": "❓ doğrulanacak",
+  "phone": "❓ doğrulanacak",
+  "same_as": [],
+  "date_modified": "2026-10-06",
+  "services": [
+    {"ad": "Marka", "items": ["İsim ve kimlik", "Logo", "Renk ve yazı sistemi", "Marka sesi", "Marka kılavuzu", "Ambalaj", "Basılı işler", "Kurumsal katalog"]},
+    {"ad": "Dijital ürün", "items": ["Kurumsal site", "E-ticaret", "Landing sayfası", "Web uygulaması", "Mobil uygulama", "Yönetim paneli", "Yapay zekâ entegrasyonu", "Sohbet botu"]},
+    {"ad": "İçerik", "items": ["Sosyal medya yönetimi", "İçerik takvimi", "Reels ve post seti", "Yapay zekâ ile video", "Yapay zekâ ile görsel", "Tanıtım filmi", "Fotoğraf yönlendirmesi", "Metin yazarlığı"]},
+    {"ad": "Büyüme", "items": ["SEO", "Google Ads", "Meta reklamları", "Google İşletme Profili", "Rakip analizi", "Pazarlama denetimi", "Ölçüm ve raporlama"]},
+    {"ad": "Strateji", "items": ["Yatırımcı sunumu", "Müşteri sunumu", "Pazar araştırması", "Marka stratejisi", "Proje ve hibe dosyası"]},
+    {"ad": "Otomasyon", "items": ["İş akışı otomasyonu", "CRM entegrasyonu", "Form ve randevu sistemleri", "Veri panoları", "Özel yazılım"]}
+  ],
+  "faq": [
+    {"q": "Fiyat nasıl belirleniyor?", "a": "İşin kapsamını ilk görüşmede birlikte netleştirir, sabit bir teklif veririz. Sonradan sürpriz kalem çıkmaz."},
+    {"q": "Ne kadar sürede teslim ediyorsunuz?", "a": "Logo ve kimlik 1–2 hafta, web sitesi 3–6 hafta sürer. Takvimi baştan birlikte koyarız."},
+    {"q": "Sadece tek bir iş için de çalışıyor musunuz?", "a": "Evet. Tek bir logo da olur, uçtan uca bir marka da. Sepetinize ne koyarsanız onu yaparız."},
+    {"q": "Revizyon hakkım var mı?", "a": "Her aşamada iki tur revizyon dahildir. Siz onaylamadan bir sonraki adıma geçmeyiz."},
+    {"q": "Hangi sektörlerle çalışıyorsunuz?", "a": "Teknolojiden sağlığa, eğitimden sivil topluma. Bizim için sektörden çok ihtiyacınız önemli."},
+    {"q": "Teslimden sonra ne oluyor?", "a": "Bütün dosyalar sizin olur. İsterseniz bakım ve reklamla devam ederiz."}
+  ]
+}

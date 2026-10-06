@@ -1,0 +1,19 @@
+# Sayfa
+
+> Sayfa; marka kimliği, web sitesi ve uygulama, sosyal medya içeriği, reklam ve iş otomasyonunu tek ekipte yapan bir ajanstır. Müşteri tek bir kişiyle konuşur, tasarım, yazılım, içerik ve reklam aynı takvimle ilerler.
+
+Resmi adı: Sayfa
+Web: https://sevvalozik.github.io/ajans-web-site/
+
+## Hizmetler
+- Marka: İsim ve kimlik, Logo, Renk ve yazı sistemi, Marka sesi
+- Dijital ürün: Kurumsal site, E-ticaret, Landing sayfası, Web uygulaması
+- İçerik: Sosyal medya yönetimi, İçerik takvimi, Reels ve post seti, Yapay zekâ ile video
+- Büyüme: SEO, Google Ads, Meta reklamları, Google İşletme Profili
+- Strateji: Yatırımcı sunumu, Müşteri sunumu, Pazar araştırması, Marka stratejisi
+- Otomasyon: İş akışı otomasyonu, CRM entegrasyonu, Form ve randevu sistemleri, Veri panoları
+
+## Sayfalar
+- [Ana sayfa](https://sevvalozik.github.io/ajans-web-site/)
+- [İletişim](https://sevvalozik.github.io/ajans-web-site/#iletisim)
+- [Tam metin](https://sevvalozik.github.io/ajans-web-site/llms-full.txt)
