@@ -2380,51 +2380,91 @@ $$(".btn").forEach(b => {
   });
 })();
 
-/* ---------- Canlı zemin: palet aynı, renkler ipek gibi çok yavaş akar, imlecin altında hafif ışık ---------- */
+/* ---------- Canlı zemin: pastel ipek yavaşça akar; imleç arkasında kıvrılıp sönen sedefli bir ışık izi bırakır ---------- */
 (() => {
   const cv = document.createElement("canvas"); cv.className = "bgfx"; cv.setAttribute("aria-hidden", "true");
   let gl = null; try { gl = cv.getContext("webgl", { antialias: false, alpha: false, premultipliedAlpha: false }); } catch (e) {}
   if (!gl) return;
   document.body.prepend(cv);
+  const NOISE = `vec2 hh(vec2 p){p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));return -1.+2.*fract(sin(p)*43758.5453);}
+  float n(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);return mix(mix(dot(hh(i),f),dot(hh(i+vec2(1.,0.)),f-vec2(1.,0.)),u.x),mix(dot(hh(i+vec2(0.,1.)),f-vec2(0.,1.)),dot(hh(i+vec2(1.,1.)),f-vec2(1.,1.)),u.x),u.y);}`;
   const VS = "attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}";
-  const FS = `precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform float sc;
-  vec2 h(vec2 p){p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));return -1.+2.*fract(sin(p)*43758.5453);}
-  float n(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);return mix(mix(dot(h(i),f),dot(h(i+vec2(1.,0.)),f-vec2(1.,0.)),u.x),mix(dot(h(i+vec2(0.,1.)),f-vec2(0.,1.)),dot(h(i+vec2(1.,1.)),f-vec2(1.,1.)),u.x),u.y);}
+  // iz: önceki kare kıvrımlı bir akışla taşınır, söner; imlecin geçtiği çizgiye renk eklenir
+  const FS_T = `precision mediump float;uniform sampler2D pv;uniform vec2 r2;uniform float t,str,asp;uniform vec2 m,pm;${NOISE}
+  vec2 curl(vec2 p){float e=.02;return vec2(n(p+vec2(0.,e))-n(p-vec2(0.,e)),-(n(p+vec2(e,0.))-n(p-vec2(e,0.))))/(2.*e);}
+  vec3 spec(float h){return .5+.5*cos(6.2831*(h+vec3(0.,.33,.67)));}
+  void main(){vec2 uv=gl_FragCoord.xy/r2;vec2 p=vec2(uv.x*asp,uv.y);
+    vec2 v=curl(p*2.4+vec2(t*.06,-t*.04))*.0022;v.x/=asp;v.y+=.0006;
+    vec4 c=texture2D(pv,uv-v);c=max(c*.968-vec4(1.6/255.),0.);
+    vec2 a=vec2(pm.x*asp,pm.y),b=vec2(m.x*asp,m.y),ab=b-a;float h=clamp(dot(p-a,ab)/max(dot(ab,ab),1e-6),0.,1.);float d=length(p-a-ab*h);
+    float s=exp(-d*d/.0011)*str;
+    c.rgb+=spec(t*.09+h*.12+uv.y*.25)*s;c.a+=s;
+    gl_FragColor=min(c,vec4(1.));}`;
+  const FS_D = `precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform float sc;uniform sampler2D tr;${NOISE}
   float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<4;i++){s+=a*n(p);p=p*2.02+vec2(1.7,9.2);a*=.5;}return s;}
   void main(){
-    vec2 uv=gl_FragCoord.xy/r; float asp=r.x/r.y; vec2 p=vec2(uv.x*asp,uv.y);
-    float T=t*.03; p.y+=sc;
+    vec2 uv=gl_FragCoord.xy/r;float asp=r.x/r.y;vec2 p=vec2(uv.x*asp,uv.y);
+    float T=t*.03;p.y+=sc;
     vec2 q=vec2(fbm(p*1.05+T),fbm(p*1.05-T+3.1));
     vec2 w=p+q*1.4+vec2(sin(T*2.),cos(T*1.7))*.12;
-    float a=fbm(w*1.15+vec2(T*1.3,-T)), b=fbm(w*.85-vec2(T,2.3)), c=fbm(w*1.5+5.2+T*.5);
+    float a=fbm(w*1.15+vec2(T*1.3,-T)),b=fbm(w*.85-vec2(T,2.3)),c=fbm(w*1.5+5.2+T*.5);
     vec3 col=vec3(.975,.96,.94);
     col=mix(col,vec3(.975,.83,.875),smoothstep(-.02,.42,a)*.85);
     col=mix(col,vec3(.875,.845,.98),smoothstep(.02,.46,b)*.8);
     col=mix(col,vec3(.985,.885,.79),smoothstep(.08,.48,c)*.65);
     col=mix(col,vec3(.865,.925,.89),smoothstep(.12,.5,-a)*.5);
-    float silk=sin(w.x*4.+w.y*6.+a*7.); col+=vec3(.022,.018,.026)*smoothstep(.82,1.,silk);
-    vec2 mm=vec2(m.x*asp,m.y+sc); float d=length(p-mm); col+=vec3(.03,.022,.036)*exp(-d*d*6.);
+    float silk=sin(w.x*4.+w.y*6.+a*7.);col+=vec3(.022,.018,.026)*smoothstep(.82,1.,silk);
+    vec2 mm=vec2(m.x*asp,m.y+sc);float d=length(p-mm);col+=vec3(.03,.022,.036)*exp(-d*d*6.);
+    vec4 Tr=texture2D(tr,uv);float k=clamp(Tr.a,0.,1.);vec3 tc=Tr.rgb/max(Tr.a,.001);
+    tc=mix(tc,vec3(1.),.18);
+    col=mix(col,col*.5+tc*.62,k*.6);
+    col+=vec3(.07,.06,.08)*k*k;
     col*=1.-.025*length(uv-.5);
     gl_FragColor=vec4(col,1.);
   }`;
   const sh = (ty, src) => { const o = gl.createShader(ty); gl.shaderSource(o, src); gl.compileShader(o); return o; };
-  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr);
-  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { cv.remove(); return; }
-  gl.useProgram(pr);
+  const prog = fs => { const p = gl.createProgram(); gl.attachShader(p, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(p, sh(gl.FRAGMENT_SHADER, fs)); gl.bindAttribLocation(p, 0, "a"); gl.linkProgram(p); return gl.getProgramParameter(p, gl.LINK_STATUS) ? p : null; };
+  const PD = prog(FS_D), PT = prog(FS_T);
+  if (!PD) { cv.remove(); return; }
   const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  const loc = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  const U = n => gl.getUniformLocation(pr, n), uR = U("r"), uT = U("t"), uM = U("m"), uS = U("sc");
-  const Q = .5; // yarım çözünürlük: yumuşak ve hafif
-  const size = () => { cv.width = Math.max(2, Math.round(innerWidth * Q)); cv.height = Math.max(2, Math.round(innerHeight * Q)); gl.viewport(0, 0, cv.width, cv.height); gl.uniform2f(uR, cv.width, cv.height); };
-  size(); addEventListener("resize", size);
-  let mx = .7, my = .6, tmx = .7, tmy = .6;
-  addEventListener("pointermove", e => { tmx = e.clientX / innerWidth; tmy = 1 - e.clientY / innerHeight; }, { passive: true });
+  gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+  const U = (p, n) => gl.getUniformLocation(p, n);
+  const D = { r: U(PD, "r"), t: U(PD, "t"), m: U(PD, "m"), sc: U(PD, "sc"), tr: U(PD, "tr") };
+  const TT = PT && { pv: U(PT, "pv"), r2: U(PT, "r2"), t: U(PT, "t"), str: U(PT, "str"), asp: U(PT, "asp"), m: U(PT, "m"), pm: U(PT, "pm") };
+  // iz için iki doku (gidip gelen)
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let last = 0, t0 = performance.now(), sc = 0;
+  let tex = [], fbo = [], tw = 2, th = 2, cur = 0;
+  const mkTex = () => { const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, tw, th, 0, gl.RGBA, gl.UNSIGNED_BYTE, null); return t; };
+  const Q = .5, QT = .25;
+  const size = () => {
+    cv.width = Math.max(2, Math.round(innerWidth * Q)); cv.height = Math.max(2, Math.round(innerHeight * Q));
+    tw = Math.max(2, Math.round(innerWidth * QT)); th = Math.max(2, Math.round(innerHeight * QT));
+    tex.forEach(t => gl.deleteTexture(t)); fbo.forEach(f => gl.deleteFramebuffer(f)); tex = []; fbo = [];
+    if (TT) for (let i = 0; i < 2; i++) { tex[i] = mkTex(); fbo[i] = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, fbo[i]); gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex[i], 0); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  };
+  size(); addEventListener("resize", size);
+  let mx = .7, my = .6, tmx = .7, tmy = .6, px = .7, py = .6, rawx = .7, rawy = .6, speed = 0;
+  addEventListener("pointermove", e => { rawx = e.clientX / innerWidth; rawy = 1 - e.clientY / innerHeight; tmx = rawx; tmy = rawy; }, { passive: true });
+  let last = 0, t0 = performance.now(), sc = 0, lx = rawx, ly = rawy;
   const draw = now => {
+    const t = (now - t0) / 1000 + 40;
     mx += (tmx - mx) * .04; my += (tmy - my) * .04;
     sc += ((scrollY / Math.max(1, innerHeight)) * .12 - sc) * .05;
-    gl.uniform1f(uT, (now - t0) / 1000 + 40); gl.uniform2f(uM, mx, my); gl.uniform1f(uS, sc);
+    if (TT && !reduce) {
+      // imleç hızı izin gücünü belirler: durunca iz sönerek kaybolur
+      const dx = rawx - lx, dy = rawy - ly, v = Math.hypot(dx * innerWidth / innerHeight, dy);
+      speed += (Math.min(1, v * 22) - speed) * .5;
+      gl.useProgram(PT); gl.bindFramebuffer(gl.FRAMEBUFFER, fbo[1 - cur]); gl.viewport(0, 0, tw, th);
+      gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex[cur]); gl.uniform1i(TT.pv, 0);
+      gl.uniform2f(TT.r2, tw, th); gl.uniform1f(TT.t, t); gl.uniform1f(TT.asp, innerWidth / innerHeight);
+      gl.uniform2f(TT.pm, lx, ly); gl.uniform2f(TT.m, rawx, rawy); gl.uniform1f(TT.str, speed * .55);
+      gl.drawArrays(gl.TRIANGLES, 0, 3); cur = 1 - cur; lx = rawx; ly = rawy;
+    }
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, cv.width, cv.height); gl.useProgram(PD);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, TT ? tex[cur] : null); gl.uniform1i(D.tr, 1);
+    gl.uniform2f(D.r, cv.width, cv.height); gl.uniform1f(D.t, t); gl.uniform2f(D.m, mx, my); gl.uniform1f(D.sc, sc);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
   if (reduce) { draw(performance.now()); cv.classList.add("on"); return; }
@@ -2434,6 +2474,7 @@ $$(".btn").forEach(b => {
     draw(now);
   })(performance.now());
   requestAnimationFrame(() => cv.classList.add("on"));
+  window.__bgfx = { draw };
 })();
 
 /* ---------- Klas imleç: nokta imlecin tam yerinde, halka yumuşakça takip eder ---------- */
