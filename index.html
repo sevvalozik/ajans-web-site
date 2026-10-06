@@ -1405,6 +1405,15 @@ html.cc-down .cc-dot{scale:1.4}
 @media (max-width:760px){.faq-t{padding:0}.faq-t .faq-lab{display:block;font-size:9px}.mini{width:66px;height:66px}.mc{width:38px;height:38px}
   .mc .m0{transform:translateZ(19px)}.mc .m1{transform:rotateY(90deg) translateZ(19px)}.mc .m2{transform:rotateY(180deg) translateZ(19px)}.mc .m3{transform:rotateY(-90deg) translateZ(19px)}.mc .m4{transform:rotateX(90deg) translateZ(19px)}.mc .m5{transform:rotateX(-90deg) translateZ(19px)}.mc i{font-size:20px}}
 @media (prefers-reduced-motion: reduce){.faq-tilt{animation:none;transform:rotateX(-12deg) rotateY(-20deg)}}
+
+/* ---------- Performans: hareketli zeminin üstünde bulanıklık filtresi her karede yeniden hesaplanıyordu; yerine daha dolu zeminler ---------- */
+*,*::before,*::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.grain{animation:none!important}
+.tb{background:color-mix(in srgb,var(--board) 94%,transparent)!important}
+.btn.line,.btn.ghost,.sy-end .btn.ghost,.hero .cta .btn.line{background:rgba(255,253,249,.88)!important}
+.sy-prog,.st-bar{background:rgba(255,255,255,.92)!important}
+.faq-p{background:rgba(255,253,249,.95)!important}
+html.cc-link .cc-ring{background:rgba(238,221,246,.45)}
 </style>
 <!-- AÇILIŞ: inci boncuklardan isim, sonra dökülme -->
 <style>
@@ -1924,7 +1933,7 @@ document.addEventListener("keydown", e => {
   const start = () => {
     if (!T || !gl) { cv.style.display = "none"; return; }
     const renderer = new T.WebGLRenderer({ canvas: cv, alpha: true, antialias: true, powerPreference: "high-performance" });
-    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
     renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
     const scene = new T.Scene();
     const cam = new T.PerspectiveCamera(36, 1, .1, 100); cam.position.set(0, 0, 10);
@@ -1940,7 +1949,7 @@ document.addEventListener("keydown", e => {
     scene.add(new T.HemisphereLight("#FFFFFF", "#D6CFEA", .5));
     const key = new T.DirectionalLight("#FFFFFF", 1.15); key.position.set(-3.5, 6, 7); scene.add(key);
     renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
-    key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.radius = 6; key.shadow.bias = -.0004; key.shadow.normalBias = .02;
+    key.castShadow = true; key.shadow.mapSize.set(1024, 1024); key.shadow.radius = 4; key.shadow.bias = -.0004; key.shadow.normalBias = .02;
     Object.assign(key.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: .5, far: 30 });
     const catcher = new T.Mesh(new T.PlaneGeometry(60, 40), new T.ShadowMaterial({ opacity: .11 })); catcher.position.z = -1.0; catcher.receiveShadow = true; scene.add(catcher);
 
@@ -2340,7 +2349,7 @@ $$(".btn").forEach(b => {
 
   const n = SV.length, TW = 512, TH = 256;
   const renderer = new T.WebGLRenderer({ canvas: cv, alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
   renderer.outputEncoding = T.sRGBEncoding;
   const scene = new T.Scene();
   const cam = new T.PerspectiveCamera(28, 1, .1, 100); cam.position.set(0, 0, 14);
@@ -2481,7 +2490,7 @@ $$(".btn").forEach(b => {
     c.rgb+=spec(t*.09+h*.12+uv.y*.25)*s;c.a+=s;
     gl_FragColor=min(c,vec4(1.));}`;
   const FS_D = `precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform float sc;uniform sampler2D tr;${NOISE}
-  float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<4;i++){s+=a*n(p);p=p*2.02+vec2(1.7,9.2);a*=.5;}return s;}
+  float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<3;i++){s+=a*n(p);p=p*2.02+vec2(1.7,9.2);a*=.5;}return s;}
   void main(){
     vec2 uv=gl_FragCoord.xy/r;float asp=r.x/r.y;vec2 p=vec2(uv.x*asp,uv.y);
     float T=t*.03;p.y+=sc;
@@ -2516,7 +2525,7 @@ $$(".btn").forEach(b => {
   let tex = [], fbo = [], tw = 2, th = 2, cur = 0;
   const mkTex = () => { const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, tw, th, 0, gl.RGBA, gl.UNSIGNED_BYTE, null); return t; };
-  const Q = .5, QT = .25;
+  const Q = .38, QT = .22;
   const size = () => {
     cv.width = Math.max(2, Math.round(innerWidth * Q)); cv.height = Math.max(2, Math.round(innerHeight * Q));
     tw = Math.max(2, Math.round(innerWidth * QT)); th = Math.max(2, Math.round(innerHeight * QT));
@@ -2798,7 +2807,7 @@ $$(".btn").forEach(b => {
     return;
   }
   const renderer = new T.WebGLRenderer({ canvas: cv, alpha: true, antialias: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.outputEncoding = T.sRGBEncoding;
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5)); renderer.outputEncoding = T.sRGBEncoding;
   const scene = new T.Scene(); const cam = new T.PerspectiveCamera(36, 1, .1, 100); cam.position.set(0, 0, 11.5);
   const R = 4.3, CW = 2.5, CH = 1.5625, N = W0.length, STEP = Math.PI * 2 / 9, DY = .62;
   // kavisli kart: silindir yüzeyine oturur
@@ -3174,7 +3183,7 @@ $("#sendPk").addEventListener("click", () => {
 
   /* ---------- sahne ---------- */
   const renderer = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.outputEncoding = T.sRGBEncoding;
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5)); renderer.outputEncoding = T.sRGBEncoding;
   const scene = new T.Scene();
   const cam = new T.PerspectiveCamera(35, 1, .1, 100); cam.position.set(0, 0, 14);
   // cam için yumuşak stüdyo yansımaları
@@ -3369,7 +3378,7 @@ $("#sendPk").addEventListener("click", () => {
   const cv = document.createElement("canvas"); cv.className = "roam"; cv.setAttribute("aria-hidden", "true"); document.body.appendChild(cv);
   let S = innerWidth < 760 ? 112 : 160;
   const renderer = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, premultipliedAlpha: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.setSize(S, S);
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5)); renderer.setSize(S, S);
   renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = .92;
   const scene = new T.Scene();
   const cam = new T.PerspectiveCamera(30, 1, .1, 50); cam.position.set(0, .35, 13.5); cam.lookAt(0, .35, 0);
@@ -3638,7 +3647,7 @@ if (ST) addEventListener("load", () => ST.refresh());
   if (!T || !G || !sec) { if (sec) sec.remove(); return; }
   try { if (!document.createElement("canvas").getContext("webgl")) { sec.remove(); return; } } catch (e) { sec.remove(); return; }
   const renderer = new T.WebGLRenderer({ canvas: cv, antialias: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5));
   renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
   renderer.physicallyCorrectLights = true;
   const scene = new T.Scene();
@@ -3857,7 +3866,7 @@ if (ST) addEventListener("load", () => ST.refresh());
   const BRAND = (typeof CONFIG !== "undefined" && CONFIG.BRAND) || "sayfa";
   const cv = document.getElementById("introGl"), bgEl = document.getElementById("introBg");
   const renderer = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.outputEncoding = T.sRGBEncoding;
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.5)); renderer.outputEncoding = T.sRGBEncoding;
   renderer.toneMapping = T.ACESFilmicToneMapping; renderer.physicallyCorrectLights = true;
   const scene = new T.Scene(), C = h => new T.Color(h).convertSRGBToLinear();
   // stüdyo ortamı: incilere yumuşak yansıma
