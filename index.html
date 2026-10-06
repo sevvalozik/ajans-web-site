@@ -435,6 +435,9 @@ a,button,[role=button],.chip,.tile,label[for],select,summary,.dock-t{cursor:url(
 #orbStage,#pkArea,#stGl,#heroPanel[data-cursor],#syPanel[data-cursor]{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 34 34'%3E%3Ccircle cx='17' cy='17' r='12.5' fill='rgba%28255,255,255,.55%29' stroke='%23FFFFFF' stroke-width='3.5'/%3E%3Ccircle cx='17' cy='17' r='12.5' fill='none' stroke='%23241F2C' stroke-width='1.6'/%3E%3Ccircle cx='17' cy='17' r='3' fill='%23241F2C'/%3E%3C/svg%3E") 17 17,grab}
 #orbStage.drag,#pkArea:active,#stGl:active,#heroPanel[data-cursor="Fırlat"]{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 34 34'%3E%3Ccircle cx='17' cy='17' r='9' fill='%23241F2C' stroke='%23FFFFFF' stroke-width='3'/%3E%3Ccircle cx='17' cy='17' r='2.6' fill='%23FFFFFF'/%3E%3C/svg%3E") 17 17,grabbing}
 input,textarea,[contenteditable=true]{cursor:text}
+/* menü ve WhatsApp sekmeleri: özel imleç yok, tarayıcının kendi imleci */
+.dock,.dock *,#btabs,#btabs *{cursor:default!important}
+.dock a,.dock button,#btabs button{cursor:pointer!important}
 .cur2{position:fixed;left:0;top:0;z-index:96;pointer-events:none}
 .cur2 .cl{position:absolute;left:0;top:0;display:inline-flex;align-items:center;gap:7px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
   background:#241F2C;color:#fff;padding:6px 11px 6px 8px;border-radius:999px;white-space:nowrap;opacity:0;scale:.8;transition:opacity .18s,scale .25s cubic-bezier(.2,1.5,.4,1);box-shadow:0 10px 24px -10px rgba(36,31,44,.5)}
@@ -3075,8 +3078,8 @@ $("#sendPk").addEventListener("click", () => {
     W = panel.clientWidth; H = panel.clientHeight; narrow = W < 760;
     renderer.setSize(W, H, false); cam.aspect = W / H; cam.fov = narrow ? 50 : 35; cam.updateProjectionMatrix();
     vh = 2 * cam.position.z * Math.tan(cam.fov * Math.PI / 360); vw = vh * cam.aspect;
-    R = narrow ? .3 : .34; BR = R * .82; SPC = BR * 2.04;
-    const pts = narrow ? snake(-vw * .4, vw * .4, vh * .28, -vh * .2, 4) : snake(vw * .0, vw * .42, vh * .4, -vh * .2, 5);
+    R = narrow ? .44 : .58; BR = R * .84; SPC = BR * 2.22;
+    const pts = narrow ? snake(-vw * .38, vw * .38, vh * .27, -vh * .22, 3) : snake(-vw * .02, vw * .42, vh * .38, -vh * .24, 3);
     curve = new T.CatmullRomCurve3(pts, false, "catmullrom", .2); Lt = curve.getLength();
     [tube, flow, ...rims].forEach(o => { if (o) { root.remove(o); o.geometry.dispose(); } }); rims = [];
     tube = new T.Mesh(new T.TubeGeometry(curve, 900, R, 36, false), glassM); tube.renderOrder = 5; root.add(tube);
