@@ -163,6 +163,12 @@ p{margin:0}
 .modes button[aria-current="true"]{color:#101217}
 .modes button[aria-current="true"]::before{width:26px}
 .hero-bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:24px 40px;flex-wrap:wrap}
+@media (min-width:901px){
+  .hero .hero-ui{justify-content:flex-start}
+  .hero-bottom{flex-direction:column;align-items:flex-start;flex-wrap:nowrap;gap:clamp(26px,3.4vh,40px);margin:auto 0;max-width:52%}
+  .hero .hero-h{font-size:clamp(54px,7.2vw,124px)}
+  .hero-side{max-width:380px}
+}
 .hero-h{
   font-size:clamp(54px,8.8vw,148px);font-weight:600;
   letter-spacing:-.055em;line-height:.92;color:var(--head);
@@ -1806,9 +1812,9 @@ document.addEventListener("keydown", e => {
       W = panel.clientWidth; H = panel.clientHeight; wide = W > 760;
       renderer.setSize(W, H, false); cam.aspect = W / H; cam.updateProjectionMatrix();
       vh = 2 * cam.position.z * Math.tan(cam.fov * Math.PI / 360); vw = vh * cam.aspect;
-      s0 = wide ? Math.min(1.05, vh / 6.4) : Math.min(.8, vw / 5.2);
-      root.scale.setScalar(s0); root.position.set(wide ? vw * .1 : vw * .08, 0, 0);
-      Ls = (vh / 2 + .4) / s0 - (wide ? vh * .27 : vh * .2) / s0;
+      s0 = wide ? Math.min(1.45, vh / 4.9) : Math.min(.8, vw / 5.2);
+      root.scale.setScalar(s0); root.position.set(wide ? vw * .2 : vw * .08, 0, 0);
+      Ls = (vh / 2 + .4) / s0 - (wide ? vh * .15 : vh * .2) / s0;
     }
     size(); new ResizeObserver(size).observe(panel);
     const topY = () => (vh / 2) / s0 + .4;
