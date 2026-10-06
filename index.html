@@ -1771,7 +1771,7 @@ document.addEventListener("keydown", e => {
     sys = { go(i) { charms.forEach(c => { if (c.mode === i) { c.q.y -= .006; c.twv += 2.5; } }); } };
 
     let t = 0, last = performance.now(), acc = 0;
-    const G_ = -6.2, H_ = 1 / 120, DAMP = .988;
+    const G_ = -10, H_ = 1 / 120, DAMP = .988;
     const dv = new T.Vector3(), rv = new T.Vector3();
     function step(h) {
       rv.copy(R).sub(Rq).multiplyScalar(DAMP); Rq.copy(R); R.add(rv); R.y += G_ * h * h;
@@ -1783,7 +1783,7 @@ document.addEventListener("keydown", e => {
         dv.copy(c.p).sub(c.q); const sp = dv.length(), mx = drag >= 0 ? .05 : .035; if (sp > mx) c.q.copy(c.p).addScaledVector(dv, -mx / sp);
       });
       for (let it = 0; it < 4; it++) {
-        tmp.copy(R).sub(A); const d = tmp.length(); if (d > Ls) R.copy(A).addScaledVector(tmp, Ls / d);
+        tmp.copy(R).sub(A); const d = tmp.length(); if (d > Ls) R.copy(A).addScaledVector(tmp, Ls / d); else if (d < Ls * .96) R.copy(A).addScaledVector(tmp, (d + (Ls - d) * .35) / d); // şerit gevşemez: başa dönünce halka hemen iner
         charms.forEach((c, i) => {
           if (drag === i) { c.p.lerp(M, .18); c.p.z = c.zo + .3; }
           attach(c, tmp); dv.copy(c.p).sub(tmp); const dd = dv.length(), Lc = c.link + c.h * .55;
@@ -1802,7 +1802,7 @@ document.addEventListener("keydown", e => {
     (function loop() {
       requestAnimationFrame(loop); const now = performance.now(), dt = Math.min(.1, (now - last) / 1000); last = now; if (!running) return; t += dt;
       // tepe noktası: girişte yukarıdan iner, kaydırınca yukarı çekilir
-      if (!introT) introT = now; const ip = Math.min(1, (now - introT) / 1600); const ie = 1 - Math.pow(1 - ip, 3);
+      if (!introT) introT = now; const ip = Math.min(1, (now - introT) / 650); const ie = 1 - Math.pow(1 - ip, 3);
       svel += ((scroll - lastS) * 60 - svel) * .2; lastS = scroll;
       A.set(Math.sin(t * .35) * .04, topY() + (1 - ie) * 6 + scroll * (vh / s0) * 1.25, 0);
       Mv.copy(M).sub(Mq).divideScalar(Math.max(dt, .001)); Mq.copy(M); if (now - lastMove > 80) Mv.set(0, 0, 0);
