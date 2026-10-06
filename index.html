@@ -1267,7 +1267,7 @@ main,footer{position:relative;z-index:1}
 /* ---------- Süreç kartları: kâğıt dosya hissi, üst şerit, teslim listesi ---------- */
 .hw-card{border-radius:30px;background:linear-gradient(180deg,var(--bg) 0%,color-mix(in srgb,var(--bg) 45%,#FFFDF9) 62%,#FFFDF9 100%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(78,42,74,.06),0 2px 0 rgba(78,42,74,.03),0 44px 80px -46px color-mix(in srgb,var(--ac) 55%,rgba(60,40,90,.6));
-  grid-template-rows:auto minmax(0,1fr);row-gap:clamp(14px,2vh,22px)}
+  grid-template-rows:none;row-gap:clamp(12px,1.8vh,20px)}
 .hw-card::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.5;mix-blend-mode:multiply;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .35 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 .hw-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px dashed color-mix(in srgb,var(--ac) 30%,transparent);
@@ -1276,7 +1276,7 @@ main,footer{position:relative;z-index:1}
 .hw-card .hw-t{display:contents}
 .hw-card .hw-t > :not(.hw-top){grid-column:1}
 .hw-card{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);grid-auto-rows:auto;align-content:start}
-.hw-card .hw-art{grid-column:2;grid-row:2 / span 5;align-self:stretch;border-radius:22px;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px rgba(78,42,74,.06);
+.hw-card .hw-art{grid-column:2;grid-row:1 / span 6;align-self:stretch;border-radius:22px;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px rgba(78,42,74,.06);
   background-image:radial-gradient(rgba(78,42,74,.09) 1px,transparent 1.3px);background-size:18px 18px;margin-top:4px}
 .hw-n{font-size:clamp(60px,6.6vw,112px);color:var(--ac);margin:0;line-height:.85}
 .hw-t h3{font-size:clamp(34px,3.8vw,58px);color:var(--head,#2A2433);margin-top:auto}
@@ -1511,7 +1511,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
   <div class="wrap">
     <div class="sec-head">
       <h2>Biz <span class="drum" id="drum"><span class="drum-in"><span style="--c:var(--c-tasarim)">marka</span><span style="--c:var(--c-kod)">site</span><span style="--c:var(--c-kod)">uygulama</span><span style="--c:var(--c-video)">reels</span><span style="--c:var(--c-reklam)">reklam</span><span style="--c:var(--ink-2)">sunum</span><span style="--c:var(--c-reklam)">SEO</span><span style="--c:var(--c-otomasyon)">otomasyon</span></span></span> yaparız.</h2>
-      <p>Altı başlık, her birinin altında onlarca iş. Küreleri sürükleyin, ortadakinin işleri altta açılır.</p>
+      
     </div>
     <div class="orbs" id="orbs">
       <div class="orb-stage" id="orbStage"><canvas id="orbGl" aria-hidden="true"></canvas><div class="orb-hint" aria-hidden="true"><b></b>Sürükleyin<b></b></div></div>
@@ -1716,7 +1716,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
   <div class="wrap">
     <div class="sec-head">
       <h2>WhatsApp'ınız<br>gece de çalışsın.</h2>
-      <p>Sorulara cevap veren, randevu ve sipariş alan, bilgiyi takviminize ve müşteri listenize kendisi işleyen bir asistan. Bilmediği bir soruda konuşmayı ekibinize devreder. Sağdaki sohbete siz de yazabilirsiniz.</p>
+      <p>Müşteriniz gece yarısı yazsa da cevapsız kalmaz. Asistanınız soruları yanıtlar, randevuyu ve siparişi alıp takviminize işler; emin olmadığı yerde konuşmayı size devreder. Yandaki sohbette hemen deneyin.</p>
     </div>
     <div class="bst" id="bst">
       <div class="btabs" id="btabs" role="tablist" aria-label="Örnek konuşmalar">
@@ -1766,11 +1766,11 @@ html.intro-on,html.intro-on body{overflow:hidden}
       <div class="sy-head">
         <span class="sy-eb">Sektörler</span>
         <h2>Hangi sektör <em>olursa</em></h2>
-        <p>Her sektörden bir deneyim küresi. Kaydırın, borunun ağzına gelen küre açılsın ve düşsün.</p>
+        <p>Her sektörden bir deneyim küresi.</p>
       </div>
       <div class="sy-prog" aria-hidden="true"><span id="tCount">0 / 5 sektör</span><span class="tbar"><i id="tBar"></i></span></div>
       <div class="sy-end" id="tEnd">
-          <h3 id="tEndH">Sizinki hangisi? Yazın, küresi borudan gelsin.</h3>
+          <h3 id="tEndH">Sizin sektörünüz nedir?</h3>
           <form class="ys-f" id="ysForm" autocomplete="off">
             <label for="ysIn" class="sr">Sektörünüz</label>
             <input id="ysIn" type="text" placeholder="Ne iş yapıyorsunuz? Örn. çiçekçi, avukat, otel…" maxlength="40">
@@ -1796,14 +1796,14 @@ html.intro-on,html.intro-on body{overflow:hidden}
     <ol class="hw-dots" aria-hidden="true"><li class="on"><i></i>Dinleriz</li><li><i></i>Kurarız</li><li><i></i>Üretiriz</li><li><i></i>Ölçeriz</li></ol>
     <div class="hw-deck">
       <article class="hw-card on" style="--bg:#FBE4EC;--ac:#C9607F">
-        <div class="hw-t"><span class="hw-top"><span>Adım 01 / 04 · Dinleriz</span><em>1 hafta</em></span><span class="hw-n">01</span><h3>Brief</h3><p>İşinizi, hedefinizi ve kısıtlarınızı tek bir sayfaya dökeriz.</p><ul class="hw-out"><li>Hedef ve kitle</li><li>Rakip taraması</li><li>Bütçe ve takvim</li></ul></div>
+        <div class="hw-t"><span class="hw-n">01</span><h3>Brief</h3><p>İşinizi, hedefinizi ve kısıtlarınızı tek bir sayfaya dökeriz.</p><ul class="hw-out"><li>Tanışma görüşmesi</li><li>Rakip ve pazar taraması</li><li>Ortak takvim</li></ul></div>
         <div class="hw-art a1" aria-hidden="true">
           <div class="bub">Ne lazım?</div>
-          <div class="note"><b>Brief</b><i style="--w:86%"></i><i style="--w:64%"></i><i style="--w:78%"></i><i style="--w:42%"></i><span class="chk">✓ Hedef</span><span class="chk">✓ Bütçe</span><span class="chk">✓ Takvim</span></div>
+          <div class="note"><b>Brief</b><i style="--w:86%"></i><i style="--w:64%"></i><i style="--w:78%"></i><i style="--w:42%"></i><span class="chk">✓ Kitle</span><span class="chk">✓ Bütçe</span><span class="chk">✓ Ton</span></div>
         </div>
       </article>
       <article class="hw-card" style="--bg:#ECE5FA;--ac:#8366CC">
-        <div class="hw-t"><span class="hw-top"><span>Adım 02 / 04 · Kurarız</span><em>1–2 hafta</em></span><span class="hw-n">02</span><h3>Fikir</h3><p>Kimliği, planı ve ilk taslakları çıkarır, onayınıza sunarız.</p><ul class="hw-out"><li>Moodboard</li><li>Logo ve kimlik taslağı</li><li>Yol haritası</li></ul></div>
+        <div class="hw-t"><span class="hw-n">02</span><h3>Fikir</h3><p>Kimliği, planı ve ilk taslakları çıkarır, onayınıza sunarız.</p><ul class="hw-out"><li>Moodboard ve referanslar</li><li>İki farklı tasarım yönü</li><li>Onay turu</li></ul></div>
         <div class="hw-art a2" aria-hidden="true">
           <svg viewBox="0 0 300 220"><g class="sk"><circle cx="80" cy="80" r="40"/><path d="M160 40 L230 40 L230 110 L160 110 Z"/><path d="M60 170 Q150 120 240 170"/></g></svg>
           <div class="mark"><span></span></div>
@@ -1811,7 +1811,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
         </div>
       </article>
       <article class="hw-card" style="--bg:#E2F1E8;--ac:#4C9474">
-        <div class="hw-t"><span class="hw-top"><span>Adım 03 / 04 · Üretiriz</span><em>3–6 hafta</em></span><span class="hw-n">03</span><h3>Üretim</h3><p>Tasarım, kod, içerik ve reklam aynı masada, aynı takvimle ilerler.</p><ul class="hw-out"><li>Tasarım ve yazılım</li><li>Çekim ve içerik</li><li>Haftalık önizleme</li></ul></div>
+        <div class="hw-t"><span class="hw-n">03</span><h3>Üretim</h3><p>Tasarım, kod, içerik ve reklam aynı masada, aynı takvimle ilerler.</p><ul class="hw-out"><li>Tek muhatap</li><li>Haftalık önizleme</li><li>Zamanında teslim</li></ul></div>
         <div class="hw-art a3" aria-hidden="true">
           <div class="tl t-web"><b></b><i></i><i></i><i></i></div>
           <div class="tl t-ph"><b></b><i></i><i></i></div>
@@ -1821,7 +1821,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
         </div>
       </article>
       <article class="hw-card" style="--bg:#FBEBDD;--ac:#C9813F">
-        <div class="hw-t"><span class="hw-top"><span>Adım 04 / 04 · Ölçeriz</span><em>Sürekli</em></span><span class="hw-n">04</span><h3>Büyüme</h3><p>Sonuçları takip eder, işleyeni büyütür, işlemeyeni düzeltiriz.</p><ul class="hw-out"><li>Reklam yönetimi</li><li>Aylık rapor</li><li>İyileştirme turları</li></ul></div>
+        <div class="hw-t"><span class="hw-n">04</span><h3>Büyüme</h3><p>Sonuçları takip eder, işleyeni büyütür, işlemeyeni düzeltiriz.</p><ul class="hw-out"><li>Reklam ve SEO yönetimi</li><li>Aylık sonuç görüşmesi</li><li>A/B testleri</li></ul></div>
         <div class="hw-art a4" aria-hidden="true">
           <svg viewBox="0 0 300 200"><g class="gr"><path d="M0 160 H300 M0 110 H300 M0 60 H300"/></g><path class="ln" d="M10 170 C60 160 80 120 120 125 S180 90 210 70 S260 40 290 22"/><circle class="dt" cx="290" cy="22" r="7"/></svg>
           <div class="kpi"><small>Dönüşüm</small><b>+<span class="cnt" data-to="38">0</span>%</b></div>
@@ -2513,11 +2513,11 @@ $$(".btn").forEach(b => {
     vec2 q=vec2(fbm(p*.62+T),fbm(p*.62-T+3.1));
     vec2 w=p*.7+q*1.1+vec2(sin(T*2.),cos(T*1.7))*.1;
     float a=fbm(w*.9+vec2(T*1.3,-T)),b=fbm(w*.7-vec2(T,2.3)),c=fbm(w*1.1+5.2+T*.5);
-    vec3 col=vec3(.962,.94,.915);
-    col=mix(col,vec3(.95,.73,.81),smoothstep(-.18,.38,a)*.9);
-    col=mix(col,vec3(.79,.75,.96),smoothstep(-.12,.4,b)*.85);
-    col=mix(col,vec3(.98,.82,.69),smoothstep(-.05,.42,c)*.7);
-    col=mix(col,vec3(.77,.885,.83),smoothstep(.0,.45,-a)*.55);
+    vec3 col=vec3(.955,.948,.935);
+    col=mix(col,vec3(.80,.82,.95),smoothstep(-.18,.38,b)*.75);
+    col=mix(col,vec3(.79,.875,.845),smoothstep(-.1,.4,-a)*.6);
+    col=mix(col,vec3(.94,.885,.80),smoothstep(-.05,.42,c)*.55);
+    col=mix(col,vec3(.90,.84,.88),smoothstep(.1,.45,a)*.35);
     vec2 mm=vec2(m.x*asp,m.y+sc);float d=length(p-mm);col+=vec3(.03,.022,.036)*exp(-d*d*6.);
     vec4 Tr=texture2D(tr,uv);float k=clamp(Tr.a,0.,1.);vec3 tc=Tr.rgb/max(Tr.a,.001);
     tc=mix(tc,vec3(1.),.18);
