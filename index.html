@@ -1429,7 +1429,7 @@ main,footer{position:relative;z-index:1}
       <div class="hx-top">İşlerden kareler · müşteri adları gizli</div>
       <div class="hx-title"><h2>Yaptığımız<br><em>işler</em></h2></div>
       <canvas id="hxGl" aria-hidden="true"></canvas>
-      <div class="hx-cap" aria-live="polite"><span id="hxCap">Kafe<b>Marka kimliği ve ürün uygulamaları</b></span><span id="hxNum">01 / 12</span></div>
+      <div class="hx-cap" aria-hidden="true"><span></span><span id="hxNum">12 iş</span></div>
       <div class="hx-grid" id="hxGrid"></div>
     </div>
   </div>
@@ -2358,7 +2358,7 @@ $$(".btn").forEach(b => {
   panel.addEventListener("pointermove", e => { const r = panel.getBoundingClientRect(); mx = (e.clientX - r.left) / r.width * 2 - 1; my = -((e.clientY - r.top) / r.height * 2 - 1); ray.set(mx, my); });
   panel.addEventListener("pointerleave", () => { ray.set(-9, -9); mx = my = 0; });
   let running = false; new IntersectionObserver(es => { running = es[0].isIntersecting; }).observe(panel);
-  const cap = $("#hxCap"), num = $("#hxNum"); let shown = -1;
+  const num = $("#hxNum"); let shown = -1;
   const v = new T.Vector3();
   let t = 0, rot = 0;
   (function loop() {
@@ -2372,12 +2372,15 @@ $$(".btn").forEach(b => {
     cards.forEach(m => {
       m.getWorldPosition(v); const facing = v.z / R; // 1 = öne bakıyor
       const near = 1 - Math.min(1, Math.abs(v.y) / 4.5);
-      m.material.opacity = Math.max(.12, (facing * .5 + .5) * (.35 + .65 * near));
+      // öne bakan kareler tam opak: başlık asla önlerine geçmez; arkadakiler başlığın ardında soluk
+      const fr = Math.min(1, Math.max(0, (facing + .15) / .35));
+      m.material.opacity = (.16 + .84 * fr) * (fr >= 1 ? Math.min(1, .25 + near * 1.6) : 1);
+      m.material.depthWrite = fr >= 1; m.renderOrder = fr >= 1 ? 2 : 1;
       const sTarget = hover === m.userData.i ? 1.12 : 1; m.userData.s += (sTarget - m.userData.s) * .12; m.scale.setScalar(m.userData.s);
       const score = v.z - Math.abs(v.y) * 1.5; if (score > fz) { fz = score; front = m.userData.i; }
     });
     const k = hover >= 0 ? hover : (fz > -2.5 ? front : -1);
-    if (k !== shown) { shown = k; cap.innerHTML = k < 0 ? `Kaydırın<b>İşler geçmeye başlasın</b>` : `${W0[k][1]}<b>${W0[k][2]}</b>`; num.textContent = k < 0 ? `${N} kare` : `${String(k + 1).padStart(2, "0")} / ${N}`; }
+    if (k !== shown) { shown = k; num.textContent = k < 0 ? `${N} kare` : `${String(k + 1).padStart(2, "0")} / ${N}`; }
     renderer.render(scene, cam);
   })();
 })();
