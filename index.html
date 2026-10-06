@@ -1144,6 +1144,8 @@ main,footer{position:relative;z-index:1}
 @media (max-width:760px){#hizmetler .orb-stage{height:300px}#hizmetler,#bot{min-height:0}}
 /* art arda gelen bölümler birbirine yapışmasın: üstte boşluk ve ince ayırıcı */
 #paket,#dene{padding-top:clamp(120px,15vh,180px);position:relative}
+#kareler{padding-bottom:clamp(140px,20vh,220px)!important;position:relative}
+#kareler::after{content:"";position:absolute;bottom:clamp(70px,10vh,110px);left:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));right:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));height:1px;background:linear-gradient(90deg,transparent,var(--line) 12%,var(--line) 88%,transparent)}
 #paket::before,#dene::before{content:"";position:absolute;top:clamp(56px,7vh,84px);left:var(--gx);right:var(--gx);height:1px;background:linear-gradient(90deg,transparent,var(--line) 12%,var(--line) 88%,transparent)}
 </style>
 
