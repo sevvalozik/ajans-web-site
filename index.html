@@ -2689,6 +2689,43 @@ $$(".btn").forEach(b => {
   if (!reduce) setInterval(() => vis.forEach(play), 7000);
 })();
 
+/* ---------- Yumuşak hizalama: kaydırma iki bölümün arasında durursa en yakın bölümün başına kayar ---------- */
+(() => {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const ids = ["#top", "#hizmetler", "#paket", "#kareler", "#anatomi", "#isler", "#bot", "#surec", "#iletisim"];
+  const secs = ids.map(i => $(i)).filter(Boolean);
+  let idle = 0, down = false, busy = false, lastY = scrollY, born = performance.now();
+  addEventListener("pointerdown", () => { down = true; }, { passive: true });
+  addEventListener("pointerup", () => { down = false; schedule(); }, { passive: true });
+  addEventListener("touchstart", () => { down = true; }, { passive: true });
+  addEventListener("touchend", () => { down = false; schedule(); }, { passive: true });
+  const blocked = () => down || busy || performance.now() - born < 2500 || document.documentElement.classList.contains("intro-on")
+    || $("#faq.open") || $("#dock.open") || (document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName));
+  function settle() {
+    if (blocked()) return;
+    const vh = innerHeight, y = scrollY, max = document.documentElement.scrollHeight - vh;
+    if (y >= max - 4) return; // en altta (alt bilgi) dokunma
+    // ekranı tek başına dolduran bir bölümün içindeysek (sabitlenen sahneler dahil) dokunma
+    for (const el of secs) { const b = el.getBoundingClientRect(); if (b.top <= 1 && b.bottom >= vh - 1) return; }
+    // görünümü en çok paylaşan iki bölümü bul: biri üstte yarım, biri altta yarım kalmış mı?
+    let target = null, best = Infinity;
+    for (const el of secs) {
+      const top = el.getBoundingClientRect().top + y;
+      const d = top - y; // bölüm başının ekranın üstüne uzaklığı
+      if (Math.abs(d) < 6) return; // zaten hizalı
+      if (Math.abs(d) < vh * .42 && Math.abs(d) < Math.abs(best)) { best = d; target = top; }
+    }
+    if (target == null) return;
+    busy = true;
+    const done = () => { busy = false; };
+    if (lenis) lenis.scrollTo(target, { duration: .75, easing: t => 1 - Math.pow(1 - t, 3), onComplete: done });
+    else { scrollTo({ top: target, behavior: "smooth" }); setTimeout(done, 800); }
+    setTimeout(done, 1200);
+  }
+  function schedule() { clearTimeout(idle); idle = setTimeout(settle, 220); }
+  addEventListener("scroll", () => { if (Math.abs(scrollY - lastY) > 0) schedule(); lastY = scrollY; }, { passive: true });
+})();
+
 /* ---------- Klas imleç: nokta imlecin tam yerinde, halka yumuşakça takip eder ---------- */
 (() => {
   if (!fine) return;
