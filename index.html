@@ -843,18 +843,18 @@ input,textarea,[contenteditable=true]{cursor:text}
 .sy-chips em{font-style:normal;font-size:14px;font-weight:600;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.8);border:1px solid rgba(16,18,23,.07);box-shadow:0 10px 22px -16px rgba(60,40,120,.45);display:inline-flex;align-items:center;gap:8px;
   animation:ys-in .5s cubic-bezier(.2,1.3,.4,1) both;animation-delay:calc(var(--i) * 90ms + .25s)}
 .sy-chips em::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pc,#7B5CFF)}
-.mx-pop{position:absolute;left:0;top:0;z-index:4;pointer-events:none;width:max-content;max-width:250px;opacity:0;--dy:44px;translate:-50% calc(-100% - var(--dy));scale:.6;transform-origin:50% 100%;
+.mx-pop{position:absolute;left:0;top:0;z-index:4;pointer-events:none;width:max-content;max-width:250px;opacity:0;--dx:62px;--dy:44px;translate:calc(-100% - var(--dx)) -50%;scale:.6;transform-origin:100% 50%;
   border-radius:18px;background:rgba(255,255,255,.94);box-shadow:0 20px 40px -20px rgba(60,40,110,.45),inset 0 0 0 1px rgba(16,18,23,.05);padding:14px 16px;
   transition:opacity .25s,scale .45s cubic-bezier(.2,1.5,.4,1)}
 .mx-pop.on{opacity:1;scale:1}
-.mx-pop::after{content:"";position:absolute;left:50%;bottom:-7px;width:14px;height:14px;margin-left:-7px;background:inherit;transform:rotate(45deg);border-radius:0 0 4px 0;box-shadow:3px 3px 6px -3px rgba(60,40,110,.25)}
+.mx-pop::after{content:"";position:absolute;right:-7px;top:50%;width:14px;height:14px;margin-top:-7px;background:inherit;transform:rotate(45deg);border-radius:0 4px 0 0;box-shadow:3px -3px 6px -3px rgba(60,40,110,.25)}
 .mx-pop b{display:block;font-size:20px;letter-spacing:-.03em;line-height:1.05}
 .mx-pop b::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:9px;vertical-align:2px;box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 22%,transparent)}
 .mx-pop span{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
 .mx-pop em{font-style:normal;font-size:12px;font-weight:600;padding:4px 9px;border-radius:999px;background:color-mix(in srgb,var(--c) 14%,#fff);color:#101217}
 .mx-lab{position:absolute;left:0;top:0;z-index:3;pointer-events:none;translate:-50% 30px;font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(16,18,23,.7);white-space:nowrap;opacity:0;transition:opacity .3s}
 .mx-lab.on{opacity:1}
-@media (max-width:760px){.mx-lab{display:none!important}.mx-pop{--dy:34px;max-width:200px;padding:11px 13px}.mx-pop b{font-size:16px}.mx-lab{font-size:9px;translate:-50% 24px}}
+@media (max-width:760px){.mx-lab{display:none!important}.mx-pop{translate:-50% calc(-100% - var(--dy));transform-origin:50% 100%}.mx-pop::after{right:auto;left:50%;top:auto;bottom:-7px;margin:0 0 0 -7px;border-radius:0 0 4px 0;box-shadow:3px 3px 6px -3px rgba(60,40,110,.25)}.mx-pop{--dy:34px;max-width:200px;padding:11px 13px}.mx-pop b{font-size:16px}.mx-lab{font-size:9px;translate:-50% 24px}}
 .sy-moon{position:absolute;left:0;top:0;z-index:2;pointer-events:none;font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#101217;background:rgba(255,255,255,.88);padding:3px 8px;border-radius:999px;margin:-26px 0 0 8px;white-space:nowrap;opacity:0;transition:opacity .3s;box-shadow:0 6px 14px -8px rgba(60,40,120,.45)}
 .sy-moon.on{opacity:1}
 .sy-tip{position:absolute;left:0;top:0;z-index:4;pointer-events:none;background:#101217;color:#fff;font-size:12.5px;font-weight:600;padding:5px 11px;border-radius:999px;opacity:0;transition:opacity .2s;white-space:nowrap}
@@ -3078,7 +3078,7 @@ $("#sendPk").addEventListener("click", () => {
     renderer.setSize(W, H, false); cam.aspect = W / H; cam.fov = narrow ? 50 : 35; cam.updateProjectionMatrix();
     vh = 2 * cam.position.z * Math.tan(cam.fov * Math.PI / 360); vw = vh * cam.aspect;
     R = narrow ? .44 : .58; BR = R * .84; SPC = BR * 2.22;
-    const pts = narrow ? snake(-vw * .38, vw * .38, vh * .27, -vh * .22, 3) : snake(-vw * .02, vw * .42, vh * .38, -vh * .24, 3);
+    const pts = narrow ? snake(-vw * .38, vw * .38, vh * .27, -vh * .22, 3) : snake(-vw * .02, vw * .42, vh * .4, -vh * .19, 3);
     curve = new T.CatmullRomCurve3(pts, false, "catmullrom", .2); Lt = curve.getLength();
     [tube, flow, ...rims].forEach(o => { if (o) { root.remove(o); o.geometry.dispose(); } }); rims = [];
     tube = new T.Mesh(new T.TubeGeometry(curve, 900, R, 36, false), glassM); tube.renderOrder = 5; root.add(tube);
@@ -3112,7 +3112,8 @@ $("#sendPk").addEventListener("click", () => {
   (function loop() {
     requestAnimationFrame(loop); const now = performance.now(), dt = Math.min(.05, (now - last) / 1000); last = now; if (!running) return; t += dt;
     const p = prog, u = Math.max(0, (p - P0) / (P1 - P0)) * N, j = Math.min(N, Math.floor(u)), f = u - j;
-    const shift = j < N ? ease(Math.max(0, (f - HOLD) / (1 - HOLD))) : 0;
+    // her adım: sıradaki küre ağza iner → kartı açılır → düşer (başta hepsi boru içinde, ağız boş)
+    const ARR = .22, arrive = j < N ? ease(Math.min(1, f / ARR)) : 1;
     flowTex.offset.x -= dt * .35;
     let shown = 0;
     balls.forEach((b, i) => {
@@ -3124,8 +3125,8 @@ $("#sendPk").addEventListener("click", () => {
         const k = i < j ? 1 : (f - HOLD) / (1 - HOLD), fall = k * k;
         b.pos.set(exitP.x + k * BR * .8, exitP.y - fall * vh * .75, 0); vis = k < .999;
       } else { // sırada bekler: alttaki ağızda, diğerleri üst üste
-        const q = i - j - (i > j ? shift : 0); onTube(q * SPC, b.pos);
-        card = i === j && p > P0 && f < HOLD && !endOn;
+        const q = i - j + 1 - arrive; onTube(q * SPC + BR * .2, b.pos);
+        card = i === j && p > P0 && f >= ARR * .85 && f < HOLD && !endOn;
       }
       if (hl === b) card = true;
       b.m.visible = vis; b.m.position.copy(b.pos);
