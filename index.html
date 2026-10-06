@@ -25,7 +25,7 @@
 <body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400..600&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Serif+Display&family=Fraunces:ital,opsz,wght,SOFT,WONK@1,9..144,100..900,0..100,0..1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300..800&family=Geist+Mono:wght@400..600&family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Serif+Display&family=Fraunces:ital,opsz,wght,SOFT,WONK@1,9..144,100..900,0..100,0..1&family=Caveat:wght@600&display=swap">
 <style>
 /* Layout: bir tasarım aracının tuvali. Sayfa = artboard, ekip = çok kullanıcılı imleçler, bölümler tuvalde yan yana duran çalışma alanları. */
 :root{
@@ -1436,6 +1436,67 @@ html.cc-link .cc-ring{background:rgba(238,221,246,.45)}
 #bot{padding-bottom:clamp(110px,15vh,170px)!important}
 #surec{position:relative}
 #surec::before{content:"";position:absolute;z-index:3;top:0;left:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));right:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));height:1px;background:linear-gradient(90deg,transparent,var(--line) 12%,var(--line) 88%,transparent)}
+
+/* ---------- Başlık dili: aynı mürdüm büyük harf, her başlıkta tek kelime bölümün nesnesine dönüşür ---------- */
+.hh{color:var(--head,#2A2433)!important}
+.hh em{background:none!important;color:inherit!important}
+/* sepet: çipler */
+.hk-chips{display:inline-flex;gap:.16em;vertical-align:baseline;text-transform:none;letter-spacing:-.03em}
+.chip-k{display:inline-flex;align-items:center;gap:.22em;padding:.04em .34em .08em .24em;border-radius:999px;background:#FFFDF9;border:.045em solid #4E2A4A;font-size:.86em;line-height:1;
+  transform:rotate(var(--r1));box-shadow:0 .12em .3em -.12em rgba(78,42,74,.35)}
+.chip-k i{width:.28em;height:.28em;border-radius:50%;background:var(--c);flex:none}
+.hh.on .chip-k{animation:hk-chip .9s cubic-bezier(.3,1.5,.5,1) both;animation-delay:var(--d)}
+@keyframes hk-chip{0%{transform:translateY(-1.6em) rotate(var(--r0));opacity:0}35%{opacity:1}100%{transform:translateY(0) rotate(var(--r1));opacity:1}}
+/* işler: harflerin içinden işler görünür */
+.hk-pics{display:inline-block;font-weight:800;letter-spacing:-.04em;padding:0 .04em;font-size:1.06em;
+  background-image:linear-gradient(rgba(60,30,60,.36),rgba(60,30,60,.36)),url(work/k01.jpg),url(work/k04.jpg),url(work/k10.jpg),url(work/k12.jpg);
+  background-size:100% 100%,25% 100%,25% 100%,25% 100%,25% 100%;background-repeat:no-repeat;background-position:0 0,0 50%,33.3% 50%,66.6% 50%,100% 50%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:.01em rgba(42,36,51,.35);animation:hk-pan 9s ease-in-out infinite alternate}
+.hh.on .hk-pics{animation:hk-reveal 1.1s cubic-bezier(.6,0,.2,1) both,hk-pan 9s ease-in-out 1.1s infinite alternate}
+@keyframes hk-reveal{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes hk-pan{to{background-position:0 0,0 30%,33.3% 70%,66.6% 35%,100% 65%}}
+/* anatomi: harfler parçalanıp geri birleşir */
+.hk-split{display:inline-flex;text-transform:none;letter-spacing:-.02em;color:#4E2A4A}
+.hk-split i{font-style:normal;display:inline-block}
+.hk-split i.sp{width:.25em}
+.hh.on .hk-split i{animation:hk-split 2.6s cubic-bezier(.5,0,.2,1) both}
+@keyframes hk-split{0%,100%{transform:none}30%,62%{transform:translate(calc((var(--k) - 5) * .09em),calc(sin(var(--k) * 1.7) * .14em)) rotate(calc(sin(var(--k) * 2.3) * 9deg))}}
+/* sektörler: Ö ve Ü'nün noktaları cam küreler */
+.hk-balls{display:inline-flex}
+.hk-balls b{position:relative;font-weight:inherit;display:inline-block}
+.hk-balls u{position:absolute;top:-.085em;width:.18em;height:.18em;border-radius:50%;text-decoration:none;
+  background:radial-gradient(circle at 32% 30%,#fff 0 14%,color-mix(in srgb,var(--c) 70%,#fff) 30%,var(--c) 72%,color-mix(in srgb,var(--c) 70%,#000) 100%);box-shadow:0 .03em .06em rgba(40,20,60,.3)}
+.hk-balls b u:nth-of-type(1){left:.16em}.hk-balls b u:nth-of-type(2){right:.16em}
+.hh.on .hk-balls u{animation:hk-ball .9s cubic-bezier(.3,1.6,.5,1) both;animation-delay:var(--d)}
+@keyframes hk-ball{0%{transform:translateY(-1.2em);opacity:0}40%{opacity:1}100%{transform:none;opacity:1}}
+/* WhatsApp: mesaj balonu */
+.hk-bub{display:inline-flex;align-items:flex-end;gap:.18em;position:relative;padding:.04em .34em .1em .38em;margin:0 .06em;border-radius:.3em .3em .08em .3em;background:#D9FDD3;
+  text-transform:none;font-size:.9em;letter-spacing:-.03em;color:#111B21;box-shadow:0 .06em .12em rgba(11,20,26,.14);transform-origin:100% 100%}
+.hk-bub::after{content:"";position:absolute;right:-.16em;bottom:0;width:.3em;height:.3em;background:#D9FDD3;clip-path:polygon(0 0,0 100%,100% 100%)}
+.hk-bub .tx{display:inline-block;min-width:1.4em}
+.hk-bub small{font:400 .17em/1 var(--f-display,Geist),sans-serif;color:#667781;letter-spacing:0;padding-bottom:.35em;white-space:nowrap}
+.hk-bub small b{font-weight:400;color:#53BDEB;letter-spacing:-.25em;margin-left:.35em}
+.hk-bub .dots{display:inline-flex;gap:.08em;align-items:center;height:.7em}
+.hk-bub .dots i{width:.12em;height:.12em;border-radius:50%;background:#667781;animation:hk-dot 1s infinite}
+.hk-bub .dots i:nth-child(2){animation-delay:.15s}.hk-bub .dots i:nth-child(3){animation-delay:.3s}
+@keyframes hk-dot{0%,60%,100%{opacity:.3;transform:none}30%{opacity:1;transform:translateY(-.05em)}}
+.hh.on .hk-bub{animation:hk-bub .5s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes hk-bub{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+/* süreç: kelime bir süreç kartının üstünde */
+.hk-card{display:inline-flex;flex-direction:column;align-items:flex-start;gap:.06em;padding:.12em .34em .16em;margin-left:.06em;border-radius:.16em;text-transform:none;letter-spacing:-.03em;
+  background:linear-gradient(180deg,#E2F1E8,#FFFDF9);color:#2F6B53;box-shadow:inset 0 0 0 .02em rgba(78,42,74,.1),0 .2em .4em -.2em rgba(60,90,70,.45);transform:rotate(-2.5deg);vertical-align:middle}
+.hk-card small{font:500 .16em/1 "Geist Mono",monospace;letter-spacing:.12em;color:rgba(47,107,83,.75)}
+.hh.on .hk-card{animation:hk-card .9s cubic-bezier(.2,1.2,.3,1) both}
+@keyframes hk-card{from{transform:perspective(600px) rotateY(-80deg) rotate(-8deg);opacity:0}to{transform:rotate(-2.5deg);opacity:1}}
+/* iletişim: mürekkeple el yazısı */
+.hk-ink{position:relative;display:inline-block;font-family:"Caveat",cursive;font-weight:600;text-transform:none;letter-spacing:0;font-size:1.22em;line-height:.8;color:#4E2A4A;padding:0 .08em}
+.hk-ink svg{position:absolute;left:0;right:0;bottom:-.08em;width:100%;height:.16em;overflow:visible}
+.hk-ink path{fill:none;stroke:#CF4B43;stroke-width:3.2;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:240;stroke-dashoffset:0}
+.hh.on .hk-ink{animation:hk-ink 1.2s steps(24) both}
+.hh.on .hk-ink path{animation:hk-line .7s 1.1s ease-out both}
+@keyframes hk-ink{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 -10% 0 0)}}
+@keyframes hk-line{from{stroke-dashoffset:240}to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion: reduce){.hh *{animation:none!important}}
 </style>
 <!-- AÇILIŞ: inci boncuklardan isim, sonra dökülme -->
 <style>
@@ -1674,7 +1735,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
   <div class="wrap pk">
     <div class="pk-side">
       <div class="eyebrow">Paketini kur</div>
-      <h2>Sepetinizi doldurun.</h2>
+      <h2 class="hh" data-hk="chips" aria-label="Sepetinize ne lazımsa atın.">Sepetinize <span class="hk-chips" aria-hidden="true"><span class="chip-k" style="--c:#2E43FF;--d:.1s;--r0:-14deg;--r1:-3deg"><i></i>ne</span><span class="chip-k" style="--c:#0C9F63;--d:.28s;--r0:12deg;--r1:2deg"><i></i>lazımsa</span></span> atın.</h2>
       <p>İstediğiniz kadar işi sepete fırlatın ya da üstüne tıklayın. Listede yoksa yazın, o da sepete düşer. İşlerinizi soldaki listede görürsünüz.</p>
       <form class="add" id="addForm" autocomplete="off">
         <label for="addIn" class="sr">Listede olmayan iş</label>
@@ -1709,7 +1770,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
   <div class="wrap">
     <div class="hx-panel" id="hxPanel" data-cursor="Kaydır">
       
-      <div class="hx-title"><h2>Yaptığımız<br><em>işler</em></h2></div>
+      <div class="hx-title"><h2 class="hh" data-hk="pics" aria-label="Bu işleri biz yaptık.">Bu <span class="hk-pics" aria-hidden="true">işleri</span><br>biz yaptık.</h2></div>
       <canvas id="hxGl" aria-hidden="true"></canvas>
       <div class="hx-cap" aria-hidden="true"><span></span><span id="hxNum">12 iş</span></div>
       <div class="hx-grid" id="hxGrid"></div>
@@ -1723,7 +1784,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
   <div class="an-tags" id="anTags"><svg id="anLines"></svg></div>
   <div class="an-head">
     <span class="an-eb">Ürün animasyonu</span>
-    <h2>Ürününüzün<em>anatomisi</em></h2>
+    <h2 class="hh" data-hk="split" aria-label="Ürününüzü parça parça anlatırız.">Ürününüzü <span class="hk-split" aria-hidden="true"><i style="--k:0">p</i><i style="--k:1">a</i><i style="--k:2">r</i><i style="--k:3">ç</i><i style="--k:4">a</i><i class="sp" style="--k:5"> </i><i style="--k:6">p</i><i style="--k:7">a</i><i style="--k:8">r</i><i style="--k:9">ç</i><i style="--k:10">a</i></span> anlatırız.</h2>
     <p>Ürün sayfaları, lansmanlar ve reels için ürünü parça parça anlatan 3D animasyonlar hazırlıyoruz.</p>
     <div class="an-cmd">
     <button class="an-btn" id="anBtn" type="button"><i>/</i><span id="anBtnTx">anatomi</span><span class="caret"></span></button>
@@ -1740,7 +1801,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
       <canvas id="syGl" aria-label="Kıvrımlı cam bir borudan sırayla raflara düşen sektör küreleri" role="img"></canvas>
       <div class="sy-head">
         <span class="sy-eb">Sektörler</span>
-        <h2>Hangi sektör <em>olursa</em></h2>
+        <h2 class="hh" data-hk="balls" aria-label="Her sektörü biliriz.">Her <span class="hk-balls" aria-hidden="true">sekt<b>o<u style="--c:#4C6FFF;--d:.1s"></u><u style="--c:#FF6F9C;--d:.22s"></u></b>r<b>u<u style="--c:#8A5CFF;--d:.34s"></u><u style="--c:#FF8A3D;--d:.46s"></u></b></span> biliriz.</h2>
         <p>Her sektörden bir deneyim küresi.</p>
       </div>
       <div class="sy-prog" aria-hidden="true"><span id="tCount">0 / 5 sektör</span><span class="tbar"><i id="tBar"></i></span></div>
@@ -1764,7 +1825,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
 <section class="sec" id="bot">
   <div class="wrap">
     <div class="sec-head">
-      <h2>WhatsApp'ınız<br>gece de çalışsın.</h2>
+      <h2 class="hh" data-hk="bub" aria-label="WhatsApp'ınız gece de çalışsın.">WhatsApp'ınız <span class="hk-bub" aria-hidden="true"><span class="tx"></span><small>23:47<b>✓✓</b></small></span> çalışsın.</h2>
       <p>Müşteriniz gece yarısı yazsa da cevapsız kalmaz. Asistanınız soruları yanıtlar, randevuyu ve siparişi alıp takviminize işler; emin olmadığı yerde konuşmayı size devreder. Yandaki sohbette hemen deneyin.</p>
     </div>
     <div class="bst" id="bst">
@@ -1799,7 +1860,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
   <div class="hw-pin">
     <div class="hw-head">
       <span class="sy-eb">Süreç</span>
-      <h2>Nasıl <em>çalışıyoruz</em></h2>
+      <h2 class="hh" data-hk="card" aria-label="Dört adımda teslim.">Dört adımda <span class="hk-card" aria-hidden="true"><small>04 / 04</small>teslim</span></h2>
       <p>Her iş aynı dört adımdan geçer. Siz tek bir kişiyle konuşursunuz, arkada bütün ekip çalışır.</p>
     </div>
     <ol class="hw-dots" aria-hidden="true"><li class="on"><i></i>Dinleriz</li><li><i></i>Kurarız</li><li><i></i>Üretiriz</li><li><i></i>Ölçeriz</li></ol>
@@ -1845,7 +1906,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
   <div class="ltr">
     <div class="ltr-left">
       <div class="eyebrow">İletişim</div>
-      <h2 id="closeH" aria-label="Sıra sizde.">Sıra sizde.<span class="caret"></span></h2>
+      <h2 id="closeH" class="hh" data-hk="ink" aria-label="Sıra sizde.">Sıra <span class="hk-ink" aria-hidden="true">sizde<svg viewBox="0 0 200 20" preserveAspectRatio="none"><path d="M3 14 C 50 4, 120 20, 197 7"/></svg></span></h2>
       <p class="sub">Ne lazım olduğunu birkaç satırla yazın. Mektubunuzu biz taşırız, en geç bir iş günü içinde dönüyoruz.</p>
     </div>
     <div class="ltr-wrap" id="ltrWrap">
@@ -2610,6 +2671,22 @@ $$(".btn").forEach(b => {
   const end = e => { if (!drag) return; drag = false; cube.classList.remove("drag"); const dx = e.clientX - sx, dy = e.clientY - sy; if (Math.abs(dx) > 40 || Math.abs(dy) > 40) go(i + ((Math.abs(dx) >= Math.abs(dy) ? -dx : dy) > 0 ? 1 : -1)); else apply(); };
   scene.addEventListener("pointerup", end); scene.addEventListener("pointercancel", end);
   go(0);
+})();
+
+/* ---------- Başlıklar: ekrandayken birkaç saniyede bir kendi kendine yeniden oynar ---------- */
+(() => {
+  const hs = $$(".hh"); if (!hs.length) return;
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const typeBub = h => { const tx = h.querySelector(".hk-bub .tx"); if (!tx) return; clearTimeout(h._t);
+    if (reduce) { tx.textContent = "gece de"; return; }
+    tx.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>';
+    h._t = setTimeout(() => { const w = "gece de"; let i = 0; tx.textContent = ""; const st = () => { tx.textContent = w.slice(0, ++i); if (i < w.length) h._t = setTimeout(st, 70); }; st(); }, 1300); };
+  const play = h => { h.classList.remove("on"); void h.offsetWidth; h.classList.add("on"); if (h.dataset.hk === "bub") typeBub(h); };
+  hs.forEach(h => { if (h.dataset.hk === "bub") h.querySelector(".hk-bub .tx").textContent = "gece de"; });
+  const vis = new Set();
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { if (!vis.has(e.target)) { vis.add(e.target); play(e.target); } } else vis.delete(e.target); }), { threshold: .4 });
+  hs.forEach(h => io.observe(h));
+  if (!reduce) setInterval(() => vis.forEach(play), 7000);
 })();
 
 /* ---------- Klas imleç: nokta imlecin tam yerinde, halka yumuşakça takip eder ---------- */
@@ -3613,14 +3690,6 @@ $("#sendPk").addEventListener("click", () => {
   if (motion) G.fromTo(sp, { "--rv": 1 }, { "--rv": 0, ease: "power2.out", scrollTrigger: { trigger: w, start: "top 95%", end: "bottom 98%", scrub: .6 } });
 })();
 
-/* ---------- Kapanış: imleç yazıyor ---------- */
-if (motion) {
-  const h = $("#closeH"); const caret = h.querySelector(".caret"); const txt = "Sıra sizde.";
-  ST.create({ trigger: h, start: "top 85%", once: true, onEnter: () => {
-    h.firstChild.textContent = ""; let k = 0;
-    const iv = setInterval(() => { h.firstChild.textContent = txt.slice(0, ++k); if (k >= txt.length) clearInterval(iv); }, 85);
-  } });
-}
 (() => {
   const form = $("#contact"), wrap = $("#ltrWrap"), pkg = $("#ltrPkg"), done = $("#ltrDone"), out = $("#sent");
   const dt = $("#lDate"); try { dt.textContent = new Date().toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" }); } catch (e) {}
