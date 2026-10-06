@@ -1335,6 +1335,50 @@ html.cc-down .cc-dot{scale:1.4}
 /* ---------- Canlı zemin: yavaşça akan pastel ipek ---------- */
 .bgfx{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:block;opacity:0;transition:opacity 1.2s ease}
 .bgfx.on{opacity:1}
+
+/* ---------- Sık sorulanlar küpü: sağ altta küçük döner küp, basınca büyür, yüz yüz çevrilir ---------- */
+.faq{position:fixed;right:clamp(12px,1.8vw,24px);bottom:calc(clamp(12px,2vw,24px) + env(safe-area-inset-bottom,0px));z-index:61;--S:min(300px,78vw)}
+.faq-t{all:unset;cursor:pointer;display:flex;align-items:center;gap:12px;height:58px;padding:0 10px 0 20px;border-radius:999px;background:rgba(255,253,249,.82);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  color:#4E2A4A;font-weight:600;font-size:15px;box-shadow:0 0 0 1px rgba(78,42,74,.12),0 16px 30px -16px rgba(90,50,100,.45);transition:transform .3s cubic-bezier(.3,1.6,.5,1),opacity .3s}
+.faq-t:hover{transform:translateY(-2px)}
+.faq-t .faq-lab{order:-1}
+.faq-t:focus-visible{outline:2px solid #8366CC;outline-offset:3px}
+.mini{width:38px;height:38px;perspective:240px;display:grid;place-items:center}
+.mc{position:relative;width:26px;height:26px;transform-style:preserve-3d;animation:mc-spin 9s linear infinite}
+.mc i{position:absolute;inset:0;display:grid;place-items:center;border-radius:5px;font:italic 500 16px/1 "Fraunces",Georgia,serif;color:#4E2A4A;box-shadow:inset 0 0 0 1px rgba(78,42,74,.15)}
+.mc .m0{background:#F6DCE5;transform:translateZ(13px)}.mc .m1{background:#E5DDF6;transform:rotateY(90deg) translateZ(13px)}.mc .m2{background:#F6E3D2;transform:rotateY(180deg) translateZ(13px)}
+.mc .m3{background:#DDEBE3;transform:rotateY(-90deg) translateZ(13px)}.mc .m4{background:#E1E7F8;transform:rotateX(90deg) translateZ(13px)}.mc .m5{background:#FBF4EC;transform:rotateX(-90deg) translateZ(13px)}
+@keyframes mc-spin{from{transform:rotateX(-22deg) rotateY(0)}to{transform:rotateX(-22deg) rotateY(360deg)}}
+.faq-p{position:absolute;right:0;bottom:0;width:calc(var(--S) + 44px);padding:26px 22px 18px;border-radius:30px;background:rgba(255,253,249,.78);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  box-shadow:0 0 0 1px rgba(78,42,74,.1),0 40px 80px -40px rgba(90,50,100,.55);display:flex;flex-direction:column;align-items:center;gap:14px;
+  transform-origin:100% 100%;transform:scale(.2);opacity:0;pointer-events:none;transition:transform .55s cubic-bezier(.2,1.2,.3,1),opacity .3s}
+.faq.open .faq-p{transform:none;opacity:1;pointer-events:auto}
+.faq.open .faq-t{opacity:0;pointer-events:none;transform:scale(.8)}
+.faq-x{all:unset;cursor:pointer;position:absolute;right:14px;top:10px;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;color:rgba(78,42,74,.6);font-size:20px}
+.faq-x:hover{background:rgba(78,42,74,.06)}
+.faq-scene{width:var(--S);height:var(--S);perspective:1100px;margin-top:6px;touch-action:none;cursor:grab}
+.faq-scene:active{cursor:grabbing}
+.faq-cube{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.3,1.25,.4,1)}
+.faq-cube.drag{transition:none}
+.fc{position:absolute;inset:0;border-radius:22px;padding:24px 22px;display:flex;flex-direction:column;gap:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;color:#2A2433;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 0 0 1px rgba(78,42,74,.08);background:linear-gradient(160deg,var(--a) 0%,#FFFDF9 78%)}
+.fc small{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(78,42,74,.55)}
+.fc b{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(22px,2vw,27px);line-height:1.12;letter-spacing:-.015em;color:#4E2A4A}
+.fc p{margin:0;font-size:15px;line-height:1.55;color:rgba(42,36,51,.78)}
+.fc .fq-more{margin-top:auto;align-self:flex-start;font-size:13.5px;font-weight:600;color:#4E2A4A;text-decoration:none;padding:9px 14px;border-radius:999px;background:linear-gradient(115deg,#FBE3EA,#EEDDF6 50%,#DFE7FB);box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(78,42,74,.12)}
+.fc .fq-more::after{content:" →"}
+.f0{--a:#F6DCE5;transform:translateZ(calc(var(--S) / 2))}
+.f1{--a:#E5DDF6;transform:rotateY(90deg) translateZ(calc(var(--S) / 2))}
+.f2{--a:#F6E3D2;transform:rotateY(180deg) translateZ(calc(var(--S) / 2))}
+.f3{--a:#DDEBE3;transform:rotateY(-90deg) translateZ(calc(var(--S) / 2))}
+.f4{--a:#E1E7F8;transform:rotateX(90deg) translateZ(calc(var(--S) / 2))}
+.f5{--a:#F3E6EE;transform:rotateX(-90deg) translateZ(calc(var(--S) / 2))}
+.faq-nav{display:flex;align-items:center;gap:16px;font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;color:rgba(78,42,74,.7)}
+.faq-nav button{all:unset;cursor:pointer;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#4E2A4A;font-size:17px;background:linear-gradient(115deg,#FBE3EA,#EEDDF6 50%,#DFE7FB);box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(78,42,74,.12);transition:transform .2s}
+.faq-nav button:hover{transform:scale(1.08)}
+.faq-hint{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(78,42,74,.4)}
+@media (max-width:760px){.faq-t{height:46px;padding:0 6px 0 6px}.faq-t .faq-lab{display:none}.faq-p{padding:22px 14px 14px}.fc{padding:20px 18px}.fc p{font-size:14px}}
+@media (prefers-reduced-motion: reduce){.mc{animation:none;transform:rotateX(-22deg) rotateY(-30deg)}.faq-cube{transition:none}}
 </style>
 <!-- AÇILIŞ: inci boncuklardan isim, sonra dökülme -->
 <style>
@@ -1362,6 +1406,16 @@ html.intro-on,html.intro-on body{overflow:hidden}
 </header>
 
 <div class="grain" aria-hidden="true"></div>
+<!-- SIK SORULANLAR: sağ altta duran küp -->
+<div class="faq" id="faq">
+  <button class="faq-t" type="button" aria-expanded="false" aria-controls="faqP"><span class="mini" aria-hidden="true"><span class="mc"><i class="m0">?</i><i class="m1">?</i><i class="m2">?</i><i class="m3">?</i><i class="m4">?</i><i class="m5">?</i></span></span><span class="faq-lab">Sık sorulanlar</span></button>
+  <div class="faq-p" id="faqP" role="dialog" aria-label="Sık sorulan sorular" aria-hidden="true">
+    <button class="faq-x" type="button" aria-label="Kapat">×</button>
+    <div class="faq-scene" id="faqScene"><div class="faq-cube" id="faqCube"><div class="fc f0" aria-hidden="false"><small>Soru 1 / 6</small><b>Fiyat nasıl belirleniyor?</b><p>İşin kapsamını ilk görüşmede birlikte netleştirir, sabit bir teklif veririz. Sonradan sürpriz kalem çıkmaz.</p></div><div class="fc f1" aria-hidden="true"><small>Soru 2 / 6</small><b>Ne kadar sürede teslim ediyorsunuz?</b><p>Logo ve kimlik 1–2 hafta, web sitesi 3–6 hafta sürer. Takvimi baştan birlikte koyarız.</p></div><div class="fc f2" aria-hidden="true"><small>Soru 3 / 6</small><b>Sadece tek bir iş için de çalışıyor musunuz?</b><p>Evet. Tek bir logo da olur, uçtan uca bir marka da. Sepetinize ne koyarsanız onu yaparız.</p></div><div class="fc f3" aria-hidden="true"><small>Soru 4 / 6</small><b>Revizyon hakkım var mı?</b><p>Her aşamada iki tur revizyon dahildir. Siz onaylamadan bir sonraki adıma geçmeyiz.</p></div><div class="fc f4" aria-hidden="true"><small>Soru 5 / 6</small><b>Hangi sektörlerle çalışıyorsunuz?</b><p>Teknolojiden sağlığa, eğitimden sivil topluma. Bizim için sektörden çok ihtiyacınız önemli.</p></div><div class="fc f5" aria-hidden="true"><small>Soru 6 / 6</small><b>Teslimden sonra ne oluyor?</b><p>Bütün dosyalar sizin olur. İsterseniz bakım, içerik ve reklamla birlikte devam ederiz.</p><a href="#iletisim" class="fq-more">Sorunuz burada yok mu? Yazın</a></div></div></div>
+    <div class="faq-nav"><button type="button" class="fq-prev" aria-label="Önceki soru">←</button><span id="faqN">1 / 6</span><button type="button" class="fq-next" aria-label="Sonraki soru">→</button></div>
+    <span class="faq-hint">Sürükleyin ya da oklara basın</span>
+  </div>
+</div>
 <nav class="dock" id="dock" aria-label="Bölümler">
   <a href="#top" style="--c:#101217"><span>Giriş</span></a>
   <a href="#hizmetler" style="--c:#2E43FF"><span>Hizmetler</span></a>
@@ -2477,6 +2531,37 @@ $$(".btn").forEach(b => {
   window.__bgfx = { draw };
 })();
 
+/* ---------- Sık sorulanlar küpü ---------- */
+(() => {
+  const root = $("#faq"); if (!root) return;
+  const t = $(".faq-t", root), panel = $("#faqP"), cube = $("#faqCube"), scene = $("#faqScene"), num = $("#faqN"), faces = $$(".fc", root);
+  // yüzler: ön, sağ, arka, sol, üst, alt
+  const ROT = [[0, 0], [0, -90], [0, -180], [0, -270], [-90, -360], [90, -360]];
+  let i = 0, turns = 0, rx = 0, ry = 0;
+  const apply = () => { cube.style.transform = `translateZ(calc(var(--S) / -2)) rotateX(${rx}deg) rotateY(${ry}deg)`; };
+  function go(n) {
+    const prev = i; i = (n + 6) % 6;
+    if (prev === 5 && i === 0) turns++; if (prev === 0 && i === 5) turns--;
+    rx = ROT[i][0]; ry = ROT[i][1] - turns * 360; apply();
+    num.textContent = `${i + 1} / 6`; faces.forEach((f, k) => f.setAttribute("aria-hidden", k === i ? "false" : "true"));
+  }
+  const open = o => { root.classList.toggle("open", o); t.setAttribute("aria-expanded", o); panel.setAttribute("aria-hidden", !o); if (o) setTimeout(() => $(".fq-next", root).focus({ preventScroll: true }), 300); else t.focus({ preventScroll: true }); };
+  t.addEventListener("click", () => open(true));
+  $(".faq-x", root).addEventListener("click", () => open(false));
+  $(".fq-next", root).addEventListener("click", () => go(i + 1));
+  $(".fq-prev", root).addEventListener("click", () => go(i - 1));
+  $(".fq-more", root).addEventListener("click", () => open(false));
+  addEventListener("keydown", e => { if (!root.classList.contains("open")) return; if (e.key === "Escape") open(false); if (e.key === "ArrowRight") go(i + 1); if (e.key === "ArrowLeft") go(i - 1); });
+  document.addEventListener("pointerdown", e => { if (root.classList.contains("open") && !root.contains(e.target)) open(false); });
+  // sürükle: küp parmağı/fareyi izler, bırakınca bir sonraki yüze oturur
+  let sx = 0, sy = 0, drag = false;
+  scene.addEventListener("pointerdown", e => { drag = true; sx = e.clientX; sy = e.clientY; cube.classList.add("drag"); scene.setPointerCapture(e.pointerId); });
+  scene.addEventListener("pointermove", e => { if (!drag) return; const dx = e.clientX - sx, dy = e.clientY - sy; cube.style.transform = `translateZ(calc(var(--S) / -2)) rotateX(${rx - dy * .25}deg) rotateY(${ry + dx * .35}deg)`; });
+  const end = e => { if (!drag) return; drag = false; cube.classList.remove("drag"); const dx = e.clientX - sx, dy = e.clientY - sy; if (Math.abs(dx) > 40 || Math.abs(dy) > 40) go(i + ((Math.abs(dx) >= Math.abs(dy) ? -dx : dy) > 0 ? 1 : -1)); else apply(); };
+  scene.addEventListener("pointerup", end); scene.addEventListener("pointercancel", end);
+  go(0);
+})();
+
 /* ---------- Klas imleç: nokta imlecin tam yerinde, halka yumuşakça takip eder ---------- */
 (() => {
   if (!fine) return;
@@ -3344,7 +3429,7 @@ $("#sendPk").addEventListener("click", () => {
     if (op < .5) return;
     if (Math.hypot(e.clientX - pos.x, e.clientY - pos.y) < S * .38) {
       spinTo += Math.PI * 2; scared = 1;
-      if (!e.target.closest("a,button,input,textarea,select,label,.gsay,#orbStage,#pkArea,#stGl,#anGl,#heroPanel canvas")) say();
+      if (!e.target.closest("a,button,input,textarea,select,label,.gsay,.faq,#orbStage,#pkArea,#stGl,#anGl,#heroPanel canvas")) say();
     } else if (sayEl && !e.target.closest(".gsay")) hideSay();
   });
   // tıklanınca tatlı bir balon: soru sormaya davet eder
