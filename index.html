@@ -1092,7 +1092,7 @@ input,textarea,[contenteditable=true]{cursor:text}
 @media (max-width:860px){.ft-top{grid-template-columns:1fr}.ft-cols{grid-template-columns:1fr 1fr}.ft-cols div:last-child{grid-column:1/-1}.ft-bot{padding-bottom:96px}}
 
 /* ---------- Ziyaretçi imleci ---------- */
-.roam{position:fixed;left:0;top:0;z-index:40;pointer-events:none;opacity:0;filter:drop-shadow(0 22px 20px rgba(70,50,110,.2));will-change:transform,opacity}
+.roam{position:fixed;left:0;top:0;z-index:0;pointer-events:none;opacity:0;filter:drop-shadow(0 22px 20px rgba(70,50,110,.2));will-change:transform,opacity}
 @media print{.roam{display:none}}
 .me{position:fixed;left:0;top:0;z-index:60;pointer-events:none;display:none}
 .me span{display:inline-block;margin:18px 0 0 14px;background:var(--ink);color:var(--board);font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:6px 999px 999px 999px}
@@ -1111,6 +1111,9 @@ body{background:transparent}
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:radial-gradient(42% 46% at 8% 12%,rgba(255,170,200,.30),transparent 70%),radial-gradient(40% 48% at 92% 22%,rgba(190,170,255,.32),transparent 70%),
     radial-gradient(44% 46% at 88% 92%,rgba(255,200,150,.26),transparent 70%),radial-gradient(40% 44% at 6% 90%,rgba(170,225,205,.24),transparent 70%),#F6F2EC}
+/* hayalet içeriğin arkasında, zeminin önünde dolaşır */
+main,footer{position:relative;z-index:1}
+.roam.front{z-index:45}
 /* bölüm panelleri kendi zeminini taşımaz */
 .hero-panel,.hx-panel,.sy-panel,.hw-pin,.ltr,.ft{background:transparent!important;box-shadow:none!important}
 .hero-panel::before,.hero-panel::after,.hx-panel::before,.hx-panel::after,.ft::after{display:none!important}
@@ -3251,12 +3254,13 @@ $("#sendPk").addEventListener("click", () => {
   const pos = { x: innerWidth - 120, y: innerHeight * .7 }, vel = { x: 0, y: 0 };
   let tgt = { x: pos.x, y: pos.y }, nextT = 0, t = 0, last = performance.now(), mouse = { x: -999, y: -999, t: 0 };
   let op = 0, opT = 1, spin = 0, spinTo = 0, scared = 0, hidden = false, phaseAt = 18 + Math.random() * 10, phasing = 0, scrollV = 0, lastY = scrollY;
-  // içeriği kapatmasın: ekranın sağ ve sol kenar şeritlerinde dolaşır
   const pickTarget = () => {
-    const m = S * .5, band = Math.max(S * 1.05, innerWidth * .12), top = 100;
-    const left = Math.random() < .12 ? pos.x > innerWidth / 2 : pos.x < innerWidth / 2;
-    const x = left ? m + Math.random() * Math.max(1, band - m * 1.6) : innerWidth - m - Math.random() * Math.max(1, band - m * 1.6);
-    tgt = { x, y: top + m * .6 + Math.random() * (innerHeight - top - m * 1.8) };
+    const m = S * .55, top = 90;
+    for (let k = 0; k < 6; k++) {
+      const x = m + Math.random() * (innerWidth - 2 * m), y = top + m * .6 + Math.random() * (innerHeight - top - m * 1.6);
+      if (Math.hypot(x - pos.x, y - pos.y) > innerWidth * .18) { tgt = { x, y }; return; }
+    }
+    tgt = { x: m + Math.random() * (innerWidth - 2 * m), y: top + m + Math.random() * (innerHeight - top - 2 * m) };
   };
   addEventListener("pointermove", e => { mouse = { x: e.clientX, y: e.clientY, t: performance.now() }; }, { passive: true });
   addEventListener("pointerdown", e => {
@@ -3274,7 +3278,7 @@ $("#sendPk").addEventListener("click", () => {
   window.__ghostCarry = (el, done) => {
     if (reduce) return false;
     if (op < .3) { pos.x = innerWidth + S * .2; pos.y = innerHeight * .35; vel.x = -200; vel.y = 0; }
-    phasing = 0; phaseAt = 1e9; task = { el, done, ph: "go", t: 0 }; return true;
+    phasing = 0; phaseAt = 1e9; task = { el, done, ph: "go", t: 0 }; cv.classList.add("front"); return true;
   };
   window.__roam = (n, x, y) => { S = n; renderer.setSize(S, S); pos.x = x; pos.y = y; tgt = { x, y }; nextT = 1e9; phaseAt = 1e9; };
   if (reduce) { pos.x = innerWidth - S * .6; pos.y = innerHeight - S * .7; }
@@ -3287,7 +3291,7 @@ $("#sendPk").addEventListener("click", () => {
     if (!reduce && phaseAt < 0 && !phasing) { phasing = 1; }
     if (phasing === 1) { opT = 0; if (op < .03) { pos.x = Math.random() < .5 ? S * .6 : innerWidth - S * .6; pos.y = 120 + Math.random() * (innerHeight - 240); vel.x = vel.y = 0; pickTarget(); phasing = 2; } }
     else if (phasing === 2) { opT = 1; if (op > .97) { phasing = 0; phaseAt = 20 + Math.random() * 16; } }
-    else opT = .82;
+    else opT = 1;
     if (inTown && !task) opT = 0;
     if (task) opT = 1;
     op += (opT - op) * Math.min(1, dt * 3.2);
@@ -3301,7 +3305,7 @@ $("#sendPk").addEventListener("click", () => {
           if (Math.hypot(tgt.x - pos.x, tgt.y - pos.y) < 36 || task.t > 4) { task.ph = "carry"; task.ox = pos.x; task.oy = pos.y; task.el.style.transition = "none"; spinTo += 0; scared = .6; } }
         else { tgt = { x: innerWidth + S * 2.5, y: -S * 2 }; nextT = 9;
           task.el.style.transform = `translate(${(pos.x - task.ox).toFixed(1)}px,${(pos.y - task.oy).toFixed(1)}px) rotate(${(vel.x / 60).toFixed(1)}deg) scale(${Math.max(.38, 1 - task.t * 1.2).toFixed(3)})`;
-          if (pos.x > innerWidth + S * .9 || pos.y < -S * .9) { const d = task.done; task.el.style.transform = ""; task = null; phasing = 1; phaseAt = 18; d && d(); } }
+          if (pos.x > innerWidth + S * .9 || pos.y < -S * .9) { const d = task.done; task.el.style.transform = ""; task = null; cv.classList.remove("front"); phasing = 1; phaseAt = 18; d && d(); } }
       } else { nextT -= dt; if (nextT < 0 || Math.hypot(tgt.x - pos.x, tgt.y - pos.y) < 30) { pickTarget(); nextT = 4 + Math.random() * 5; } }
       const md = Math.hypot(mouse.x - pos.x, mouse.y - pos.y);
       if (!task && md < S * .75 && now - mouse.t < 1500) { // imleç yaklaşınca nazikçe kaçar
