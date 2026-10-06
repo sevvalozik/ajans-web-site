@@ -1713,20 +1713,24 @@ document.addEventListener("keydown", e => {
     const pm = new T.PMREMGenerator(renderer), es = new T.Scene();
     es.add(new T.Mesh(new T.SphereGeometry(10, 32, 16), new T.ShaderMaterial({ side: T.BackSide,
       vertexShader: "varying vec3 p; void main(){ p = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.); }",
-      fragmentShader: "varying vec3 p; void main(){ float h = normalize(p).y * .5 + .5; gl_FragColor = vec4(mix(vec3(.62,.58,.72), vec3(1.,.97,.95), h), 1.); }" })));
+      fragmentShader: "varying vec3 p; void main(){ vec3 n = normalize(p); float h = n.y * .5 + .5; vec3 c = mix(vec3(.62,.58,.72), vec3(1.,.97,.95), smoothstep(.35,.9,h)); c = mix(vec3(.16,.14,.2), c, smoothstep(.3,.52,h)); c *= .85 + .15 * smoothstep(-.6,.6,n.x); gl_FragColor = vec4(c, 1.); }" })));
     const lbox = (w, h, x, y, z, c, k) => { const m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: new T.Color(c).multiplyScalar(k), side: T.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); es.add(m); };
     lbox(7, 3, -4, 6, 4, "#FFFFFF", 3.2); lbox(3, 6, 7, 1, 3, "#FFE0EE", 2); lbox(6, 2, 0, -6, 3, "#E4DEFF", 1.4); lbox(3, 3, -7, 0, -3, "#FFFFFF", 1.8); lbox(4, 4, 3, 3, -7, "#DDEBFF", 1.6);
     scene.environment = pm.fromScene(es, .03).texture;
     scene.add(new T.HemisphereLight("#FFFFFF", "#D6CFEA", .5));
-    const key = new T.DirectionalLight("#FFFFFF", 1.0); key.position.set(-3, 5, 6); scene.add(key);
+    const key = new T.DirectionalLight("#FFFFFF", 1.15); key.position.set(-3.5, 6, 7); scene.add(key);
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
+    key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.radius = 6; key.shadow.bias = -.0004; key.shadow.normalBias = .02;
+    Object.assign(key.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: .5, far: 30 });
+    const catcher = new T.Mesh(new T.PlaneGeometry(60, 40), new T.ShadowMaterial({ opacity: .11 })); catcher.position.z = -1.0; catcher.receiveShadow = true; scene.add(catcher);
 
     /* malzemeler ve şekiller */
-    const chrome = new T.MeshStandardMaterial({ color: "#EDEDF2", metalness: 1, roughness: .14 });
+    const chrome = new T.MeshPhysicalMaterial({ color: "#E4E4EA", metalness: 1, roughness: .2, clearcoat: .4, clearcoatRoughness: .15, envMapIntensity: 1.25 });
     const lin = c => new T.Color(c).convertSRGBToLinear();
-    const enamel = c => new T.MeshPhysicalMaterial({ color: lin(c), roughness: .24, clearcoat: 1, clearcoatRoughness: .06, emissive: lin(c), emissiveIntensity: 0, envMapIntensity: .6 });
-    const white = new T.MeshPhysicalMaterial({ color: "#FFFFFF", roughness: .25, clearcoat: 1, clearcoatRoughness: .1 });
+    const enamel = c => new T.MeshPhysicalMaterial({ color: lin(c), roughness: .3, clearcoat: .7, clearcoatRoughness: .16, sheen: .12, sheenColor: lin("#FFFFFF"), sheenRoughness: .6, emissive: lin(c), emissiveIntensity: 0, envMapIntensity: .85 });
+    const white = new T.MeshPhysicalMaterial({ color: "#FBF9F6", roughness: .32, clearcoat: .6, clearcoatRoughness: .2, sheen: .3 });
     const rrect = (w, h, r) => { const s = new T.Shape(), x = -w / 2, y = -h / 2; s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r); s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s; };
-    const ext = (shape, d, bv = .03) => { const g = new T.ExtrudeGeometry(shape, { depth: d, bevelEnabled: true, bevelThickness: bv, bevelSize: bv, bevelSegments: 5, curveSegments: 28 }); g.center(); return g; };
+    const ext = (shape, d, bv = .045) => { const g = new T.ExtrudeGeometry(shape, { depth: d, bevelEnabled: true, bevelThickness: bv, bevelSize: bv * .9, bevelSegments: 9, curveSegments: 40 }); g.center(); g.computeVertexNormals(); return g; };
     const jring = y => { const m = new T.Mesh(new T.TorusGeometry(.075, .02, 10, 28), chrome); m.position.y = y; m.rotation.y = Math.PI / 2; return m; };
     const tex = (w, h, f) => { const c = document.createElement("canvas"); c.width = w; c.height = h; f(c.getContext("2d"), w, h); const t = new T.CanvasTexture(c); t.encoding = T.sRGBEncoding; t.anisotropy = 4; return t; };
     const rr2 = (x, c, a, b, w, h, r) => { x.beginPath(); x.roundRect ? x.roundRect(a, b, w, h, r) : x.rect(a, b, w, h); x.fillStyle = c; x.fill(); };
@@ -1734,33 +1738,33 @@ document.addEventListener("keydown", e => {
     /* takılar: kanca noktası (0,0,0), gövde aşağı sarkar */
     function cTag() {
       const g = new T.Group(), s = rrect(.62, 1.02, .16); const hole = new T.Path(); hole.absarc(0, .38, .065, 0, Math.PI * 2, true); s.holes.push(hole);
-      const m = new T.MeshPhysicalMaterial({ color: lin("#FF9CC8"), roughness: .08, clearcoat: 1, transparent: true, opacity: .85, emissive: lin("#FF8FC0"), emissiveIntensity: 0, envMapIntensity: .7 });
-      const b = new T.Mesh(ext(s, .05, .02), m); b.position.y = -.42; g.add(b);
+      const m = new T.MeshPhysicalMaterial({ color: lin("#FFB3D3"), roughness: .06, transmission: .82, thickness: .25, ior: 1.49, attenuationColor: lin("#FF8FC0"), attenuationDistance: .5, clearcoat: 1, clearcoatRoughness: .04, emissive: lin("#FF8FC0"), emissiveIntensity: 0, envMapIntensity: 1 });
+      const b = new T.Mesh(ext(s, .07, .025), m); b.position.y = -.42; g.add(b);
       const tt = tex(256, 420, (x, w, h) => { x.clearRect(0, 0, w, h); x.fillStyle = "#14121A"; x.textAlign = "center"; x.textBaseline = "middle";
         x.save(); x.translate(w / 2, h * .6); x.rotate(-Math.PI / 2); let fs = 120; const fam = getComputedStyle(document.documentElement).getPropertyValue("--f-display") || "sans-serif";
         x.font = `800 ${fs}px ${fam}`; while (x.measureText(CONFIG.BRAND).width > h * .62 && fs > 30) { fs -= 6; x.font = `800 ${fs}px ${fam}`; } x.fillText(CONFIG.BRAND, 0, 0); x.restore(); });
-      const tp = new T.Mesh(new T.PlaneGeometry(.62, 1.02), new T.MeshBasicMaterial({ map: tt, transparent: true })); tp.position.set(0, -.42, .051); g.add(tp);
+      const tp = new T.Mesh(new T.PlaneGeometry(.62, 1.02), new T.MeshBasicMaterial({ map: tt, transparent: true })); tp.position.set(0, -.42, .072); g.add(tp);
       g.add(jring(.0)); return { g, h: 1.0, r: .36, m };
     }
     function cMarka() {
-      const g = new T.Group(), m = enamel("#2433E8"); const b = new T.Mesh(ext(rrect(.74, .74, .2), .12), m); b.position.y = -.5; g.add(b);
-      const w = new T.Mesh(ext(rrect(.2, .26, .04), .04, .012), white); w.position.set(.13, -.5, .1); g.add(w);
+      const g = new T.Group(), m = enamel("#2433E8"); const b = new T.Mesh(ext(rrect(.74, .74, .2), .16), m); b.position.y = -.5; g.add(b);
+      const w = new T.Mesh(ext(rrect(.2, .26, .05), .04, .016), white); w.position.set(.13, -.5, .14); g.add(w);
       g.add(jring(-.06)); return { g, h: .9, r: .43, m };
     }
     function cMobil() {
-      const g = new T.Group(), m = enamel("#079A5C"); const b = new T.Mesh(ext(rrect(.5, .9, .12), .08), m); b.position.y = -.58; g.add(b);
+      const g = new T.Group(), m = enamel("#079A5C"); const b = new T.Mesh(ext(rrect(.5, .9, .12), .13), m); b.position.y = -.58; g.add(b);
       const t2 = tex(160, 288, (x, w, h) => {
         const gr = x.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, "#E9FFF4"); gr.addColorStop(1, "#FFFFFF"); x.fillStyle = gr; x.fillRect(0, 0, w, h);
         rr2(x, "#101217", 56, 10, 48, 10, 5); rr2(x, "#2ED3A0", 14, 36, 132, 70, 14); rr2(x, "#FFB3D4", 14, 116, 62, 62, 12); rr2(x, "#C9B8FF", 84, 116, 62, 62, 12);
         rr2(x, "#DDE3EA", 14, 190, 132, 12, 6); rr2(x, "#DDE3EA", 14, 210, 96, 12, 6); rr2(x, "#101217", 14, 240, 132, 32, 16); });
-      const sc = new T.Mesh(new T.PlaneGeometry(.42, .78), new T.MeshStandardMaterial({ map: t2, emissive: "#FFFFFF", emissiveMap: t2, emissiveIntensity: .45, roughness: .15 })); sc.position.set(0, -.58, .071); g.add(sc);
+      const sc = new T.Mesh(new T.PlaneGeometry(.42, .78), new T.MeshStandardMaterial({ map: t2, emissive: "#FFFFFF", emissiveMap: t2, emissiveIntensity: .45, roughness: .15 })); sc.position.set(0, -.58, .114); g.add(sc);
       g.add(jring(-.08)); return { g, h: 1.05, r: .36, m };
     }
     function cVideo() {
-      const g = new T.Group(), m = enamel("#FF2E7A"); const d = new T.Mesh(new T.CylinderGeometry(.4, .4, .12, 56), m); d.rotation.x = Math.PI / 2; d.position.y = -.5; g.add(d);
-      const rim = new T.Mesh(new T.TorusGeometry(.4, .028, 10, 56), chrome); rim.position.y = -.5; g.add(rim);
+      const g = new T.Group(), m = enamel("#FF2E7A"); const d = new T.Mesh(ext((() => { const c = new T.Shape(); c.absarc(0, 0, .37, 0, Math.PI * 2, false); return c; })(), .14), m); d.position.y = -.5; g.add(d);
+      const rim = new T.Mesh(new T.TorusGeometry(.415, .03, 14, 72), chrome); rim.position.y = -.5; g.add(rim);
       const tr = new T.Shape(); tr.moveTo(-.1, .16); tr.lineTo(.17, 0); tr.lineTo(-.1, -.16); tr.closePath();
-      const pl = new T.Mesh(ext(tr, .04, .02), white); pl.position.set(.02, -.5, .08); g.add(pl);
+      const pl = new T.Mesh(ext(tr, .04, .02), white); pl.position.set(.02, -.5, .13); g.add(pl);
       g.add(jring(-.06)); return { g, h: .92, r: .44, m };
     }
     function cReklam() {
@@ -1776,7 +1780,7 @@ document.addEventListener("keydown", e => {
       const g = new T.Group(), m = enamel("#6A33EE"), s = new T.Shape(), n = 10;
       for (let i = 0; i < n * 4; i++) { const a = i / (n * 4) * Math.PI * 2, r = (i % 4 < 2) ? .42 : .33; s[i ? "lineTo" : "moveTo"](Math.cos(a) * r, Math.sin(a) * r); } s.closePath();
       const h = new T.Path(); h.absarc(0, 0, .13, 0, Math.PI * 2, true); s.holes.push(h);
-      const b = new T.Mesh(ext(s, .1, .02), m); b.position.y = -.5; g.add(b);
+      const b = new T.Mesh(ext(s, .15, .03), m); b.position.y = -.5; g.add(b);
       const hub = new T.Mesh(new T.TorusGeometry(.13, .03, 10, 36), chrome); hub.position.y = -.5; g.add(hub);
       g.add(jring(-.06)); return { g, h: .92, r: .44, m };
     }
@@ -1786,7 +1790,7 @@ document.addEventListener("keydown", e => {
     const root = new T.Group(); scene.add(root);
     // halka, şerit, kilit
     const RING_R = .6;
-    const ring = new T.Mesh(new T.TorusGeometry(RING_R, .05, 16, 96), chrome); root.add(ring);
+    const ring = new T.Mesh(new T.TubeGeometry(new (class extends T.Curve { getPoint(u) { const a = u * Math.PI * 4 - Math.PI / 2 + .25; return new T.Vector3(Math.cos(a) * RING_R, Math.sin(a) * RING_R, (u - .5) * .1); } })(), 360, .042, 14, false), chrome); root.add(ring);
     const clasp = new T.Group(); root.add(clasp);
     const cb = new T.Mesh(new T.CylinderGeometry(.07, .07, .32, 24), chrome); cb.position.y = .1; clasp.add(cb);
     const hook = new T.Mesh(new T.TorusGeometry(.11, .028, 10, 32, Math.PI * 1.6), chrome); hook.position.y = -.12; hook.rotation.set(0, Math.PI / 2, Math.PI * .7); clasp.add(hook);
@@ -1796,11 +1800,12 @@ document.addEventListener("keydown", e => {
     strapT.wrapT = T.RepeatWrapping;
     const strap = new T.Mesh(new T.BoxGeometry(.24, 1, .025), new T.MeshPhysicalMaterial({ map: strapT, roughness: .55, sheen: .6, sheenColor: new T.Color("#FFFFFF") })); root.add(strap);
     const strapLoop = new T.Mesh(new T.TorusGeometry(.12, .03, 10, 24), chrome); root.add(strapLoop);
+    [ring, strap, strapLoop, cb, hook].forEach(o => o.castShadow = true);
 
     const charms = DEF.map(([fn, mode, L, zo], i) => {
       const c = fn(); root.add(c.g);
-      const links = [0, 1, 2].map(k => { const l = new T.Mesh(new T.TorusGeometry(.05, .014, 8, 20), chrome); l.scale.set(1, 1.5, 1); root.add(l); return l; });
-      c.g.traverse(o => { if (o.isMesh) o.userData.ci = i; });
+      const links = [0, 1, 2].map(k => { const l = new T.Mesh(new T.TorusGeometry(.052, .016, 12, 28), chrome); l.scale.set(1, 1.55, 1); root.add(l); return l; });
+      c.g.traverse(o => { if (o.isMesh) { o.userData.ci = i; o.castShadow = true; } }); links.forEach(l => l.castShadow = true);
       const th = (-.62 + i / (DEF.length - 1) * 1.24);
       return Object.assign(c, { mode, L, zo, th, links, p: new T.Vector3(), q: new T.Vector3(), tw: (Math.random() - .5) * .6, twv: 0, sc: 1, glow: 0, link: L * .5 + .12 });
     });
