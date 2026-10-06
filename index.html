@@ -80,7 +80,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 h1,h2,h3{font-family:var(--f-display);font-weight:600;line-height:.98;letter-spacing:-.045em;text-wrap:balance;margin:0}
 :root{--head:#2A2433}
 h2,.orb-info h3,.hw-t h3{text-transform:uppercase;letter-spacing:-.042em;line-height:.9;color:var(--head)}
-h2 em,h2 .drum{text-transform:none}
+h2 em{text-transform:none}
 h2 em{letter-spacing:-.02em}
 p{margin:0}
 
@@ -1097,6 +1097,41 @@ input,textarea,[contenteditable=true]{cursor:text}
   .caret{animation:none}
   *{transition:none!important}
 }
+
+/* ================= Genel düzen: tek zemin, tek ritim ================= */
+:root{--canvas:#F6F2EC;--line:#E2DCD3;--gx:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)))}
+html{background:#F6F2EC}
+body{background:transparent}
+/* bütün sayfanın arkasında ekrana sabit, yumuşak pastel ışık: bölümler aynı ışığın üstünden kayar */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(42% 46% at 8% 12%,rgba(255,170,200,.30),transparent 70%),radial-gradient(40% 48% at 92% 22%,rgba(190,170,255,.32),transparent 70%),
+    radial-gradient(44% 46% at 88% 92%,rgba(255,200,150,.26),transparent 70%),radial-gradient(40% 44% at 6% 90%,rgba(170,225,205,.24),transparent 70%),#F6F2EC}
+/* bölüm panelleri kendi zeminini taşımaz */
+.hero-panel,.hx-panel,.sy-panel,.hw-pin,.ltr,.ft{background:transparent!important;box-shadow:none!important}
+.hero-panel::before,.hero-panel::after,.hx-panel::before,.hx-panel::after,.ft::after{display:none!important}
+.ft{background-image:none!important;border-top:1px solid var(--line)}
+.wall-row span.o{color:transparent!important;text-shadow:none!important;-webkit-text-stroke:1.5px var(--head,#2A2433)}
+/* tek ritim: bölüm boşlukları ve başlık boyları */
+.sec{padding-block:clamp(72px,8vw,112px)}
+.sec-head{margin-bottom:clamp(20px,3vw,40px)}
+.sec-head h2,.pk-side h2{font-size:clamp(36px,4.6vw,68px)}
+.sy-head h2,.hw-head h2{font-size:clamp(38px,4.8vw,72px)}
+.eyebrow,.sy-eb{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(42,36,51,.55)}
+/* hizmetler: başlık + küreler + liste tek ekrana sığar */
+#hizmetler{min-height:100vh;min-height:100svh;padding-block:clamp(92px,11vh,120px) clamp(20px,3vh,36px);display:flex;flex-direction:column;justify-content:center}
+#hizmetler .sec-head{margin-bottom:0}
+#hizmetler .sec-head h2{font-size:clamp(34px,4.2vw,62px)}
+#hizmetler .orb-stage{height:clamp(240px,calc(100svh - 520px),440px)}
+#hizmetler .orb-info{padding-top:12px;margin-top:0;gap:12px 48px}
+#hizmetler .orb-info h3{font-size:clamp(32px,3.8vw,56px)}
+#hizmetler .orb-info li{padding:8px 0 7px;font-size:clamp(15px,1.25vw,18px)}
+/* WhatsApp: başlık + panel tek ekrana sığar */
+#bot{min-height:100vh;min-height:100svh;padding-block:clamp(92px,11vh,120px) clamp(20px,3vh,36px);display:flex;flex-direction:column;justify-content:center}
+#bot .sec-head h2{font-size:clamp(34px,4.2vw,62px)}
+#bot .bst{min-height:0;height:clamp(460px,calc(100svh - 300px),660px)}
+#bot .bchat{height:auto;min-height:0}
+@media (max-width:1100px){#bot .bst{height:auto}#bot .bchat{height:520px}}
+@media (max-width:760px){#hizmetler .orb-stage{height:300px}#hizmetler,#bot{min-height:0}}
 </style>
 
 <a class="skip" href="#icerik">İçeriğe geç</a>
