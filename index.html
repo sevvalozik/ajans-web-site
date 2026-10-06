@@ -78,6 +78,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .mono{font-family:var(--f-mono);font-size:12px;letter-spacing:.02em}
 .eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
 h1,h2,h3{font-family:var(--f-display);font-weight:600;line-height:.98;letter-spacing:-.045em;text-wrap:balance;margin:0}
+:root{--head:#2A2433}
+h2,.orb-info h3,.hw-t h3{text-transform:uppercase;letter-spacing:-.042em;line-height:.9;color:var(--head)}
+h2 em,h2 .drum{text-transform:none}
+h2 em{letter-spacing:-.02em}
 p{margin:0}
 
 /* ---------- Üst çubuk (araç çubuğu) ---------- */
@@ -161,7 +165,7 @@ p{margin:0}
 .hero-bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:24px 40px;flex-wrap:wrap}
 .hero-h{
   font-size:clamp(54px,8.8vw,148px);font-weight:600;
-  letter-spacing:-.055em;line-height:.92;color:#101217;
+  letter-spacing:-.055em;line-height:.92;color:var(--head);
 }
 .hero-h .ln{display:block;overflow:hidden;padding-bottom:.17em;margin-bottom:-.17em}
 .hero-h .ln > span{display:inline-block}
@@ -399,12 +403,14 @@ section{position:relative}
 .orb-info .nav button:hover{background:var(--chip)}
 .orb-info h3{font-size:clamp(38px,4.6vw,68px); 96;letter-spacing:-.04em;margin-top:8px}
 .orb-info h3 em{font-style:normal;color:var(--oc)}
-.orb-info ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
-.orb-info li{font-size:14px;border:1px solid var(--line);background:var(--board);border-radius:999px;padding:6px 13px}
-.orb-info li::before{content:"";display:inline-block;width:7px;height:7px;border-radius:2px;background:var(--oc);margin-right:8px;vertical-align:1px}
+.orb-info ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(20px,3vw,44px);counter-reset:oi;align-self:end}
+.orb-info li{counter-increment:oi;display:flex;align-items:baseline;gap:14px;padding:13px 0 12px;border-bottom:1px solid var(--line);font-size:clamp(17px,1.5vw,21px);font-weight:500;letter-spacing:-.02em;color:var(--head,#2A2433);animation:oi-li .55s cubic-bezier(.2,.9,.3,1) both;animation-delay:calc(var(--i,0) * 45ms)}
+.orb-info li::before{content:counter(oi,decimal-leading-zero);font-family:var(--f-mono);font-size:11px;font-weight:500;letter-spacing:.04em;color:var(--oc);min-width:20px}
+.orb-info li:nth-child(-n+2){border-top:1px solid var(--line)}
+@keyframes oi-li{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .orb-info .swapin{animation:oi-in .5s cubic-bezier(.2,.8,.2,1)}
 @keyframes oi-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@media (max-width:760px){.orb-info{grid-template-columns:1fr}}
+@media (max-width:760px){.orb-info{grid-template-columns:1fr}.orb-info li{font-size:16px;padding:10px 0}}
 
 /* ---------- Butonlarda yuvarlanan harfler ---------- */
 .roll{display:inline-flex;overflow:hidden;height:1.25em;line-height:1.25em;vertical-align:middle}
@@ -423,40 +429,29 @@ a:hover .roll > span,button:hover .roll > span,a:focus-visible .roll > span{tran
 @keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-4%)}60%{transform:translate(-4%,1%)}80%{transform:translate(3%,3%)}100%{transform:translate(0,0)}}
 @media (prefers-reduced-motion: reduce){.grain{animation:none}}
 
-/* ---------- İmleç: tarayıcının kendi imleci, özel ok çizimi (gecikmesiz, her zeminde görünür) ---------- */
-html,body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M4 2.5 L21.5 12.2 L13.4 14.1 L9.6 22.6 Z' fill='%230F1012' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3,auto}
-a,button,[role=button],.chip,.tile,label[for],select,summary,.dock-t{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M4 2.5 L21.5 12.2 L13.4 14.1 L9.6 22.6 Z' fill='%232E43FF' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3,pointer!important}
-#orbStage,#pkArea,#stGl{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 26 26'%3E%3Cpath d='M4 2.5 L21.5 12.2 L13.4 14.1 L9.6 22.6 Z' fill='%230F1012' stroke='%23FFFFFF' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E") 4 3,grab}
-#orbStage.drag,#pkArea:active,#stGl:active{cursor:grabbing}
-input,textarea{cursor:text}
-.cx{position:fixed;left:0;top:0;z-index:96;pointer-events:none;opacity:0;transition:opacity .25s}
-.cx.on{opacity:1}
-html.cx-on,html.cx-on *{cursor:none!important}
-html.cx-on input:not([type=range]):not([type=checkbox]):not([type=radio]),html.cx-on textarea,html.cx-on [contenteditable=true]{cursor:text!important}
-.cx-dot{position:fixed;left:-3.5px;top:-3.5px;width:7px;height:7px;border-radius:50%;background:#101217;box-shadow:0 0 0 1.5px rgba(255,255,255,.85);transition:opacity .2s,scale .2s}
-.cx-ring{position:fixed;left:0;top:0;width:30px;height:30px;border-radius:15px;border:1.5px solid rgba(16,18,23,.55);box-shadow:0 0 0 1px rgba(255,255,255,.5);
-  transition:background .25s,border-color .25s,opacity .2s;display:flex;align-items:center;justify-content:center;overflow:hidden;will-change:transform,width,height}
-.cx.snap .cx-ring{background:rgba(46,67,255,.07);border-color:rgba(46,67,255,.55);box-shadow:0 8px 24px -10px rgba(46,67,255,.45)}
-.cx.snap .cx-dot{opacity:0;scale:.3}
-.cx.lab .cx-ring{background:#101217;border-color:#101217;box-shadow:0 10px 26px -10px rgba(16,18,23,.5)}
-.cx.lab .cx-dot{scale:.8}
-.cx-lab{flex:none;display:inline-flex;align-items:center;gap:7px;padding:0 13px 0 9px;white-space:nowrap;color:#fff;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:0;transition:opacity .2s}
-.cx-lab i{font-style:normal;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#FF4F8B,#9B6BFF);font-size:11px;letter-spacing:0}
-.cx.lab .cx-lab{opacity:1;transition-delay:.06s}
-.cx.txt .cx-ring,.cx.txt .cx-dot{opacity:0}
-.cx.down .cx-dot{scale:.6}
+/* ---------- İmleç: tarayıcının kendi imleci (hep tam yerinde), yumuşak köşeli özel çizim ---------- */
+html,body{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M7.5 5.2 L23.6 14.6 Q25 15.5 23.4 16 L16.2 17.9 L12.9 24.6 Q12.2 26 11.6 24.5 Z' fill='rgba%2836,31,44,.18%29' transform='translate%281.2 1.6%29'/%3E%3Cpath d='M7.5 5.2 L23.6 14.6 Q25 15.5 23.4 16 L16.2 17.9 L12.9 24.6 Q12.2 26 11.6 24.5 Z' fill='%23241F2C' stroke='%23FFFFFF' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E") 7 5,auto}
+a,button,[role=button],.chip,.tile,label[for],select,summary,.dock-t{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Cpath d='M7.5 5.2 L23.6 14.6 Q25 15.5 23.4 16 L16.2 17.9 L12.9 24.6 Q12.2 26 11.6 24.5 Z' fill='rgba%2836,31,44,.18%29' transform='translate%281.2 1.6%29'/%3E%3Cpath d='M7.5 5.2 L23.6 14.6 Q25 15.5 23.4 16 L16.2 17.9 L12.9 24.6 Q12.2 26 11.6 24.5 Z' fill='%23CF4B43' stroke='%23FFFFFF' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E") 7 5,pointer}
+#orbStage,#pkArea,#stGl,#heroPanel[data-cursor],#syPanel[data-cursor]{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 34 34'%3E%3Ccircle cx='17' cy='17' r='12.5' fill='rgba%28255,255,255,.55%29' stroke='%23FFFFFF' stroke-width='3.5'/%3E%3Ccircle cx='17' cy='17' r='12.5' fill='none' stroke='%23241F2C' stroke-width='1.6'/%3E%3Ccircle cx='17' cy='17' r='3' fill='%23241F2C'/%3E%3C/svg%3E") 17 17,grab}
+#orbStage.drag,#pkArea:active,#stGl:active,#heroPanel[data-cursor="Fırlat"]{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='34' height='34' viewBox='0 0 34 34'%3E%3Ccircle cx='17' cy='17' r='9' fill='%23241F2C' stroke='%23FFFFFF' stroke-width='3'/%3E%3Ccircle cx='17' cy='17' r='2.6' fill='%23FFFFFF'/%3E%3C/svg%3E") 17 17,grabbing}
+input,textarea,[contenteditable=true]{cursor:text}
+.cur2{position:fixed;left:0;top:0;z-index:96;pointer-events:none}
+.cur2 .cl{position:absolute;left:0;top:0;display:inline-flex;align-items:center;gap:7px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  background:#241F2C;color:#fff;padding:6px 11px 6px 8px;border-radius:999px;white-space:nowrap;opacity:0;scale:.8;transition:opacity .18s,scale .25s cubic-bezier(.2,1.5,.4,1);box-shadow:0 10px 24px -10px rgba(36,31,44,.5)}
+.cur2 .cl i{font-style:normal;display:grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#CF4B43;font-size:10px;letter-spacing:0}
+.cur2.lab .cl{opacity:1;scale:1}
+@media not all and (hover:hover) and (pointer:fine){.cur2{display:none}}
 
 /* ---------- Alt menü: kapalıyken tek küçük düğme, basınca renkli etiketler yukarı açılır ---------- */
 .topbar-in{align-items:flex-start}
 .dock{position:fixed;left:clamp(12px,1.8vw,24px);bottom:calc(clamp(12px,2vw,24px) + env(safe-area-inset-bottom,0px));z-index:60;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
 .dock .dock-t{
-  position:relative;display:flex;align-items:center;gap:12px;height:58px;margin-top:4px;padding:0 24px 0 18px;border-radius:999px;border:0;cursor:pointer;
-  background:linear-gradient(100deg,#FF4F8B,#FF8A3D 30%,#9B6BFF 62%,#2E8BFF);background-size:220% 100%;animation:menu-shine 7s ease-in-out infinite alternate;
-  color:#fff;font-weight:650;font-size:16px;letter-spacing:-.01em;box-shadow:0 14px 30px -12px rgba(155,107,255,.85),inset 0 0 0 1px rgba(255,255,255,.3);
-  transition:transform .3s cubic-bezier(.3,1.6,.5,1),box-shadow .3s;
+  position:relative;display:flex;align-items:center;gap:12px;height:58px;margin-top:4px;padding:0 26px 0 20px;border-radius:999px;border:0;cursor:pointer;
+  background:#CF4B43;color:#fff;font-weight:650;font-size:16px;letter-spacing:-.01em;box-shadow:0 14px 30px -14px rgba(160,50,44,.75),inset 0 1px 0 rgba(255,255,255,.25);
+  transition:transform .3s cubic-bezier(.3,1.6,.5,1),box-shadow .3s,background .3s;
 }
-.dock .dock-t:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 18px 36px -12px rgba(255,79,139,.8),inset 0 0 0 1px rgba(255,255,255,.4)}
-.dock .dock-t::after{content:"";position:absolute;inset:-6px;border-radius:999px;border:2px solid rgba(155,107,255,.6);animation:menu-ping 2.2s ease-out 1s 4;pointer-events:none;opacity:0}
+.dock .dock-t:hover{transform:translateY(-2px) scale(1.04);background:#C2423B;box-shadow:0 18px 36px -14px rgba(160,50,44,.8),inset 0 1px 0 rgba(255,255,255,.3)}
+.dock .dock-t::after{content:"";position:absolute;inset:-6px;border-radius:999px;border:2px solid rgba(207,75,67,.5);animation:menu-ping 2.2s ease-out 1s 4;pointer-events:none;opacity:0}
 .dock .dock-t em{font-style:normal;opacity:.85;font-weight:500;font-size:14px;padding-left:12px;border-left:1px solid rgba(255,255,255,.35)}
 .dock .bg{position:relative;width:20px;height:14px;display:block}
 .dock .bg b{position:absolute;left:0;right:0;height:2.5px;border-radius:2px;background:#fff;transition:transform .35s cubic-bezier(.3,1.4,.5,1),opacity .2s,top .35s}
@@ -476,7 +471,7 @@ html.cx-on input:not([type=range]):not([type=checkbox]):not([type=radio]),html.c
 .dock.open a{opacity:1;transform:rotate(var(--r));pointer-events:auto}
 .dock.open a:hover{transform:rotate(0) translateX(6px) scale(1.04)}
 .dock a.on{background:#fff;color:#101217;border-color:#101217}
-.dock a.on::before{content:"";width:9px;height:9px;border-radius:50%;background:#FF4F8B;margin-right:10px}
+.dock a.on::before{content:"";width:9px;height:9px;border-radius:50%;background:#CF4B43;margin-right:10px}
 @media (max-width:760px){
   .dock .dock-t{height:46px;padding:0 16px 0 14px;font-size:15px;gap:9px}
   .dock .dock-t em{display:none}
@@ -657,7 +652,7 @@ html.cx-on input:not([type=range]):not([type=checkbox]):not([type=radio]),html.c
   background-image:radial-gradient(rgba(16,18,23,.12) 1px,transparent 1.3px);background-size:22px 22px;
   -webkit-mask-image:radial-gradient(70% 70% at 50% 50%,#000,transparent);mask-image:radial-gradient(70% 70% at 50% 50%,#000,transparent)}
 .hx-title{position:absolute;inset:0;z-index:1;display:grid;place-items:center;pointer-events:none;text-align:center}
-.hx-title h2{font-size:clamp(48px,7.4vw,124px);letter-spacing:-.045em;line-height:.88;color:#101217}
+.hx-title h2{font-size:clamp(48px,7.4vw,124px);letter-spacing:-.045em;line-height:.88;color:var(--head)}
 .hx-title h2 em{font-style:normal;background:linear-gradient(90deg,#FF4F8B,#FF8A3D,#9B6BFF,#2E8BFF);-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .04em .12em}
 #hxGl{position:absolute;inset:0;width:100%;height:100%;z-index:2;display:block}
 .hx-cap{position:absolute;z-index:3;left:clamp(20px,3vw,40px);right:clamp(20px,3vw,40px);bottom:clamp(18px,3vw,32px);display:flex;justify-content:space-between;gap:16px;align-items:flex-end;font-family:var(--f-mono);font-size:12px;color:rgba(16,18,23,.6);pointer-events:none}
@@ -1009,7 +1004,7 @@ html.cx-on input:not([type=range]):not([type=checkbox]):not([type=radio]),html.c
 .ltr{--gx:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));position:relative;min-height:100vh;min-height:100svh;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,500px);gap:clamp(28px,5vw,80px);align-items:center;
   padding:clamp(110px,14vh,150px) var(--gx) clamp(110px,13vh,150px);overflow:hidden;color:#101217;
   background:radial-gradient(45% 55% at 78% 45%,#F1E6FF 0%,rgba(241,230,255,0) 70%),radial-gradient(40% 50% at 8% 90%,#FFE3EC 0%,rgba(255,227,236,0) 70%),radial-gradient(40% 40% at 50% 0%,#FFF1D9 0%,rgba(255,241,217,0) 70%),#FBF8F3}
-.close h2{font-size:clamp(56px,8.4vw,132px);letter-spacing:-.045em;line-height:.95;margin-top:14px}
+.close h2{font-size:clamp(56px,8.4vw,132px);letter-spacing:-.045em;line-height:.9;margin-top:14px;color:var(--head)}
 .close h2 .caret{background:#7B5CFF}
 .close .sub{color:rgba(16,18,23,.66);margin-top:20px;max-width:34ch;font-size:17px}
 .ltr-wrap{position:relative;display:grid;place-items:center;min-height:600px;perspective:1600px}
@@ -1069,12 +1064,30 @@ html.cx-on input:not([type=range]):not([type=checkbox]):not([type=radio]),html.c
   .l-head{font-size:19px;flex-direction:column;gap:4px}
   .l-sign{grid-template-columns:1fr}
 }
-footer{padding-block:28px 48px}
-.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:flex-end;color:var(--ink-2);font-size:14px}
-.foot .big{font-family:var(--f-display);font-weight:800;font-size:clamp(64px,16vw,240px);letter-spacing:-.05em;line-height:.8;color:transparent;-webkit-text-stroke:1.5px var(--ink-3);width:100%}
+/* ---------- Alt bilgi: tam genişlikte marka yazısı; imleci izleyen yumuşak ışık ---------- */
+.ft{--gx:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));position:relative;overflow:hidden;background:#EEE7DF;color:#3A3342;padding:clamp(56px,8vw,96px) 0 0;
+  background-image:radial-gradient(60% 80% at 80% 0%,rgba(214,201,232,.55),transparent 70%),radial-gradient(50% 70% at 0% 100%,rgba(236,205,200,.5),transparent 70%)}
+.ft-top{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr);gap:40px;padding:0 var(--gx)}
+.ft-k{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(58,51,66,.55);margin-bottom:14px}
+.ft-big{font-size:clamp(28px,3.2vw,46px);font-weight:600;letter-spacing:-.035em;color:#2A2433;text-decoration:none;display:inline-flex;gap:12px;align-items:baseline;border-bottom:2px solid rgba(42,36,51,.18);padding-bottom:6px;transition:border-color .3s,gap .3s}
+.ft-big i{font-style:normal;font-family:"Fraunces",Georgia,serif;color:#B35C66;transition:transform .3s}
+.ft-big:hover{border-color:#B35C66;gap:18px}.ft-big:hover i{transform:translate(3px,-3px)}
+.ft-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.ft-cols a{display:block;color:#3A3342;text-decoration:none;font-size:15.5px;padding:3px 0;width:max-content;background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .35s}
+.ft-cols a:hover{background-size:100% 1px}
+.ft-cols p{font-size:15px;line-height:1.5;color:rgba(58,51,66,.75);max-width:24ch}
+.ft-word{text-align:center;position:relative;margin-top:clamp(40px,6vw,80px);padding:0 calc(var(--gx) * .4);line-height:.74;user-select:none;--mx:50%;--my:120%;--lit:0}
+.ft-word span{display:inline-block;font-family:"Bricolage Grotesque",var(--f-display);font-weight:800;letter-spacing:-.065em;white-space:nowrap;font-size:30vw;text-align:center;padding:0 .02em .16em;
+  background:radial-gradient(circle calc(16vw + var(--lit) * 10vw) at var(--mx) var(--my),#D9848E 0%,#A891D6 40%,#5A4E66 75%),#5A4E66;-webkit-background-clip:text;background-clip:text;color:transparent;
+  clip-path:inset(0 0 calc(var(--rv,0) * 100%) 0);transition:--lit .4s}
+.ft::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.16;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .35 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.ft-bot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px var(--gx) 28px;border-top:1px solid rgba(58,51,66,.12);font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:rgba(58,51,66,.6)}
+.ft-bot a{color:inherit;text-decoration:none}.ft-bot a:hover{color:#2A2433}
+@media (max-width:860px){.ft-top{grid-template-columns:1fr}.ft-cols{grid-template-columns:1fr 1fr}.ft-cols div:last-child{grid-column:1/-1}.ft-bot{padding-bottom:96px}}
 
 /* ---------- Ziyaretçi imleci ---------- */
-.roam{position:fixed;left:0;top:0;z-index:45;pointer-events:none;opacity:0;filter:drop-shadow(0 22px 20px rgba(70,50,110,.2));will-change:transform,opacity}
+.roam{position:fixed;left:0;top:0;z-index:40;pointer-events:none;opacity:0;filter:drop-shadow(0 22px 20px rgba(70,50,110,.2));will-change:transform,opacity}
 @media print{.roam{display:none}}
 .me{position:fixed;left:0;top:0;z-index:60;pointer-events:none;display:none}
 .me span{display:inline-block;margin:18px 0 0 14px;background:var(--ink);color:var(--board);font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:6px 999px 999px 999px}
@@ -1106,7 +1119,7 @@ footer{padding-block:28px 48px}
   <a href="#bot" style="--c:#7044F2"><span>WhatsApp asistanı</span></a>
   <a href="#kareler" style="--c:#E39A12;--t:#101217"><span>İşler</span></a>
   <a href="#iletisim" style="--c:#101217"><span>İletişim</span></a>
-  <button class="dock-t" type="button" aria-expanded="false" aria-controls="dock"><i class="bg" aria-hidden="true"><b></b><b></b><b></b></i><span>Menü</span><em id="dockNow">Giriş</em></button>
+  <button class="dock-t" type="button" aria-expanded="false" aria-controls="dock"><i class="bg" aria-hidden="true"><b></b><b></b><b></b></i><span>Menü</span></button>
 </nav>
 <main id="icerik">
 <!-- GİRİŞ -->
@@ -1117,13 +1130,6 @@ footer{padding-block:28px 48px}
       <div class="hero-ui">
         <div class="hero-top">
           <span class="eyebrow">Tasarım · Yazılım · İçerik · Reklam · Otomasyon</span>
-          <ol class="modes" id="modes" aria-label="Sahnede gösterilen iş">
-            <li><button type="button" data-i="0" aria-current="true"><span>01</span>Marka kimliği</button></li>
-            <li><button type="button" data-i="1" aria-current="false"><span>02</span>Mobil uygulama</button></li>
-            <li><button type="button" data-i="2" aria-current="false"><span>03</span>Video ve reels</button></li>
-            <li><button type="button" data-i="3" aria-current="false"><span>04</span>Reklam ve büyüme</button></li>
-            <li><button type="button" data-i="4" aria-current="false"><span>05</span>Otomasyon</button></li>
-          </ol>
         </div>
         <div class="hero-bottom">
           <h1 class="hero-h" aria-label="Ne lazımsa yaparız."><span class="ln" aria-hidden="true"><span>Ne lazımsa</span></span><span class="ln" aria-hidden="true"><span>yaparız.</span></span></h1>
@@ -1523,12 +1529,17 @@ footer{padding-block:28px 48px}
 </section>
 </main>
 
-<footer>
-  <div class="wrap foot">
-    <div class="big" aria-hidden="true" data-brand>sayfa</div>
-    <span>© 2026 <span data-brand>sayfa</span> · Marka, web, içerik, reklam, otomasyon</span>
-    <a href="#top">Başa dön ↑</a>
+<footer class="ft" id="ft">
+  <div class="ft-top">
+    <div class="ft-cta"><span class="ft-k">Birlikte çalışalım</span><a class="ft-big" href="#iletisim">Bir mektup yazın <i>↗</i></a></div>
+    <nav class="ft-cols" aria-label="Alt menü">
+      <div><span class="ft-k">Site</span><a href="#hizmetler">Hizmetler</a><a href="#paket">Sepet</a><a href="#kareler">İşler</a><a href="#iletisim">İletişim</a></div>
+      <div><span class="ft-k">Sosyal</span><a href="#" rel="noopener">Instagram</a><a href="#" rel="noopener">LinkedIn</a><a href="#" rel="noopener">Behance</a></div>
+      <div><span class="ft-k">Ne yapıyoruz</span><p>Marka, web, uygulama, içerik, reklam ve otomasyon.</p></div>
+    </nav>
   </div>
+  <div class="ft-word" id="ftWord" aria-hidden="true"><span data-brand>sayfa</span></div>
+  <div class="ft-bot"><span>© 2026 <span data-brand>sayfa</span></span><span>Tüm hakları saklıdır</span><a href="#top">Başa dön ↑</a></div>
 </footer>
 
 
@@ -1545,6 +1556,7 @@ footer{padding-block:28px 48px}
 const CONFIG = { BRAND: "sayfa" };
 document.querySelectorAll("[data-brand]").forEach(el => el.textContent = CONFIG.BRAND);
 
+document.documentElement.lang = document.documentElement.lang || "tr";
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fine = matchMedia("(hover:hover) and (pointer:fine)").matches;
 const G = window.gsap, ST = window.ScrollTrigger;
@@ -2062,7 +2074,7 @@ $$(".btn").forEach(b => {
     info.box.style.setProperty("--oc", s.c === "#101217" ? "var(--ink)" : s.c);
     info.idx.textContent = `${String(i + 1).padStart(2, "0")} / ${String(n).padStart(2, "0")}`;
     info.name.innerHTML = `${s.ad}${i < n - 1 ? "<em>.</em>" : ""}`;
-    info.list.innerHTML = s.items.map(x => `<li>${x}</li>`).join("");
+    info.list.innerHTML = s.items.map((x, k) => `<li style="--i:${k}">${x}</li>`).join("");
     [info.name, info.list].forEach(el => { el.classList.remove("swapin"); void el.offsetWidth; el.classList.add("swapin"); });
   }
   let running = false; new IntersectionObserver(es => { running = es[0].isIntersecting; }).observe(stage);
@@ -2101,51 +2113,24 @@ $$(".btn").forEach(b => {
   })();
 })();
 
-/* ---------- İmleç: nokta + halka; butona yapışıp şeklini alır, alana göre etikete dönüşür ---------- */
+/* ---------- İmleç etiketi: bazı alanlarda imlecin yanında küçük ipucu (imlecin kendisi tarayıcınınki) ---------- */
 (() => {
   if (!fine) return;
-  const root = document.createElement("div"); root.className = "cx"; root.setAttribute("aria-hidden", "true");
-  root.innerHTML = `<div class="cx-ring"><span class="cx-lab"><i></i><b></b></span></div><div class="cx-dot"></div>`;
-  document.body.appendChild(root); document.documentElement.classList.add("cx-on");
-  const ring = root.querySelector(".cx-ring"), dot = root.querySelector(".cx-dot"), lab = root.querySelector(".cx-lab b"), ico = root.querySelector(".cx-lab i");
+  const c = document.createElement("div"); c.className = "cur2"; c.setAttribute("aria-hidden", "true");
+  c.innerHTML = `<span class="cl"><i></i><b></b></span>`; document.body.appendChild(c);
+  const cl = c.querySelector(".cl"), lab = c.querySelector("b"), ico = c.querySelector("i");
   const AUTO = [["#orbStage", "Sürükle"], ["#pkArea", "Fırlat"], ["#stGl", "Çevir"]];
-  const ICON = { "Sürükle": "↔", "Fırlat": "↗", "Çevir": "↻", "Kaydır": "↓", "Tut": "✦", "Fırlat ": "↗" };
-  const SNAP = "a,button,[role=button],.chip,label[for],select,summary,.dock-t";
-  let x = -100, y = -100, rx = -100, ry = -100, rw = 30, rh = 30, rr = 15, seen = false, down = false;
-  let snapEl = null, label = null, textMode = false;
+  const ICON = { "Sürükle": "↔", "Fırlat": "↗", "Çevir": "↻", "Kaydır": "↓", "Tut": "✦", "Tara": "+" };
+  let cur = null;
   addEventListener("pointermove", e => {
     if (e.pointerType !== "mouse") return;
-    x = e.clientX; y = e.clientY; dot.style.transform = `translate3d(${x}px,${y}px,0)`;
-    if (!seen) { seen = true; rx = x; ry = y; root.classList.add("on"); }
+    cl.style.transform = `translate3d(${e.clientX + 22}px,${e.clientY + 20}px,0)`;
     const t = e.target instanceof Element ? e.target : null; if (!t) return;
-    textMode = !!t.closest("input:not([type=range]):not([type=checkbox]):not([type=radio]),textarea,[contenteditable=true]");
-    const s = textMode ? null : t.closest(SNAP);
-    snapEl = s && s.offsetWidth < 420 && s.offsetHeight < 140 ? s : null;
-    const d = (!snapEl && !textMode) ? (t.closest("[data-cursor]") || null) : null;
-    let l = d ? d.dataset.cursor : null;
-    if (!l && !snapEl && !textMode) { const hit = AUTO.find(([sel]) => t.closest(sel)); if (hit) l = hit[1]; }
-    if (l !== label) { label = l; if (l) { lab.textContent = l; ico.textContent = ICON[l] || "•"; } }
-    root.classList.toggle("snap", !!snapEl); root.classList.toggle("lab", !!label); root.classList.toggle("txt", textMode);
+    let l = null;
+    if (!t.closest("a,button,input,textarea,select,.chip,label")) { const d = t.closest("[data-cursor]"); l = d ? d.dataset.cursor : null; if (!l) { const h = AUTO.find(([sel]) => t.closest(sel)); if (h) l = h[1]; } }
+    if (l !== cur) { cur = l; if (l) { lab.textContent = l; ico.textContent = ICON[l] || "•"; } c.classList.toggle("lab", !!l); }
   }, { passive: true });
-  document.addEventListener("pointerleave", () => root.classList.remove("on"));
-  document.addEventListener("pointerenter", () => { if (seen) root.classList.add("on"); });
-  addEventListener("pointerdown", () => { down = true; root.classList.add("down"); });
-  addEventListener("pointerup", () => { down = false; root.classList.remove("down"); });
-  (function loop() {
-    requestAnimationFrame(loop); if (!seen) return;
-    let tx = x, ty = y, tw = 30, th = 30, tr = 15;
-    if (snapEl && (snapEl.disabled || !document.contains(snapEl) || snapEl.closest('.s1,.gone'))) { snapEl = null; root.classList.remove("snap"); }
-    if (snapEl) {
-      const r = snapEl.getBoundingClientRect(), cs = getComputedStyle(snapEl), br = parseFloat(cs.borderTopLeftRadius) || 8;
-      tw = r.width + 12; th = r.height + 12; tr = Math.min(th / 2, br + 6);
-      tx = r.left + r.width / 2 + (x - (r.left + r.width / 2)) * .12; ty = r.top + r.height / 2 + (y - (r.top + r.height / 2)) * .12;
-    } else if (label) { tw = lab.parentNode.offsetWidth + 2; th = 34; tr = 17; tx = x + tw / 2 + 14; ty = y + 22; }
-    const k = snapEl ? .3 : .26;
-    rx += (tx - rx) * k; ry += (ty - ry) * k; rw += (tw - rw) * .28; rh += (th - rh) * .28; rr += (tr - rr) * .28;
-    const sc = down ? .86 : 1;
-    ring.style.transform = `translate3d(${(rx - rw / 2).toFixed(1)}px,${(ry - rh / 2).toFixed(1)}px,0) scale(${sc})`;
-    ring.style.width = rw.toFixed(1) + "px"; ring.style.height = rh.toFixed(1) + "px"; ring.style.borderRadius = rr.toFixed(1) + "px";
-  })();
+  document.addEventListener("pointerleave", () => { cur = null; c.classList.remove("lab"); });
   $$(".btn").forEach(b => {
     b.addEventListener("pointermove", e => { const r = b.getBoundingClientRect(); b.style.translate = `${(e.clientX - r.left - r.width / 2) * .14}px ${(e.clientY - r.top - r.height / 2) * .2}px`; });
     b.addEventListener("pointerleave", () => { b.style.translate = ""; });
@@ -2165,7 +2150,6 @@ $$(".btn").forEach(b => {
   const secs = links.map(a => $(a.getAttribute("href"))).filter(Boolean);
   const set = id => links.forEach(a => {
     const on = a.getAttribute("href") === "#" + id; a.classList.toggle("on", on);
-    if (on) nowEl.textContent = a.textContent.trim();
   });
   const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) set(e.target.id); }), { rootMargin: "-45% 0px -50% 0px" });
   secs.forEach(x => io.observe(x)); set("top");
@@ -3202,16 +3186,15 @@ $("#sendPk").addEventListener("click", () => {
   function setOp(o) { fm.forEach(m => { m.opacity = o; m.depthWrite = o > .98; }); }
 
   /* dolaşma: hedef noktaya yaylı süzülme, imleçten kaçma, ara sıra kaybolup başka yerde belirme */
-  const pos = { x: innerWidth * .82, y: innerHeight * .7 }, vel = { x: 0, y: 0 };
+  const pos = { x: innerWidth - 120, y: innerHeight * .7 }, vel = { x: 0, y: 0 };
   let tgt = { x: pos.x, y: pos.y }, nextT = 0, t = 0, last = performance.now(), mouse = { x: -999, y: -999, t: 0 };
   let op = 0, opT = 1, spin = 0, spinTo = 0, scared = 0, hidden = false, phaseAt = 18 + Math.random() * 10, phasing = 0, scrollV = 0, lastY = scrollY;
+  // içeriği kapatmasın: ekranın sağ ve sol kenar şeritlerinde dolaşır
   const pickTarget = () => {
-    const m = S * .55, top = 90;
-    for (let k = 0; k < 6; k++) {
-      const x = m + Math.random() * (innerWidth - 2 * m), y = top + m * .6 + Math.random() * (innerHeight - top - m * 1.6);
-      if (Math.hypot(x - pos.x, y - pos.y) > innerWidth * .18) { tgt = { x, y }; return; }
-    }
-    tgt = { x: m + Math.random() * (innerWidth - 2 * m), y: top + m + Math.random() * (innerHeight - top - 2 * m) };
+    const m = S * .5, band = Math.max(S * 1.05, innerWidth * .12), top = 100;
+    const left = Math.random() < .12 ? pos.x > innerWidth / 2 : pos.x < innerWidth / 2;
+    const x = left ? m + Math.random() * Math.max(1, band - m * 1.6) : innerWidth - m - Math.random() * Math.max(1, band - m * 1.6);
+    tgt = { x, y: top + m * .6 + Math.random() * (innerHeight - top - m * 1.8) };
   };
   addEventListener("pointermove", e => { mouse = { x: e.clientX, y: e.clientY, t: performance.now() }; }, { passive: true });
   addEventListener("pointerdown", e => {
@@ -3240,9 +3223,9 @@ $("#sendPk").addEventListener("click", () => {
     // görünürlük
     phaseAt -= dt;
     if (!reduce && phaseAt < 0 && !phasing) { phasing = 1; }
-    if (phasing === 1) { opT = 0; if (op < .03) { pos.x = S * .6 + Math.random() * (innerWidth - S * 1.2); pos.y = 120 + Math.random() * (innerHeight - 240); vel.x = vel.y = 0; pickTarget(); phasing = 2; } }
+    if (phasing === 1) { opT = 0; if (op < .03) { pos.x = Math.random() < .5 ? S * .6 : innerWidth - S * .6; pos.y = 120 + Math.random() * (innerHeight - 240); vel.x = vel.y = 0; pickTarget(); phasing = 2; } }
     else if (phasing === 2) { opT = 1; if (op > .97) { phasing = 0; phaseAt = 20 + Math.random() * 16; } }
-    else opT = 1;
+    else opT = .82;
     if (inTown && !task) opT = 0;
     if (task) opT = 1;
     op += (opT - op) * Math.min(1, dt * 3.2);
@@ -3309,6 +3292,22 @@ $("#sendPk").addEventListener("click", () => {
   });
   tl.to({}, { duration: .3 });
   setOn(0);
+})();
+
+/* ---------- Alt bilgi: marka yazısı genişliğe oturur, imleci ışık gibi izler ---------- */
+(() => {
+  const w = $("#ftWord"); if (!w) return; const sp = w.querySelector("span");
+  const fit = () => { sp.style.fontSize = "100px"; const k = (w.clientWidth * .95) / sp.getBoundingClientRect().width; sp.style.fontSize = Math.max(40, 100 * k) + "px"; };
+  fit(); addEventListener("resize", fit); if (document.fonts) { document.fonts.load('800 100px "Bricolage Grotesque"').then(fit).catch(() => {}); document.fonts.ready.then(fit); } setTimeout(fit, 1500);
+  let tx = 50, ty = 130, cx = 50, cy = 130, lit = 0, tl = 0, on = false;
+  w.addEventListener("pointermove", e => { const r = w.getBoundingClientRect(); tx = (e.clientX - r.left) / r.width * 100; ty = (e.clientY - r.top) / r.height * 100; tl = 1; }, { passive: true });
+  w.addEventListener("pointerleave", () => { tl = 0; ty = 130; });
+  new IntersectionObserver(es => { on = es[0].isIntersecting; }).observe(w);
+  (function loop(t) { requestAnimationFrame(loop); if (!on) return;
+    if (!tl) { tx = 50 + Math.sin(t / 2400) * 38; ty = 70 + Math.cos(t / 3100) * 25; }
+    cx += (tx - cx) * .08; cy += (ty - cy) * .08; lit += (tl - lit) * .06;
+    sp.style.setProperty("--mx", cx.toFixed(2) + "%"); sp.style.setProperty("--my", cy.toFixed(2) + "%"); w.style.setProperty("--lit", lit.toFixed(3)); })(0);
+  if (motion) G.fromTo(sp, { "--rv": 1 }, { "--rv": 0, ease: "power2.out", scrollTrigger: { trigger: w, start: "top 95%", end: "bottom 98%", scrub: .6 } });
 })();
 
 /* ---------- Kapanış: imleç yazıyor ---------- */
