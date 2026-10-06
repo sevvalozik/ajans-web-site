@@ -1191,6 +1191,19 @@ main,footer{position:relative;z-index:1}
 #kareler::after{content:"";position:absolute;bottom:clamp(70px,10vh,110px);left:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));right:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));height:1px;background:linear-gradient(90deg,transparent,var(--line) 12%,var(--line) 88%,transparent)}
 #paket::before,#dene::before{content:"";position:absolute;top:clamp(56px,7vh,84px);left:var(--gx);right:var(--gx);height:1px;background:linear-gradient(90deg,transparent,var(--line) 12%,var(--line) 88%,transparent)}
 </style>
+<!-- AÇILIŞ: inci boncuklardan isim, sonra dökülme -->
+<style>
+.intro{position:fixed;inset:0;z-index:10000;pointer-events:auto;cursor:pointer}
+.intro-bg{position:absolute;inset:0;background:#F6F2EC}
+.intro-bg::before{content:"";position:absolute;inset:0;background:radial-gradient(40% 40% at 12% 12%,rgba(236,186,204,.38),transparent 70%),radial-gradient(40% 45% at 88% 18%,rgba(196,184,236,.34),transparent 70%),radial-gradient(45% 45% at 80% 95%,rgba(250,214,180,.36),transparent 70%)}
+.intro canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.intro-skip{position:absolute;right:max(16px,3vw);bottom:max(16px,3vh);font:500 11px "Geist Mono",ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;color:rgba(42,36,51,.45);transition:opacity .4s}
+.intro.out{pointer-events:none}
+.intro.out .intro-skip{opacity:0}
+html.intro-on,html.intro-on body{overflow:hidden}
+</style>
+<div class="intro" id="intro" aria-hidden="true"><div class="intro-bg" id="introBg"></div><canvas id="introGl"></canvas><span class="intro-skip">Geçmek için tıklayın</span></div>
+
 
 <a class="skip" href="#icerik">İçeriğe geç</a>
 
@@ -1863,7 +1876,7 @@ document.addEventListener("keydown", e => {
     (function loop() {
       requestAnimationFrame(loop); const now = performance.now(), dt = Math.min(.1, (now - last) / 1000); last = now; if (!running) return; t += dt;
       // tepe noktası: girişte yukarıdan iner, kaydırınca yukarı çekilir
-      if (!introT) introT = now; const ip = Math.min(1, (now - introT) / 650); const ie = 1 - Math.pow(1 - ip, 3);
+      if (!introT && !window.__introHold) introT = now; const ip = introT ? Math.min(1, (now - introT) / 650) : 0; const ie = 1 - Math.pow(1 - ip, 3);
       svel += ((scroll - lastS) * 60 - svel) * .2; lastS = scroll;
       A.set(Math.sin(t * .35) * .04, topY() + (1 - ie) * 6 + scroll * (vh / s0) * 1.25, 0);
       Mv.copy(M).sub(Mq).divideScalar(Math.max(dt, .001)); Mq.copy(M); if (now - lastMove > 80) Mv.set(0, 0, 0);
@@ -3407,6 +3420,102 @@ if (ST) addEventListener("load", () => ST.refresh());
   }
   requestAnimationFrame(frame);
   window.__an = { toggle, st };
+})();
+</script>
+
+<script>
+(() => {
+  const el = document.getElementById("intro"); if (!el) return;
+  document.documentElement.classList.add("intro-on"); window.__introHold = true;
+  const done = () => { window.__introHold = false; document.documentElement.classList.remove("intro-on"); el.remove(); };
+  const T = window.THREE, reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let gl = null; try { gl = document.createElement("canvas").getContext("webgl"); } catch (e) {}
+  if (!T || !gl || reduce) { done(); return; }
+
+  const go = () => {
+  const BRAND = (typeof CONFIG !== "undefined" && CONFIG.BRAND) || "sayfa";
+  const cv = document.getElementById("introGl"), bgEl = document.getElementById("introBg");
+  const renderer = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); renderer.outputEncoding = T.sRGBEncoding;
+  renderer.toneMapping = T.ACESFilmicToneMapping; renderer.physicallyCorrectLights = true;
+  const scene = new T.Scene(), C = h => new T.Color(h).convertSRGBToLinear();
+  // stüdyo ortamı: incilere yumuşak yansıma
+  (() => {
+    const s = new T.Scene(); s.background = C("#EAE3DC");
+    const add = (w, h, x, y, z, col, k) => { const m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ color: C(col).multiplyScalar(k), side: T.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); s.add(m); };
+    add(8, 8, -6, 6, 6, "#FFFFFF", 6); add(6, 10, 8, 0, 3, "#FFE6EE", 3.2); add(10, 3, 0, -7, 4, "#EEF0FF", 2); add(5, 5, 0, 0, 10, "#FFFFFF", 1.6);
+    const pm = new T.PMREMGenerator(renderer); scene.environment = pm.fromScene(s, .03).texture; pm.dispose();
+  })();
+  const key = new T.DirectionalLight(0xffffff, 1.6); key.position.set(-3, 5, 8); scene.add(key);
+
+  const W = innerWidth, H = innerHeight, narrow = W < 700;
+  const cols = narrow ? 26 : Math.round(Math.min(72, Math.max(44, W / 21)));
+  const rows = Math.ceil(cols * H / W) + 1;
+  // isim maskesi: yazıyı küçük bir tuvale çizip hücre hücre örnekle
+  const mask = (() => {
+    const S = 8, c = document.createElement("canvas"); c.width = cols * S; c.height = rows * S; const g = c.getContext("2d");
+    let fs = rows * S * .5; g.font = `800 ${fs}px Geist, system-ui, sans-serif`;
+    while (g.measureText(BRAND).width > c.width * .74 && fs > 10) { fs -= 4; g.font = `800 ${fs}px Geist, system-ui, sans-serif`; }
+    g.fillStyle = "#000"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(BRAND, c.width / 2, c.height * .5);
+    const d = g.getImageData(0, 0, c.width, c.height).data, m = [];
+    for (let r = 0; r < rows; r++) for (let q = 0; q < cols; q++) { let a = 0; for (let yy = 2; yy < S; yy += 2) for (let xx = 2; xx < S; xx += 2) a += d[((r * S + yy) * c.width + q * S + xx) * 4 + 3]; m.push(a / 9 / 255 > .45); }
+    return m;
+  })();
+
+  const cam = new T.PerspectiveCamera(26, W / H, .1, 400);
+  const dist = (rows / 2) / Math.tan(13 * Math.PI / 180); cam.position.set(0, 0, dist); cam.lookAt(0, 0, 0);
+  renderer.setSize(W, H, false);
+
+  const N = cols * rows;
+  const geo = new T.SphereGeometry(.47, 18, 12);
+  const mat = new T.MeshPhysicalMaterial({ roughness: .2, clearcoat: 1, clearcoatRoughness: .06, iridescence: .55, iridescenceIOR: 1.35, iridescenceThicknessRange: [180, 420], sheen: .5, sheenColor: C("#FFFFFF"), sheenRoughness: .4, envMapIntensity: 1.1 });
+  const mesh = new T.InstancedMesh(geo, mat, N); mesh.instanceMatrix.setUsage(T.DynamicDrawUsage); scene.add(mesh);
+  const PAL = ["#F7F0E9", "#F3D8DF", "#E3DAF3", "#F6E0CD", "#DCE9E1", "#FBF7F2", "#EFE3F0"].map(C);
+  const GR = ["#B65E7A", "#8A5CA6", "#5C73B4"].map(C), inkAt = u => u < .5 ? GR[0].clone().lerp(GR[1], u * 2) : GR[1].clone().lerp(GR[2], (u - .5) * 2);
+  const B = [], cx = (cols - 1) / 2, cy = (rows - 1) / 2, maxD = Math.hypot(cx, cy);
+  for (let r = 0; r < rows; r++) for (let q = 0; q < cols; q++) {
+    const i = r * cols + q, x = q - cx, y = cy - r, name = mask[i];
+    const base = PAL[(Math.random() * PAL.length) | 0].clone();
+    B.push({ x, y, name, base, ink: inkAt(q / (cols - 1)).lerp(C("#3E3048"), .12 + Math.random() * .08), d: Math.hypot(x, y) / maxD, row: r, j: Math.random(), vx: (Math.random() - .5) * 3, s: 0 });
+    mesh.setColorAt(i, base);
+  }
+  const m4 = new T.Matrix4(), q4 = new T.Quaternion(), v3 = new T.Vector3(), sc = new T.Vector3(), col = new T.Color();
+  // zaman çizelgesi (sn): dolar 0–1, isim 0.8–1.6, bekler, döker 2.3–4
+  const FILL = 1.0, NAME0 = .85, HOLD = 2.35, END = 4.0;
+  const eob = t => { const c1 = 1.5, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+  const clamp = v => Math.max(0, Math.min(1, v));
+  let t0 = performance.now(), skipAt = -1, released = false;
+  const skip = () => { const t = (performance.now() - t0) / 1000; if (t < HOLD) t0 -= (HOLD - t) * 1000; };
+  el.addEventListener("pointerdown", skip); addEventListener("wheel", skip, { passive: true }); addEventListener("keydown", skip); addEventListener("touchstart", skip, { passive: true });
+  const fallH = rows + 4, G = 2 * fallH / .78 / .78;
+  (function frame(now) {
+    const t = window.__introT != null ? window.__introT : (now - t0) / 1000;
+    if (t >= END) { done(); renderer.dispose(); return; }
+    requestAnimationFrame(frame);
+    if (t > HOLD - .1 && !released) { released = true; window.__introHold = false; el.classList.add("out"); }
+    bgEl.style.opacity = 1 - clamp((t - HOLD - .25) / .8);
+    for (let i = 0; i < N; i++) {
+      const b = B[i];
+      // ekran dolar: merkezden dışa
+      const fp = clamp((t - b.d * .6 - b.j * .12) / .38), s = fp <= 0 ? 0 : eob(fp);
+      // isim: soldan sağa koyulaşır ve öne çıkar
+      let z = 0, k = 0;
+      if (b.name) { k = clamp((t - NAME0 - (b.x + cx) / cols * .45) / .35); z = k * .35; }
+      // dökülme: alttan yukarı sıra sıra, isim en son
+      const start = HOLD + ((rows - 1 - b.row) / rows) * .55 + b.j * .18 + (b.name ? .22 : 0);
+      let y = b.y, x = b.x;
+      if (t > start) { const u = t - start; y -= .5 * G * u * u; x += b.vx * u; z += u * 2; }
+      v3.set(x, y, z); sc.setScalar(Math.max(.0001, s * (b.name ? 1 + k * .06 : 1))); m4.compose(v3, q4, sc); mesh.setMatrixAt(i, m4);
+      if (b.name && k > 0) { col.copy(b.base).lerp(b.ink, k); mesh.setColorAt(i, col); }
+    }
+    mesh.instanceMatrix.needsUpdate = true; if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+    // çok hafif kamera nefesi
+    cam.position.x = Math.sin(t * .6) * .6; cam.position.y = Math.cos(t * .5) * .4; cam.lookAt(0, 0, 0);
+    renderer.render(scene, cam);
+  })(t0);
+  };
+  let went = false; const once = () => { if (!went) { went = true; go(); } };
+  (document.fonts ? document.fonts.load("800 40px Geist") : Promise.resolve()).then(once, once); setTimeout(once, 900);
 })();
 </script>
 
