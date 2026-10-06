@@ -2480,7 +2480,8 @@ $$(".btn").forEach(b => {
     float s=exp(-d*d/.0011)*str;
     c.rgb+=spec(t*.09+h*.12+uv.y*.25)*s;c.a+=s;
     gl_FragColor=min(c,vec4(1.));}`;
-  const FS_D = `precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform float sc;uniform sampler2D tr;${NOISE}
+  const FS_D = `#extension GL_OES_standard_derivatives : enable
+precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform float sc;uniform sampler2D tr;uniform vec3 tint;${NOISE}
   float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<3;i++){s+=a*n(p);p=p*2.02+vec2(1.7,9.2);a*=.5;}return s;}
   void main(){
     vec2 uv=gl_FragCoord.xy/r;float asp=r.x/r.y;vec2 p=vec2(uv.x*asp,uv.y);
@@ -2488,11 +2489,18 @@ $$(".btn").forEach(b => {
     vec2 q=vec2(fbm(p*.62+T),fbm(p*.62-T+3.1));
     vec2 w=p*.7+q*1.1+vec2(sin(T*2.),cos(T*1.7))*.1;
     float a=fbm(w*.9+vec2(T*1.3,-T)),b=fbm(w*.7-vec2(T,2.3)),c=fbm(w*1.1+5.2+T*.5);
-    vec3 col=vec3(.955,.948,.935);
-    col=mix(col,vec3(.80,.82,.95),smoothstep(-.18,.38,b)*.75);
-    col=mix(col,vec3(.79,.875,.845),smoothstep(-.1,.4,-a)*.6);
-    col=mix(col,vec3(.94,.885,.80),smoothstep(-.05,.42,c)*.55);
-    col=mix(col,vec3(.90,.84,.88),smoothstep(.1,.45,a)*.35);
+    vec3 col=mix(vec3(.955,.948,.935),tint,.55);
+    col=mix(col,vec3(.82,.84,.94),smoothstep(-.18,.38,b)*.32);
+    col=mix(col,vec3(.81,.88,.85),smoothstep(-.1,.4,-a)*.28);
+    col=mix(col,vec3(.94,.89,.81),smoothstep(-.05,.42,c)*.25);
+    // kontur çizgileri: ince, mürdüm, yavaşça şekil değiştirir; imleç çevresinde bükülür
+    vec2 cm=vec2(m.x*asp,m.y+sc);vec2 dv=p-cm;float dd=length(dv);
+    vec2 cp=p+normalize(dv+1e-5)*.07*exp(-dd*dd*9.);
+    float f=fbm(cp*1.25+vec2(T*.8,-T*.6))+.35*fbm(cp*2.6-T);
+    float v=f*10.;float lw=abs(fract(v-.5)-.5)/max(fwidth(v),1e-4);
+    float ln=1.-smoothstep(.0,.9,lw);
+    float major=step(.5,fract(floor(v)*.2+.1));
+    col=mix(col,vec3(.306,.165,.29),ln*(.045+.035*major));
     vec2 mm=vec2(m.x*asp,m.y+sc);float d=length(p-mm);col+=vec3(.03,.022,.036)*exp(-d*d*6.);
     vec4 Tr=texture2D(tr,uv);float k=clamp(Tr.a,0.,1.);vec3 tc=Tr.rgb/max(Tr.a,.001);
     tc=mix(tc,vec3(1.),.18);
@@ -2503,12 +2511,20 @@ $$(".btn").forEach(b => {
   }`;
   const sh = (ty, src) => { const o = gl.createShader(ty); gl.shaderSource(o, src); gl.compileShader(o); return o; };
   const prog = fs => { const p = gl.createProgram(); gl.attachShader(p, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(p, sh(gl.FRAGMENT_SHADER, fs)); gl.bindAttribLocation(p, 0, "a"); gl.linkProgram(p); return gl.getProgramParameter(p, gl.LINK_STATUS) ? p : null; };
+  gl.getExtension("OES_standard_derivatives");
   const PD = prog(FS_D), PT = prog(FS_T);
   if (!PD) { cv.remove(); return; }
   const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
   gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
   const U = (p, n) => gl.getUniformLocation(p, n);
-  const D = { r: U(PD, "r"), t: U(PD, "t"), m: U(PD, "m"), sc: U(PD, "sc"), tr: U(PD, "tr") };
+  const D = { r: U(PD, "r"), t: U(PD, "t"), m: U(PD, "m"), sc: U(PD, "sc"), tr: U(PD, "tr"), tint: U(PD, "tint") };
+  // bölüme göre zemin tonu: kaydırdıkça yavaşça değişir (sade, kurumsal tonlar)
+  const TINTS = [["#top", "#EEE5D6"], ["#hizmetler", "#DEE1EF"], ["#paket", "#E9E6DF"], ["#anatomi", "#E6E2EC"], ["#bot", "#DCE7E0"], ["#kareler", "#E2E2EC"], ["#isler", "#DDE6EA"], ["#surec", "#ECE4D7"], ["#iletisim", "#EEE2D8"], ["#ft", "#E4E1EA"]]
+    .map(([sel, h]) => [document.querySelector(sel), [1, 3, 5].map(i => parseInt(h.substr(i, 2), 16) / 255)]).filter(x => x[0]);
+  const tint = [.93, .9, .84];
+  const pickTint = () => { const mid = innerHeight / 2; let best = null, bd = 1e9;
+    for (const [el, c] of TINTS) { const b = el.getBoundingClientRect(); const d = b.top <= mid && b.bottom >= mid ? 0 : Math.min(Math.abs(b.top - mid), Math.abs(b.bottom - mid)); if (d < bd) { bd = d; best = c; } }
+    if (best) for (let i = 0; i < 3; i++) tint[i] += (best[i] - tint[i]) * .035; };
   const TT = PT && { pv: U(PT, "pv"), r2: U(PT, "r2"), t: U(PT, "t"), str: U(PT, "str"), asp: U(PT, "asp"), m: U(PT, "m"), pm: U(PT, "pm") };
   // iz için iki doku (gidip gelen)
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2543,7 +2559,7 @@ $$(".btn").forEach(b => {
     }
     gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, cv.width, cv.height); gl.useProgram(PD);
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, TT ? tex[cur] : null); gl.uniform1i(D.tr, 1);
-    gl.uniform2f(D.r, cv.width, cv.height); gl.uniform1f(D.t, t); gl.uniform2f(D.m, mx, my); gl.uniform1f(D.sc, sc);
+    pickTint(); gl.uniform3f(D.tint, tint[0], tint[1], tint[2]); gl.uniform2f(D.r, cv.width, cv.height); gl.uniform1f(D.t, t); gl.uniform2f(D.m, mx, my); gl.uniform1f(D.sc, sc);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
   if (reduce) { draw(performance.now()); cv.classList.add("on"); return; }
