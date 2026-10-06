@@ -2488,7 +2488,7 @@ $$(".btn").forEach(b => {
 /* ---------- Canlı zemin: pastel ipek yavaşça akar; imleç arkasında kıvrılıp sönen sedefli bir ışık izi bırakır ---------- */
 (() => {
   const cv = document.createElement("canvas"); cv.className = "bgfx"; cv.setAttribute("aria-hidden", "true");
-  let gl = null; try { gl = cv.getContext("webgl", { antialias: false, alpha: false, premultipliedAlpha: false }); } catch (e) {}
+  let gl = null; try { gl = cv.getContext("webgl", { antialias: false, alpha: true, premultipliedAlpha: true }); } catch (e) {}
   if (!gl) return;
   document.body.prepend(cv);
   const NOISE = `vec2 hh(vec2 p){p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));return -1.+2.*fract(sin(p)*43758.5453);}
@@ -2505,35 +2505,10 @@ $$(".btn").forEach(b => {
     float s=exp(-d*d/.0011)*str;
     c.rgb+=spec(t*.09+h*.12+uv.y*.25)*s;c.a+=s;
     gl_FragColor=min(c,vec4(1.));}`;
-  const FS_D = `#extension GL_OES_standard_derivatives : enable
-precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform float sc;uniform sampler2D tr;uniform vec3 tint;${NOISE}
-  float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<3;i++){s+=a*n(p);p=p*2.02+vec2(1.7,9.2);a*=.5;}return s;}
-  void main(){
-    vec2 uv=gl_FragCoord.xy/r;float asp=r.x/r.y;vec2 p=vec2(uv.x*asp,uv.y);
-    float T=t*.03;p.y+=sc;
-    vec2 q=vec2(fbm(p*.62+T),fbm(p*.62-T+3.1));
-    vec2 w=p*.7+q*1.1+vec2(sin(T*2.),cos(T*1.7))*.1;
-    float a=fbm(w*.9+vec2(T*1.3,-T)),b=fbm(w*.7-vec2(T,2.3)),c=fbm(w*1.1+5.2+T*.5);
-    vec3 col=mix(vec3(.955,.948,.935),tint,.55);
-    col=mix(col,vec3(.82,.84,.94),smoothstep(-.18,.38,b)*.32);
-    col=mix(col,vec3(.81,.88,.85),smoothstep(-.1,.4,-a)*.28);
-    col=mix(col,vec3(.94,.89,.81),smoothstep(-.05,.42,c)*.25);
-    // kontur çizgileri: ince, mürdüm, yavaşça şekil değiştirir; imleç çevresinde bükülür
-    vec2 cm=vec2(m.x*asp,m.y+sc);vec2 dv=p-cm;float dd=length(dv);
-    vec2 cp=p+normalize(dv+1e-5)*.07*exp(-dd*dd*9.);
-    float f=fbm(cp*1.25+vec2(T*.8,-T*.6))+.35*fbm(cp*2.6-T);
-    float v=f*10.;float lw=abs(fract(v-.5)-.5)/max(fwidth(v),1e-4);
-    float ln=1.-smoothstep(.0,.9,lw);
-    float major=step(.5,fract(floor(v)*.2+.1));
-    col=mix(col,vec3(.306,.165,.29),ln*(.045+.035*major));
-    vec2 mm=vec2(m.x*asp,m.y+sc);float d=length(p-mm);col+=vec3(.03,.022,.036)*exp(-d*d*6.);
-    vec4 Tr=texture2D(tr,uv);float k=clamp(Tr.a,0.,1.);vec3 tc=Tr.rgb/max(Tr.a,.001);
-    tc=mix(tc,vec3(1.),.18);
-    col=mix(col,col*.5+tc*.62,k*.6);
-    col+=vec3(.07,.06,.08)*k*k;
-    col*=1.-.025*length(uv-.5);
-    gl_FragColor=vec4(col,1.);
-  }`;
+  const FS_D = `precision mediump float;uniform vec2 r;uniform sampler2D tr;
+  // zemin artık sabit pastel ışık (body::before); bu tuval yalnız imleç izini çizer
+  void main(){vec2 uv=gl_FragCoord.xy/r;vec4 Tr=texture2D(tr,uv);float k=clamp(Tr.a,0.,1.);
+    vec3 tc=mix(Tr.rgb/max(Tr.a,.001),vec3(1.),.18);gl_FragColor=vec4(tc*k*.42,k*.42);}`;
   const sh = (ty, src) => { const o = gl.createShader(ty); gl.shaderSource(o, src); gl.compileShader(o); return o; };
   const prog = fs => { const p = gl.createProgram(); gl.attachShader(p, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(p, sh(gl.FRAGMENT_SHADER, fs)); gl.bindAttribLocation(p, 0, "a"); gl.linkProgram(p); return gl.getProgramParameter(p, gl.LINK_STATUS) ? p : null; };
   gl.getExtension("OES_standard_derivatives");
@@ -2584,7 +2559,7 @@ precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform fl
     }
     gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, cv.width, cv.height); gl.useProgram(PD);
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, TT ? tex[cur] : null); gl.uniform1i(D.tr, 1);
-    pickTint(); gl.uniform3f(D.tint, tint[0], tint[1], tint[2]); gl.uniform2f(D.r, cv.width, cv.height); gl.uniform1f(D.t, t); gl.uniform2f(D.m, mx, my); gl.uniform1f(D.sc, sc);
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); gl.uniform2f(D.r, cv.width, cv.height); gl.uniform1f(D.t, t); gl.uniform2f(D.m, mx, my); gl.uniform1f(D.sc, sc);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
   if (reduce) { draw(performance.now()); cv.classList.add("on"); return; }
