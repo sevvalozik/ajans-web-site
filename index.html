@@ -2494,15 +2494,14 @@ $$(".btn").forEach(b => {
   void main(){
     vec2 uv=gl_FragCoord.xy/r;float asp=r.x/r.y;vec2 p=vec2(uv.x*asp,uv.y);
     float T=t*.03;p.y+=sc;
-    vec2 q=vec2(fbm(p*1.05+T),fbm(p*1.05-T+3.1));
-    vec2 w=p+q*1.4+vec2(sin(T*2.),cos(T*1.7))*.12;
-    float a=fbm(w*1.15+vec2(T*1.3,-T)),b=fbm(w*.85-vec2(T,2.3)),c=fbm(w*1.5+5.2+T*.5);
-    vec3 col=vec3(.975,.96,.94);
-    col=mix(col,vec3(.975,.83,.875),smoothstep(-.02,.42,a)*.85);
-    col=mix(col,vec3(.875,.845,.98),smoothstep(.02,.46,b)*.8);
-    col=mix(col,vec3(.985,.885,.79),smoothstep(.08,.48,c)*.65);
-    col=mix(col,vec3(.865,.925,.89),smoothstep(.12,.5,-a)*.5);
-    float silk=sin(w.x*4.+w.y*6.+a*7.);col+=vec3(.022,.018,.026)*smoothstep(.82,1.,silk);
+    vec2 q=vec2(fbm(p*.62+T),fbm(p*.62-T+3.1));
+    vec2 w=p*.7+q*1.1+vec2(sin(T*2.),cos(T*1.7))*.1;
+    float a=fbm(w*.9+vec2(T*1.3,-T)),b=fbm(w*.7-vec2(T,2.3)),c=fbm(w*1.1+5.2+T*.5);
+    vec3 col=vec3(.962,.94,.915);
+    col=mix(col,vec3(.95,.73,.81),smoothstep(-.18,.38,a)*.9);
+    col=mix(col,vec3(.79,.75,.96),smoothstep(-.12,.4,b)*.85);
+    col=mix(col,vec3(.98,.82,.69),smoothstep(-.05,.42,c)*.7);
+    col=mix(col,vec3(.77,.885,.83),smoothstep(.0,.45,-a)*.55);
     vec2 mm=vec2(m.x*asp,m.y+sc);float d=length(p-mm);col+=vec3(.03,.022,.036)*exp(-d*d*6.);
     vec4 Tr=texture2D(tr,uv);float k=clamp(Tr.a,0.,1.);vec3 tc=Tr.rgb/max(Tr.a,.001);
     tc=mix(tc,vec3(1.),.18);
