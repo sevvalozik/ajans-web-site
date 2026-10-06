@@ -1379,6 +1379,32 @@ html.cc-down .cc-dot{scale:1.4}
 .faq-hint{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(78,42,74,.4)}
 @media (max-width:760px){.faq-t{height:46px;padding:0 6px 0 6px}.faq-t .faq-lab{display:none}.faq-p{padding:22px 14px 14px}.fc{padding:20px 18px}.fc p{font-size:14px}}
 @media (prefers-reduced-motion: reduce){.mc{animation:none;transform:rotateX(-22deg) rotateY(-30deg)}.faq-cube{transition:none}}
+
+/* küp güncellemesi: kapalıyken yalnız küp + altında minik yazı; açıkken eğik durur, küp olduğu belli olur */
+.faq-t{flex-direction:column;gap:6px;height:auto;padding:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;border-radius:0}
+.faq-t .faq-lab{order:2;font-family:var(--f-mono);font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:rgba(78,42,74,.7);background:rgba(255,253,249,.7);padding:3px 8px;border-radius:999px}
+.mini{width:84px;height:84px;perspective:420px;position:relative}
+.mini::after{content:"";position:absolute;left:50%;bottom:2px;width:54px;height:10px;margin-left:-27px;border-radius:50%;background:radial-gradient(closest-side,rgba(78,42,74,.22),transparent);filter:blur(2px)}
+.mc{width:48px;height:48px;animation-duration:10s}
+.mc i{font-size:26px;border-radius:9px;box-shadow:inset 0 0 0 1.5px rgba(78,42,74,.16),inset 0 -6px 12px -6px rgba(78,42,74,.18)}
+.mc .m0{transform:translateZ(24px)}.mc .m1{transform:rotateY(90deg) translateZ(24px)}.mc .m2{transform:rotateY(180deg) translateZ(24px)}
+.mc .m3{transform:rotateY(-90deg) translateZ(24px)}.mc .m4{transform:rotateX(90deg) translateZ(24px)}.mc .m5{transform:rotateX(-90deg) translateZ(24px)}
+.faq-t:hover .mc{animation-duration:3s}
+.faq-t:hover{transform:translateY(-3px)}
+.faq{--S:min(250px,66vw)}
+.faq-p{width:calc(var(--S) + 110px);padding:30px 22px 18px}
+.faq-scene{perspective:1500px;width:calc(var(--S) + 60px);height:calc(var(--S) + 100px);display:grid;place-items:center;margin:0}
+.faq{--S:min(230px,62vw)}
+.mc{width:54px;height:54px}.mc .m0{transform:translateZ(27px)}.mc .m1{transform:rotateY(90deg) translateZ(27px)}.mc .m2{transform:rotateY(180deg) translateZ(27px)}.mc .m3{transform:rotateY(-90deg) translateZ(27px)}.mc .m4{transform:rotateX(90deg) translateZ(27px)}.mc .m5{transform:rotateX(-90deg) translateZ(27px)}.mini{width:92px;height:92px}
+.faq-tilt{width:var(--S);height:var(--S);transform-style:preserve-3d;animation:faq-sway 7s ease-in-out infinite}
+@keyframes faq-sway{0%,100%{transform:rotateX(-14deg) rotateY(-24deg)}50%{transform:rotateX(-10deg) rotateY(-16deg)}}
+.fc{box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 0 0 1.5px rgba(78,42,74,.13),inset 0 -24px 40px -30px rgba(78,42,74,.25);border-radius:18px;padding:22px 20px}
+.fc b{font-size:clamp(19px,1.7vw,23px)}
+.fc{overflow:hidden}.fc .fq-more{font-size:12.5px;padding:8px 13px}
+.fc p{font-size:14px}
+@media (max-width:760px){.faq-t{padding:0}.faq-t .faq-lab{display:block;font-size:9px}.mini{width:66px;height:66px}.mc{width:38px;height:38px}
+  .mc .m0{transform:translateZ(19px)}.mc .m1{transform:rotateY(90deg) translateZ(19px)}.mc .m2{transform:rotateY(180deg) translateZ(19px)}.mc .m3{transform:rotateY(-90deg) translateZ(19px)}.mc .m4{transform:rotateX(90deg) translateZ(19px)}.mc .m5{transform:rotateX(-90deg) translateZ(19px)}.mc i{font-size:20px}}
+@media (prefers-reduced-motion: reduce){.faq-tilt{animation:none;transform:rotateX(-12deg) rotateY(-20deg)}}
 </style>
 <!-- AÇILIŞ: inci boncuklardan isim, sonra dökülme -->
 <style>
@@ -1411,7 +1437,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
   <button class="faq-t" type="button" aria-expanded="false" aria-controls="faqP"><span class="mini" aria-hidden="true"><span class="mc"><i class="m0">?</i><i class="m1">?</i><i class="m2">?</i><i class="m3">?</i><i class="m4">?</i><i class="m5">?</i></span></span><span class="faq-lab">Sık sorulanlar</span></button>
   <div class="faq-p" id="faqP" role="dialog" aria-label="Sık sorulan sorular" aria-hidden="true">
     <button class="faq-x" type="button" aria-label="Kapat">×</button>
-    <div class="faq-scene" id="faqScene"><div class="faq-cube" id="faqCube"><div class="fc f0" aria-hidden="false"><small>Soru 1 / 6</small><b>Fiyat nasıl belirleniyor?</b><p>İşin kapsamını ilk görüşmede birlikte netleştirir, sabit bir teklif veririz. Sonradan sürpriz kalem çıkmaz.</p></div><div class="fc f1" aria-hidden="true"><small>Soru 2 / 6</small><b>Ne kadar sürede teslim ediyorsunuz?</b><p>Logo ve kimlik 1–2 hafta, web sitesi 3–6 hafta sürer. Takvimi baştan birlikte koyarız.</p></div><div class="fc f2" aria-hidden="true"><small>Soru 3 / 6</small><b>Sadece tek bir iş için de çalışıyor musunuz?</b><p>Evet. Tek bir logo da olur, uçtan uca bir marka da. Sepetinize ne koyarsanız onu yaparız.</p></div><div class="fc f3" aria-hidden="true"><small>Soru 4 / 6</small><b>Revizyon hakkım var mı?</b><p>Her aşamada iki tur revizyon dahildir. Siz onaylamadan bir sonraki adıma geçmeyiz.</p></div><div class="fc f4" aria-hidden="true"><small>Soru 5 / 6</small><b>Hangi sektörlerle çalışıyorsunuz?</b><p>Teknolojiden sağlığa, eğitimden sivil topluma. Bizim için sektörden çok ihtiyacınız önemli.</p></div><div class="fc f5" aria-hidden="true"><small>Soru 6 / 6</small><b>Teslimden sonra ne oluyor?</b><p>Bütün dosyalar sizin olur. İsterseniz bakım, içerik ve reklamla birlikte devam ederiz.</p><a href="#iletisim" class="fq-more">Sorunuz burada yok mu? Yazın</a></div></div></div>
+    <div class="faq-scene" id="faqScene"><div class="faq-tilt"><div class="faq-cube" id="faqCube"><div class="fc f0" aria-hidden="false"><small>Soru 1 / 6</small><b>Fiyat nasıl belirleniyor?</b><p>İşin kapsamını ilk görüşmede birlikte netleştirir, sabit bir teklif veririz. Sonradan sürpriz kalem çıkmaz.</p></div><div class="fc f1" aria-hidden="true"><small>Soru 2 / 6</small><b>Ne kadar sürede teslim ediyorsunuz?</b><p>Logo ve kimlik 1–2 hafta, web sitesi 3–6 hafta sürer. Takvimi baştan birlikte koyarız.</p></div><div class="fc f2" aria-hidden="true"><small>Soru 3 / 6</small><b>Sadece tek bir iş için de çalışıyor musunuz?</b><p>Evet. Tek bir logo da olur, uçtan uca bir marka da. Sepetinize ne koyarsanız onu yaparız.</p></div><div class="fc f3" aria-hidden="true"><small>Soru 4 / 6</small><b>Revizyon hakkım var mı?</b><p>Her aşamada iki tur revizyon dahildir. Siz onaylamadan bir sonraki adıma geçmeyiz.</p></div><div class="fc f4" aria-hidden="true"><small>Soru 5 / 6</small><b>Hangi sektörlerle çalışıyorsunuz?</b><p>Teknolojiden sağlığa, eğitimden sivil topluma. Bizim için sektörden çok ihtiyacınız önemli.</p></div><div class="fc f5" aria-hidden="true"><small>Soru 6 / 6</small><b>Teslimden sonra ne oluyor?</b><p>Bütün dosyalar sizin olur. İsterseniz bakım ve reklamla devam ederiz.</p><a href="#iletisim" class="fq-more">Sorunuz burada yok mu? Yazın</a></div></div></div></div>
     <div class="faq-nav"><button type="button" class="fq-prev" aria-label="Önceki soru">←</button><span id="faqN">1 / 6</span><button type="button" class="fq-next" aria-label="Sonraki soru">→</button></div>
     <span class="faq-hint">Sürükleyin ya da oklara basın</span>
   </div>
@@ -2538,7 +2564,7 @@ $$(".btn").forEach(b => {
   // yüzler: ön, sağ, arka, sol, üst, alt
   const ROT = [[0, 0], [0, -90], [0, -180], [0, -270], [-90, -360], [90, -360]];
   let i = 0, turns = 0, rx = 0, ry = 0;
-  const apply = () => { cube.style.transform = `translateZ(calc(var(--S) / -2)) rotateX(${rx}deg) rotateY(${ry}deg)`; };
+  const apply = () => { cube.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`; };
   function go(n) {
     const prev = i; i = (n + 6) % 6;
     if (prev === 5 && i === 0) turns++; if (prev === 0 && i === 5) turns--;
@@ -2556,7 +2582,7 @@ $$(".btn").forEach(b => {
   // sürükle: küp parmağı/fareyi izler, bırakınca bir sonraki yüze oturur
   let sx = 0, sy = 0, drag = false;
   scene.addEventListener("pointerdown", e => { drag = true; sx = e.clientX; sy = e.clientY; cube.classList.add("drag"); scene.setPointerCapture(e.pointerId); });
-  scene.addEventListener("pointermove", e => { if (!drag) return; const dx = e.clientX - sx, dy = e.clientY - sy; cube.style.transform = `translateZ(calc(var(--S) / -2)) rotateX(${rx - dy * .25}deg) rotateY(${ry + dx * .35}deg)`; });
+  scene.addEventListener("pointermove", e => { if (!drag) return; const dx = e.clientX - sx, dy = e.clientY - sy; cube.style.transform = `rotateX(${rx - dy * .25}deg) rotateY(${ry + dx * .35}deg)`; });
   const end = e => { if (!drag) return; drag = false; cube.classList.remove("drag"); const dx = e.clientX - sx, dy = e.clientY - sy; if (Math.abs(dx) > 40 || Math.abs(dy) > 40) go(i + ((Math.abs(dx) >= Math.abs(dy) ? -dx : dy) > 0 ? 1 : -1)); else apply(); };
   scene.addEventListener("pointerup", end); scene.addEventListener("pointercancel", end);
   go(0);
