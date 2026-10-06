@@ -1059,6 +1059,7 @@ input,textarea,[contenteditable=true]{cursor:text}
 .l-sign{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:22px}
 .l-sign input{width:100%;background:transparent;border:0;border-bottom:1.5px solid rgba(42,36,51,.16);padding:6px 0 7px;font-family:var(--f-display);font-size:16px;letter-spacing:-.01em;text-transform:none;color:#2A2433;transition:border-color .2s}
 .l-sign input::placeholder{color:rgba(42,36,51,.32)}
+.l-sec{grid-column:1/-1}.l-sec[hidden]{display:none}
 .l-sign input:focus{border-bottom-color:#7B5CFF}
 .letter .btn{margin-top:26px;width:100%;justify-content:center;background:#2A2433;color:#fff}
 .letter .sent{margin-top:10px;font-size:13.5px;color:#B3434D;min-height:1em}
@@ -1291,6 +1292,49 @@ main,footer{position:relative;z-index:1}
   .hw-t h3{margin-top:2px;font-size:34px}
   .hw-t p{font-size:14.5px}
 }
+
+/* ---------- WhatsApp: sade düzen. Zemin sitenin kremi, yeşil yalnız sohbet ekranında; sağda seçili konuşmanın tek paneli ---------- */
+#bot .bst{background:#FBF8F3;box-shadow:inset 0 0 0 1px rgba(78,42,74,.07),0 40px 80px -60px rgba(70,90,70,.35);grid-template-columns:minmax(0,.72fr) minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(14px,1.8vw,22px)}
+#bot .bst::before{background:radial-gradient(40% 55% at 50% 40%,rgba(160,200,170,.16),transparent 70%),radial-gradient(35% 45% at 100% 100%,rgba(236,186,204,.16),transparent 70%),radial-gradient(35% 45% at 0% 0%,rgba(196,184,236,.14),transparent 70%)}
+#bot .bst::after{opacity:.5;background-image:radial-gradient(rgba(78,42,74,.08) 1px,transparent 1.3px);background-size:22px 22px;-webkit-mask-image:radial-gradient(80% 80% at 50% 50%,#000,transparent);mask-image:radial-gradient(80% 80% at 50% 50%,#000,transparent)}
+#bot .btabs button b{color:rgba(42,36,51,.38)}
+#bot .btabs button span{color:rgba(42,36,51,.62)}
+#bot .btabs button i{background:rgba(78,42,74,.08)}
+#bot .btabs button[aria-selected="true"]{background:#fff;box-shadow:0 0 0 1px rgba(78,42,74,.07),0 14px 28px -20px rgba(78,42,74,.4)}
+#bot .btabs button[aria-selected="true"] b{color:#4E2A4A}
+#bot .bchat{box-shadow:0 30px 60px -30px rgba(40,70,50,.4),0 0 0 8px rgba(255,255,255,.7),0 0 0 9px rgba(78,42,74,.06)}
+#bot .bboard{gap:12px}
+#bot .bcard{background:#fff;border:0;box-shadow:0 0 0 1px rgba(78,42,74,.07),0 16px 30px -24px rgba(78,42,74,.35)}
+#bot .bcard:nth-child(2){display:none}
+#bot .bcard:first-child{flex:1}
+#bot .bcard:last-child{flex:none;padding:12px 14px}
+#bot #bToasts .bt:not(:first-child){display:none}
+#bot .bh{color:#2A2433}
+#bot .bh em{color:rgba(42,36,51,.5)}
+#bot .cal{gap:5px}#bot .cal .c{height:clamp(30px,5.2vh,52px);border-radius:8px}#bot .cal .h{line-height:clamp(30px,5.2vh,52px)}#bot .cal .c.new::after{top:50%;transform:translateY(-50%);left:8px}
+#bot .kan > div{min-height:clamp(190px,30vh,320px)}#bot .trk{gap:22px;padding-top:12px}#bot .trk div{font-size:14.5px}
+@media (max-width:1100px){#bot .bst{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+
+/* ---------- Klas imleç: mürdüm nokta + yumuşakça takip eden ince halka ---------- */
+@media (hover:hover) and (pointer:fine){
+  html.cc-on,html.cc-on *{cursor:none!important}
+  html.cc-on input,html.cc-on textarea,html.cc-on [contenteditable=true]{cursor:text!important}
+}
+.cc-dot,.cc-ring{position:fixed;left:0;top:0;z-index:98;pointer-events:none;border-radius:50%;opacity:0;will-change:transform}
+.cc-dot{width:8px;height:8px;margin:-4px 0 0 -4px;background:#4E2A4A;box-shadow:0 0 0 2px rgba(255,253,249,.85);transition:opacity .2s,scale .25s cubic-bezier(.2,1.5,.4,1)}
+.cc-ring{width:36px;height:36px;margin:-18px 0 0 -18px;border:1.2px solid rgba(78,42,74,.38);transition:opacity .25s,width .35s cubic-bezier(.2,1,.3,1),height .35s cubic-bezier(.2,1,.3,1),margin .35s cubic-bezier(.2,1,.3,1),background-color .3s,border-color .3s}
+html.cc-on .cc-dot,html.cc-on .cc-ring{opacity:1}
+html.cc-on.cc-hide .cc-dot,html.cc-on.cc-hide .cc-ring,html.cc-on.cc-out .cc-dot,html.cc-on.cc-out .cc-ring{opacity:0}
+html.cc-link .cc-ring{width:58px;height:58px;margin:-29px 0 0 -29px;background:rgba(238,221,246,.38);border-color:rgba(78,42,74,.22);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+html.cc-link .cc-dot{scale:.5}
+html.cc-drag .cc-ring{width:70px;height:70px;margin:-35px 0 0 -35px;border-style:dashed;border-color:rgba(78,42,74,.45);background:rgba(255,253,249,.25)}
+html.cc-down .cc-ring{scale:.82}
+html.cc-down .cc-dot{scale:1.4}
+.cc-ring{transition-property:opacity,width,height,margin,background-color,border-color,scale}
+
+/* ---------- Canlı zemin: yavaşça akan pastel ipek ---------- */
+.bgfx{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;display:block;opacity:0;transition:opacity 1.2s ease}
+.bgfx.on{opacity:1}
 </style>
 <!-- AÇILIŞ: inci boncuklardan isim, sonra dökülme -->
 <style>
@@ -1701,6 +1745,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
           <label for="cMsg" class="l-lab">Ne lazım?</label>
           <textarea id="cMsg" rows="5" placeholder="Örn. yeni bir site, logo ve 3 aylık sosyal medya."></textarea>
           <div class="l-sign">
+            <label for="cSec" class="l-lab l-sec" id="lSec" hidden>Sektörünüz<input id="cSec" type="text" autocomplete="organization-title" placeholder="Örn. avukatlık"></label>
             <label for="cName" class="l-lab">Adınız<input id="cName" type="text" autocomplete="name" placeholder="Ad Soyad" required></label>
             <label for="cMail" class="l-lab">E-posta adresiniz<input id="cMail" type="email" autocomplete="email" placeholder="ornek@mail.com" required></label>
           </div>
@@ -2335,6 +2380,93 @@ $$(".btn").forEach(b => {
   });
 })();
 
+/* ---------- Canlı zemin: palet aynı, renkler ipek gibi çok yavaş akar, imlecin altında hafif ışık ---------- */
+(() => {
+  const cv = document.createElement("canvas"); cv.className = "bgfx"; cv.setAttribute("aria-hidden", "true");
+  let gl = null; try { gl = cv.getContext("webgl", { antialias: false, alpha: false, premultipliedAlpha: false }); } catch (e) {}
+  if (!gl) return;
+  document.body.prepend(cv);
+  const VS = "attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}";
+  const FS = `precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform float sc;
+  vec2 h(vec2 p){p=vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3)));return -1.+2.*fract(sin(p)*43758.5453);}
+  float n(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);return mix(mix(dot(h(i),f),dot(h(i+vec2(1.,0.)),f-vec2(1.,0.)),u.x),mix(dot(h(i+vec2(0.,1.)),f-vec2(0.,1.)),dot(h(i+vec2(1.,1.)),f-vec2(1.,1.)),u.x),u.y);}
+  float fbm(vec2 p){float a=.5,s=0.;for(int i=0;i<4;i++){s+=a*n(p);p=p*2.02+vec2(1.7,9.2);a*=.5;}return s;}
+  void main(){
+    vec2 uv=gl_FragCoord.xy/r; float asp=r.x/r.y; vec2 p=vec2(uv.x*asp,uv.y);
+    float T=t*.03; p.y+=sc;
+    vec2 q=vec2(fbm(p*1.05+T),fbm(p*1.05-T+3.1));
+    vec2 w=p+q*1.4+vec2(sin(T*2.),cos(T*1.7))*.12;
+    float a=fbm(w*1.15+vec2(T*1.3,-T)), b=fbm(w*.85-vec2(T,2.3)), c=fbm(w*1.5+5.2+T*.5);
+    vec3 col=vec3(.975,.96,.94);
+    col=mix(col,vec3(.975,.83,.875),smoothstep(-.02,.42,a)*.85);
+    col=mix(col,vec3(.875,.845,.98),smoothstep(.02,.46,b)*.8);
+    col=mix(col,vec3(.985,.885,.79),smoothstep(.08,.48,c)*.65);
+    col=mix(col,vec3(.865,.925,.89),smoothstep(.12,.5,-a)*.5);
+    float silk=sin(w.x*4.+w.y*6.+a*7.); col+=vec3(.022,.018,.026)*smoothstep(.82,1.,silk);
+    vec2 mm=vec2(m.x*asp,m.y+sc); float d=length(p-mm); col+=vec3(.03,.022,.036)*exp(-d*d*6.);
+    col*=1.-.025*length(uv-.5);
+    gl_FragColor=vec4(col,1.);
+  }`;
+  const sh = (ty, src) => { const o = gl.createShader(ty); gl.shaderSource(o, src); gl.compileShader(o); return o; };
+  const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr);
+  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { cv.remove(); return; }
+  gl.useProgram(pr);
+  const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(pr, "a"); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  const U = n => gl.getUniformLocation(pr, n), uR = U("r"), uT = U("t"), uM = U("m"), uS = U("sc");
+  const Q = .5; // yarım çözünürlük: yumuşak ve hafif
+  const size = () => { cv.width = Math.max(2, Math.round(innerWidth * Q)); cv.height = Math.max(2, Math.round(innerHeight * Q)); gl.viewport(0, 0, cv.width, cv.height); gl.uniform2f(uR, cv.width, cv.height); };
+  size(); addEventListener("resize", size);
+  let mx = .7, my = .6, tmx = .7, tmy = .6;
+  addEventListener("pointermove", e => { tmx = e.clientX / innerWidth; tmy = 1 - e.clientY / innerHeight; }, { passive: true });
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let last = 0, t0 = performance.now(), sc = 0;
+  const draw = now => {
+    mx += (tmx - mx) * .04; my += (tmy - my) * .04;
+    sc += ((scrollY / Math.max(1, innerHeight)) * .12 - sc) * .05;
+    gl.uniform1f(uT, (now - t0) / 1000 + 40); gl.uniform2f(uM, mx, my); gl.uniform1f(uS, sc);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+  };
+  if (reduce) { draw(performance.now()); cv.classList.add("on"); return; }
+  (function loop(now) {
+    requestAnimationFrame(loop);
+    if (document.hidden || now - last < 33) return; last = now; // ~30 kare yeter
+    draw(now);
+  })(performance.now());
+  requestAnimationFrame(() => cv.classList.add("on"));
+})();
+
+/* ---------- Klas imleç: nokta imlecin tam yerinde, halka yumuşakça takip eder ---------- */
+(() => {
+  if (!fine) return;
+  const H = document.documentElement;
+  const dot = document.createElement("div"), ring = document.createElement("div");
+  dot.className = "cc-dot"; ring.className = "cc-ring"; dot.setAttribute("aria-hidden", "true"); ring.setAttribute("aria-hidden", "true");
+  document.body.append(ring, dot);
+  let mx = -100, my = -100, rx = -100, ry = -100, seen = false;
+  const DRAG = "#orbStage,#pkArea,#stGl,#anGl,[data-cursor]", LINK = "a,button,[role=button],.chip,label[for],select,summary,.tile", SNAP = ".dock-t,.dock a,#btabs button", TEXT = "input,textarea,[contenteditable=true]";
+  addEventListener("pointermove", e => {
+    if (e.pointerType !== "mouse") { H.classList.remove("cc-on"); return; }
+    mx = e.clientX; my = e.clientY; if (!seen) { seen = true; rx = mx; ry = my; H.classList.add("cc-on"); }
+    H.classList.remove("cc-out");
+    dot.style.transform = `translate3d(${mx}px,${my}px,0)`;
+    const t = e.target instanceof Element ? e.target : null; if (!t) return;
+    const snap = !!t.closest(SNAP), text = !!t.closest(TEXT);
+    H.classList.toggle("cc-hide", snap || text);
+    const link = !snap && !text && !!t.closest(LINK);
+    H.classList.toggle("cc-link", link);
+    H.classList.toggle("cc-drag", !link && !snap && !text && !!t.closest(DRAG));
+  }, { passive: true });
+  document.addEventListener("pointerleave", () => H.classList.add("cc-out"));
+  addEventListener("pointerdown", () => H.classList.add("cc-down"));
+  addEventListener("pointerup", () => H.classList.remove("cc-down"));
+  (function loop() {
+    requestAnimationFrame(loop); if (!seen) return;
+    rx += (mx - rx) * .2; ry += (my - ry) * .2;
+    ring.style.transform = `translate3d(${rx.toFixed(1)}px,${ry.toFixed(1)}px,0)`;
+  })();
+})();
+
 /* ---------- Menü ve WhatsApp sekmeleri: imleç butonun etrafını sarar ---------- */
 (() => {
   if (!fine) return;
@@ -2864,6 +2996,8 @@ $("#sendPk").addEventListener("click", () => {
   const out = $("#ysOut"), act = $("#ysAct");
   const col = n => { const k = typeof catOf === "function" ? catOf(n) : "ozel"; return k === "ozel" || !CATS[k] ? "#8F8D91" : `var(${CATS[k].c})`; };
   function suggest(q, d) {
+    // ziyaretçi sektör yazdıysa mektupta sektör alanı açılır ve dolu gelir
+    { const f = $("#lSec"), i = $("#cSec"); if (f && i && q) { f.hidden = false; i.value = q.trim().slice(0, 40).replace(/^./, c => c.toLocaleUpperCase("tr")); } }
     picked = d ? d.biz.concat(d === DEF ? [] : ["Sosyal medya"]).slice(0, 5) : DEF.biz;
     const name = (q.length > 28 ? q.slice(0, 28) + "…" : q).replace(/[<&>]/g, "");
     out.innerHTML = `<b>${name} için ilk adımlar</b><div class="ys-chips">${picked.map((p, i) => `<span style="--i:${i};--c:${col(p)}"><i></i>${p}</span>`).join("")}</div>`;
