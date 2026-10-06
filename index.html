@@ -1429,6 +1429,13 @@ html.cc-down .cc-dot{scale:1.4}
 .sy-prog,.st-bar{background:rgba(255,255,255,.92)!important}
 .faq-p{background:rgba(255,253,249,.95)!important}
 html.cc-link .cc-ring{background:rgba(238,221,246,.45)}
+
+/* sıra: işler sarmalı → anatomi → sektörler → WhatsApp → süreç (sabitlenen bölümler art arda gelmez) */
+#anatomi::before{display:none}
+#bot::before{display:none}
+#bot{padding-bottom:clamp(110px,15vh,170px)!important}
+#surec{position:relative}
+#surec::before{content:"";position:absolute;z-index:3;top:0;left:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));right:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));height:1px;background:linear-gradient(90deg,transparent,var(--line) 12%,var(--line) 88%,transparent)}
 </style>
 <!-- AÇILIŞ: inci boncuklardan isim, sonra dökülme -->
 <style>
@@ -1470,8 +1477,10 @@ html.intro-on,html.intro-on body{overflow:hidden}
   <a href="#top" style="--c:#101217"><span>Giriş</span></a>
   <a href="#hizmetler" style="--c:#2E43FF"><span>Hizmetler</span></a>
   <a href="#paket" style="--c:#0C9F63"><span>Sepetini doldur</span></a>
-  <a href="#bot" style="--c:#7044F2"><span>WhatsApp asistanı</span></a>
   <a href="#kareler" style="--c:#E39A12;--t:#101217"><span>İşler</span></a>
+  <a href="#isler" style="--c:#D9306F"><span>Sektörler</span></a>
+  <a href="#bot" style="--c:#7044F2"><span>WhatsApp asistanı</span></a>
+  <a href="#surec" style="--c:#4C9474"><span>Nasıl çalışıyoruz</span></a>
   <a href="#iletisim" style="--c:#101217"><span>İletişim</span></a>
   <button class="dock-t" type="button" aria-expanded="false" aria-controls="dock"><i class="bg" aria-hidden="true"><b></b><b></b><b></b></i><span>Menü</span></button>
 </nav>
@@ -1695,6 +1704,19 @@ html.intro-on,html.intro-on body{overflow:hidden}
 
 
 
+<!-- PROJE SARMALI -->
+<section class="hx" id="kareler">
+  <div class="wrap">
+    <div class="hx-panel" id="hxPanel" data-cursor="Kaydır">
+      
+      <div class="hx-title"><h2>Yaptığımız<br><em>işler</em></h2></div>
+      <canvas id="hxGl" aria-hidden="true"></canvas>
+      <div class="hx-cap" aria-hidden="true"><span></span><span id="hxNum">12 iş</span></div>
+      <div class="hx-grid" id="hxGrid"></div>
+    </div>
+  </div>
+</section>
+
 <!-- ÜRÜN ANATOMİSİ -->
 <section class="an" id="anatomi">
   <canvas id="anGl" aria-label="Parçalarına ayrılan pompalı cam şişe" role="img"></canvas>
@@ -1709,6 +1731,33 @@ html.intro-on,html.intro-on body{overflow:hidden}
   </div>
   </div>
   <div class="an-count" id="anCount">7 parça</div>
+</section>
+
+<!-- SEKTÖR SİSTEMİ -->
+<section class="sy" id="isler">
+  <div class="sy-pin">
+    <div class="sy-panel" id="syPanel">
+      <canvas id="syGl" aria-label="Kıvrımlı cam bir borudan sırayla raflara düşen sektör küreleri" role="img"></canvas>
+      <div class="sy-head">
+        <span class="sy-eb">Sektörler</span>
+        <h2>Hangi sektör <em>olursa</em></h2>
+        <p>Her sektörden bir deneyim küresi.</p>
+      </div>
+      <div class="sy-prog" aria-hidden="true"><span id="tCount">0 / 5 sektör</span><span class="tbar"><i id="tBar"></i></span></div>
+      <div class="sy-end" id="tEnd">
+          <h3 id="tEndH">Sizin sektörünüz nedir?</h3>
+          <form class="ys-f" id="ysForm" autocomplete="off">
+            <label for="ysIn" class="sr">Sektörünüz</label>
+            <input id="ysIn" type="text" placeholder="Ne iş yapıyorsunuz? Örn. çiçekçi, avukat, otel…" maxlength="40">
+            <button class="btn" type="submit">Ekle</button>
+          </form>
+          <div class="ys-q" id="ysQ"><button type="button">Çiçekçi</button><button type="button">Diş kliniği</button><button type="button">Spor salonu</button><button type="button">Avukat</button><button type="button">Pastane</button><button type="button">Veteriner</button></div>
+          <div class="ys-out" id="ysOut" aria-live="polite"></div>
+          <div class="ys-act" id="ysAct" hidden><button class="btn ghost" type="button" id="ysAdd">Sepete ekle</button><a class="btn accent" href="#iletisim" id="ysSend">Bu işlerle yazın</a></div>
+        </div>
+      <div class="sy-flat" id="syFlat"></div>
+    </div>
+  </div>
 </section>
 
 <!-- WHATSAPP ASİSTANI -->
@@ -1741,46 +1790,6 @@ html.intro-on,html.intro-on body{overflow:hidden}
         <div class="bcard"><div class="bh"><span>Müşteri listesi</span><em id="bRowsN">3 kişi</em></div><div class="brows" id="bRows"></div></div>
         <div class="bcard"><div class="bh"><span>Ekip bildirimleri</span><em class="live">canlı</em></div><div class="btoasts" id="bToasts"><div class="bt idle">Henüz bildirim yok</div></div></div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- PROJE SARMALI -->
-<section class="hx" id="kareler">
-  <div class="wrap">
-    <div class="hx-panel" id="hxPanel" data-cursor="Kaydır">
-      
-      <div class="hx-title"><h2>Yaptığımız<br><em>işler</em></h2></div>
-      <canvas id="hxGl" aria-hidden="true"></canvas>
-      <div class="hx-cap" aria-hidden="true"><span></span><span id="hxNum">12 iş</span></div>
-      <div class="hx-grid" id="hxGrid"></div>
-    </div>
-  </div>
-</section>
-
-<!-- SEKTÖR SİSTEMİ -->
-<section class="sy" id="isler">
-  <div class="sy-pin">
-    <div class="sy-panel" id="syPanel">
-      <canvas id="syGl" aria-label="Kıvrımlı cam bir borudan sırayla raflara düşen sektör küreleri" role="img"></canvas>
-      <div class="sy-head">
-        <span class="sy-eb">Sektörler</span>
-        <h2>Hangi sektör <em>olursa</em></h2>
-        <p>Her sektörden bir deneyim küresi.</p>
-      </div>
-      <div class="sy-prog" aria-hidden="true"><span id="tCount">0 / 5 sektör</span><span class="tbar"><i id="tBar"></i></span></div>
-      <div class="sy-end" id="tEnd">
-          <h3 id="tEndH">Sizin sektörünüz nedir?</h3>
-          <form class="ys-f" id="ysForm" autocomplete="off">
-            <label for="ysIn" class="sr">Sektörünüz</label>
-            <input id="ysIn" type="text" placeholder="Ne iş yapıyorsunuz? Örn. çiçekçi, avukat, otel…" maxlength="40">
-            <button class="btn" type="submit">Ekle</button>
-          </form>
-          <div class="ys-q" id="ysQ"><button type="button">Çiçekçi</button><button type="button">Diş kliniği</button><button type="button">Spor salonu</button><button type="button">Avukat</button><button type="button">Pastane</button><button type="button">Veteriner</button></div>
-          <div class="ys-out" id="ysOut" aria-live="polite"></div>
-          <div class="ys-act" id="ysAct" hidden><button class="btn ghost" type="button" id="ysAdd">Sepete ekle</button><a class="btn accent" href="#iletisim" id="ysSend">Bu işlerle yazın</a></div>
-        </div>
-      <div class="sy-flat" id="syFlat"></div>
     </div>
   </div>
 </section>
