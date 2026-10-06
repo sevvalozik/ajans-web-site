@@ -432,8 +432,8 @@ section{position:relative}
 @media (max-width:760px){.orb-info{grid-template-columns:1fr}.orb-info li{font-size:16px;padding:10px 0}}
 
 /* ---------- Butonlarda yuvarlanan harfler ---------- */
-.roll{display:inline-flex;overflow:hidden;height:1.25em;line-height:1.25em;vertical-align:middle}
-.roll > span{display:flex;flex-direction:column;transition:transform .45s cubic-bezier(.65,0,.25,1);transition-delay:calc(var(--i) * 14ms)}
+.roll{display:inline-flex;align-items:flex-start;overflow:hidden;height:1.25em;line-height:1.25em;vertical-align:middle}
+.roll > span{display:flex;flex-direction:column;flex:none;align-self:flex-start;transition:transform .45s cubic-bezier(.65,0,.25,1);transition-delay:calc(var(--i) * 14ms)}
 .roll > span b{font-weight:inherit;white-space:pre}
 a:hover .roll > span,button:hover .roll > span,a:focus-visible .roll > span{transform:translateY(-50%)}
 @media (prefers-reduced-motion: reduce){.roll > span{transition:none}}
@@ -469,6 +469,7 @@ input,textarea,[contenteditable=true]{cursor:text}
 /* ---------- Alt menü: kapalıyken tek küçük düğme, basınca renkli etiketler yukarı açılır ---------- */
 .topbar-in{align-items:flex-start}
 .dock{position:fixed;left:clamp(12px,1.8vw,24px);bottom:calc(clamp(12px,2vw,24px) + env(safe-area-inset-bottom,0px));z-index:60;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+.dock{pointer-events:none}.dock .dock-t{pointer-events:auto}
 .dock .dock-t{
   position:relative;display:flex;align-items:center;gap:12px;height:58px;margin-top:4px;padding:0 26px 0 20px;border-radius:999px;border:0;cursor:pointer;
   background:#CF4B43;color:#fff;font-weight:650;font-size:16px;letter-spacing:-.01em;box-shadow:0 14px 30px -14px rgba(160,50,44,.75),inset 0 1px 0 rgba(255,255,255,.25);
@@ -869,6 +870,10 @@ input,textarea,[contenteditable=true]{cursor:text}
   border-radius:18px;background:rgba(255,255,255,.94);box-shadow:0 20px 40px -20px rgba(60,40,110,.45),inset 0 0 0 1px rgba(16,18,23,.05);padding:14px 16px;
   transition:opacity .25s,scale .45s cubic-bezier(.2,1.5,.4,1)}
 .mx-pop.on{opacity:1;scale:1}
+/* yazılan sektörün kartı: sağa açılır, "Sizinki hangisi" panelinin üstünde kalır */
+.mx-pop.r{z-index:7;translate:var(--dx) -50%;transform-origin:0 50%}
+.mx-pop.r::after{right:auto;left:-7px;border-radius:0 0 0 4px;box-shadow:-3px 3px 6px -3px rgba(60,40,110,.25)}
+@media (max-width:760px){.mx-pop.r{translate:-50% calc(-100% - var(--dy));transform-origin:50% 100%}.mx-pop.r::after{left:50%;border-radius:0 0 4px 0}}
 .mx-pop::after{content:"";position:absolute;right:-7px;top:50%;width:14px;height:14px;margin-top:-7px;background:inherit;transform:rotate(45deg);border-radius:0 4px 0 0;box-shadow:3px -3px 6px -3px rgba(60,40,110,.25)}
 .mx-pop b{display:block;font-size:20px;letter-spacing:-.03em;line-height:1.05}
 .mx-pop b::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:9px;vertical-align:2px;box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 22%,transparent)}
@@ -1183,7 +1188,7 @@ main,footer{position:relative;z-index:1}
 .an-head h2 em{display:block;font-family:var(--serif);font-style:italic;font-weight:400;text-transform:none;letter-spacing:-.02em;
   background:linear-gradient(90deg,#E27B8E,#B98BD9 55%,#7FA3E0);-webkit-background-clip:text;background-clip:text;color:transparent;padding:0 .05em .1em 0}
 .an-head p{margin:18px 0 0;max-width:340px;font-size:15px;line-height:1.55;color:var(--ink-2)}
-.an-cmd{position:absolute;z-index:3;left:var(--gx);bottom:clamp(40px,8vh,80px);display:flex;align-items:center;gap:14px}
+.an-cmd{position:relative;z-index:3;margin-top:28px;display:flex;align-items:center;gap:14px;pointer-events:auto}
 .an-btn{appearance:none;border:0;cursor:pointer;display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 22px 0 18px;border-radius:999px;
   background:#2A2433;color:#F6F2EC;font-family:var(--mono);font-size:14px;letter-spacing:.02em;box-shadow:0 18px 40px -18px rgba(42,36,51,.6);transition:transform .25s}
 .an-btn:hover{transform:translateY(-2px)}
@@ -1209,6 +1214,83 @@ main,footer{position:relative;z-index:1}
 }
 #kareler::after{content:"";position:absolute;bottom:clamp(70px,10vh,110px);left:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));right:max(var(--gutter),calc((100vw - var(--maxw)) / 2 + var(--gutter)));height:1px;background:linear-gradient(90deg,transparent,var(--line) 12%,var(--line) 88%,transparent)}
 #paket::before,#dene::before{content:"";position:absolute;top:clamp(56px,7vh,84px);left:var(--gx);right:var(--gx);height:1px;background:linear-gradient(90deg,transparent,var(--line) 12%,var(--line) 88%,transparent)}
+
+/* ---------- Tek buton dili: pastel dolgulu ana buton, beyaz cam ikincil buton, mürdüm yazı; sepetteki "Bu işlerle yazın" mavi ---------- */
+:root{--plum:#4E2A4A;--btn-grad:linear-gradient(115deg,#FBE3EA 0%,#EEDDF6 40%,#DFE7FB 70%,#FBE3EA 100%)}
+.btn,.sy-end .btn,.letter .btn,.btn.light,.btn.line,.btn.ghost,.sy-end .btn.ghost{
+  min-height:48px;padding:0 22px;border-radius:999px;justify-content:center;font-weight:600;letter-spacing:-.005em;color:var(--plum);border:0;
+  background:var(--btn-grad) 0 0/220% 100%;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(78,42,74,.06),0 0 0 1px rgba(78,42,74,.12),0 14px 28px -18px rgba(110,60,110,.55);
+  transition:transform .25s ease,background-position .6s ease,box-shadow .3s ease,background-color .3s ease}
+.btn:hover,.sy-end .btn:hover,.letter .btn:hover{background-position:100% 0;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 0 0 1px rgba(78,42,74,.2),0 18px 32px -18px rgba(110,60,110,.6)}
+.btn.line,.btn.ghost,.sy-end .btn.ghost{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 0 0 1px rgba(78,42,74,.16)}
+.btn.line:hover,.btn.ghost:hover,.sy-end .btn.ghost:hover{background:rgba(255,255,255,.9);box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(78,42,74,.3)}
+.btn.accent,.sy-end .btn.accent{background:#2E43FF;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 14px 28px -16px rgba(46,67,255,.65)}
+.btn.accent:hover,.sy-end .btn.accent:hover{background:#2337F0}
+.btn:disabled{opacity:.55;cursor:default}
+.tb .btn{min-height:40px;padding:0 16px;font-size:14px;border-radius:999px}
+.letter .btn{min-height:52px}
+/* anatomi komut butonu da aynı dilde */
+.an-btn{background:var(--btn-grad) 0 0/220% 100%!important;color:var(--plum)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 0 0 1px rgba(78,42,74,.14),0 16px 30px -18px rgba(110,60,110,.6)!important;transition:transform .25s,background-position .6s!important}
+.an-btn:hover{background-position:100% 0!important}
+.an-btn i{color:#B65E7A!important}
+.an-btn .caret{background:var(--plum)!important}
+
+/* hayalet konuşma balonu */
+.gsay{position:fixed;left:0;top:0;z-index:55;width:max-content;max-width:250px;padding:14px 16px 15px;border-radius:20px 20px 20px 6px;background:#FFFDF9;color:#4E2A4A;
+  box-shadow:0 0 0 1px rgba(78,42,74,.1),0 22px 44px -20px rgba(90,50,100,.5);font-size:14.5px;line-height:1.45;opacity:0;scale:.6;transform-origin:0 100%;pointer-events:none;
+  transition:opacity .25s,scale .45s cubic-bezier(.2,1.5,.4,1)}
+.gsay.l{border-radius:20px 20px 6px 20px;transform-origin:100% 100%}
+.gsay.on{opacity:1;scale:1;pointer-events:auto}
+.gsay b{display:block;font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:500;font-size:19px;letter-spacing:-.01em;margin-bottom:3px}
+.gsay a{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600;color:#4E2A4A;text-decoration:none;
+  background:linear-gradient(115deg,#FBE3EA,#EEDDF6 50%,#DFE7FB);box-shadow:inset 0 1px 0 #fff,0 0 0 1px rgba(78,42,74,.12)}
+.gsay a::after{content:"→";transition:transform .25s}.gsay a:hover::after{transform:translateX(3px)}
+.gsay button{position:absolute;right:8px;top:6px;border:0;background:none;color:rgba(78,42,74,.45);font-size:18px;line-height:1;cursor:pointer;padding:4px}
+
+/* ---------- Süreç kartları: kâğıt dosya hissi, üst şerit, teslim listesi ---------- */
+.hw-card{border-radius:30px;background:linear-gradient(180deg,var(--bg) 0%,color-mix(in srgb,var(--bg) 45%,#FFFDF9) 62%,#FFFDF9 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 1px rgba(78,42,74,.06),0 2px 0 rgba(78,42,74,.03),0 44px 80px -46px color-mix(in srgb,var(--ac) 55%,rgba(60,40,90,.6));
+  grid-template-rows:auto minmax(0,1fr);row-gap:clamp(14px,2vh,22px)}
+.hw-card::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.5;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .35 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.hw-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px dashed color-mix(in srgb,var(--ac) 30%,transparent);
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:color-mix(in srgb,var(--ac) 70%,#4E2A4A)}
+.hw-top em{font-style:normal;letter-spacing:.06em;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.75);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ac) 25%,transparent);color:#4E2A4A}
+.hw-card .hw-t{display:contents}
+.hw-card .hw-t > :not(.hw-top){grid-column:1}
+.hw-card{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);grid-auto-rows:auto;align-content:start}
+.hw-card .hw-art{grid-column:2;grid-row:2 / span 5;align-self:stretch;border-radius:22px;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px rgba(78,42,74,.06);
+  background-image:radial-gradient(rgba(78,42,74,.09) 1px,transparent 1.3px);background-size:18px 18px;margin-top:4px}
+.hw-n{font-size:clamp(60px,6.6vw,112px);color:var(--ac);margin:0;line-height:.85}
+.hw-t h3{font-size:clamp(34px,3.8vw,58px);color:var(--head,#2A2433);margin-top:auto}
+.hw-t p{color:rgba(42,36,51,.7);font-size:15.5px;margin:0}
+.hw-out{list-style:none;margin:2px 0 0;padding:0;display:flex;flex-direction:column;max-width:34ch}
+.hw-out li{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid color-mix(in srgb,var(--ac) 16%,transparent);font-size:14.5px;font-weight:500;color:#3A3346;
+  opacity:0;transform:translateX(-6px);transition:opacity .4s,transform .5s}
+.hw-out li::before{content:"";flex:none;width:16px;height:16px;border-radius:50%;background:var(--ac) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 8.3 7 10.6 11.6 5.6'/%3E%3C/svg%3E") center/12px no-repeat}
+.hw-card.on .hw-out li{opacity:1;transform:none}
+.hw-card.on .hw-out li:nth-child(2){transition-delay:.12s}.hw-card.on .hw-out li:nth-child(3){transition-delay:.24s}
+/* çizimlerde siyah yok: mürdüm ve pastel */
+.a1 .bub{background:#4E2A4A}
+.a1 .note{box-shadow:0 24px 44px -26px rgba(120,50,80,.35),inset 0 0 0 1px rgba(78,42,74,.05)}
+.a2 .mark{background:linear-gradient(145deg,#6A4A78,#4E2A4A);box-shadow:0 30px 50px -20px rgba(131,102,204,.55)}
+.a2 .sk *{stroke:rgba(131,102,204,.5)}
+.a3 .t-vid{background:#4E2A4A}
+.a3 .t-web b{background:linear-gradient(120deg,#4C9474,#A9D8BF)}
+.a3 .t-ph b{background:linear-gradient(160deg,#F2D08A,#E8A27A)}
+.a3 .t-post b{background:linear-gradient(140deg,#E89AB3,#B7A0E6)}
+.a4 .kpi{box-shadow:0 18px 30px -20px rgba(150,90,40,.4),inset 0 0 0 1px rgba(78,42,74,.05)}
+@media (max-width:900px){
+  .hw-card{grid-template-columns:1fr}
+  .hw-card .hw-art{grid-column:1;grid-row:auto;min-height:0;height:min(220px,30vh)}
+  .hw-out li{padding:6px 0;font-size:13.5px}
+  .hw-card .hw-art{order:9}
+  .hw-card{row-gap:10px;grid-template-rows:none}
+  .hw-n{font-size:52px}
+  .hw-t h3{margin-top:2px;font-size:34px}
+  .hw-t p{font-size:14.5px}
+}
 </style>
 <!-- AÇILIŞ: inci boncuklardan isim, sonra dökülme -->
 <style>
@@ -1473,10 +1555,10 @@ html.intro-on,html.intro-on body{overflow:hidden}
     <span class="an-eb">Ürün animasyonu</span>
     <h2>Ürününüzün<em>anatomisi</em></h2>
     <p>Ürün sayfaları, lansmanlar ve reels için ürünü parça parça anlatan 3D animasyonlar hazırlıyoruz.</p>
-  </div>
-  <div class="an-cmd">
+    <div class="an-cmd">
     <button class="an-btn" id="anBtn" type="button"><i>/</i><span id="anBtnTx">anatomi</span><span class="caret"></span></button>
     <span class="an-hint">Sürükleyip çevirin</span>
+  </div>
   </div>
   <div class="an-count" id="anCount">7 parça</div>
 </section>
@@ -1519,7 +1601,7 @@ html.intro-on,html.intro-on body{overflow:hidden}
 <section class="hx" id="kareler">
   <div class="wrap">
     <div class="hx-panel" id="hxPanel" data-cursor="Kaydır">
-      <div class="hx-top">İşlerden kareler · müşteri adları gizli</div>
+      
       <div class="hx-title"><h2>Yaptığımız<br><em>işler</em></h2></div>
       <canvas id="hxGl" aria-hidden="true"></canvas>
       <div class="hx-cap" aria-hidden="true"><span></span><span id="hxNum">12 iş</span></div>
@@ -1565,23 +1647,23 @@ html.intro-on,html.intro-on body{overflow:hidden}
     </div>
     <ol class="hw-dots" aria-hidden="true"><li class="on"><i></i>Dinleriz</li><li><i></i>Kurarız</li><li><i></i>Üretiriz</li><li><i></i>Ölçeriz</li></ol>
     <div class="hw-deck">
-      <article class="hw-card on" style="--bg:#FFE6EF;--ac:#FF4F8B">
-        <div class="hw-t"><span class="hw-n">01</span><span class="hw-k">Dinleriz</span><h3>Brief</h3><p>İşinizi, hedefinizi ve kısıtlarınızı tek bir sayfaya dökeriz.</p></div>
+      <article class="hw-card on" style="--bg:#FBE4EC;--ac:#C9607F">
+        <div class="hw-t"><span class="hw-top"><span>Adım 01 / 04 · Dinleriz</span><em>1 hafta</em></span><span class="hw-n">01</span><h3>Brief</h3><p>İşinizi, hedefinizi ve kısıtlarınızı tek bir sayfaya dökeriz.</p><ul class="hw-out"><li>Hedef ve kitle</li><li>Rakip taraması</li><li>Bütçe ve takvim</li></ul></div>
         <div class="hw-art a1" aria-hidden="true">
           <div class="bub">Ne lazım?</div>
           <div class="note"><b>Brief</b><i style="--w:86%"></i><i style="--w:64%"></i><i style="--w:78%"></i><i style="--w:42%"></i><span class="chk">✓ Hedef</span><span class="chk">✓ Bütçe</span><span class="chk">✓ Takvim</span></div>
         </div>
       </article>
-      <article class="hw-card" style="--bg:#EEE6FF;--ac:#7B5CFF">
-        <div class="hw-t"><span class="hw-n">02</span><span class="hw-k">Kurarız</span><h3>Fikir</h3><p>Kimliği, planı ve ilk taslakları çıkarır, onayınıza sunarız.</p></div>
+      <article class="hw-card" style="--bg:#ECE5FA;--ac:#8366CC">
+        <div class="hw-t"><span class="hw-top"><span>Adım 02 / 04 · Kurarız</span><em>1–2 hafta</em></span><span class="hw-n">02</span><h3>Fikir</h3><p>Kimliği, planı ve ilk taslakları çıkarır, onayınıza sunarız.</p><ul class="hw-out"><li>Moodboard</li><li>Logo ve kimlik taslağı</li><li>Yol haritası</li></ul></div>
         <div class="hw-art a2" aria-hidden="true">
           <svg viewBox="0 0 300 220"><g class="sk"><circle cx="80" cy="80" r="40"/><path d="M160 40 L230 40 L230 110 L160 110 Z"/><path d="M60 170 Q150 120 240 170"/></g></svg>
           <div class="mark"><span></span></div>
-          <div class="sw"><i style="--c:#7B5CFF"></i><i style="--c:#FF4F8B"></i><i style="--c:#FFC93C"></i><i style="--c:#101217"></i></div>
+          <div class="sw"><i style="--c:#8366CC"></i><i style="--c:#E293AE"></i><i style="--c:#EFCB7D"></i><i style="--c:#4E2A4A"></i></div>
         </div>
       </article>
-      <article class="hw-card" style="--bg:#E2F6EC;--ac:#0C9F63">
-        <div class="hw-t"><span class="hw-n">03</span><span class="hw-k">Üretiriz</span><h3>Üretim</h3><p>Tasarım, kod, içerik ve reklam aynı masada, aynı takvimle ilerler.</p></div>
+      <article class="hw-card" style="--bg:#E2F1E8;--ac:#4C9474">
+        <div class="hw-t"><span class="hw-top"><span>Adım 03 / 04 · Üretiriz</span><em>3–6 hafta</em></span><span class="hw-n">03</span><h3>Üretim</h3><p>Tasarım, kod, içerik ve reklam aynı masada, aynı takvimle ilerler.</p><ul class="hw-out"><li>Tasarım ve yazılım</li><li>Çekim ve içerik</li><li>Haftalık önizleme</li></ul></div>
         <div class="hw-art a3" aria-hidden="true">
           <div class="tl t-web"><b></b><i></i><i></i><i></i></div>
           <div class="tl t-ph"><b></b><i></i><i></i></div>
@@ -1590,8 +1672,8 @@ html.intro-on,html.intro-on body{overflow:hidden}
           <div class="tl t-ad"><b>%</b></div>
         </div>
       </article>
-      <article class="hw-card" style="--bg:#FFEEDD;--ac:#F28A00">
-        <div class="hw-t"><span class="hw-n">04</span><span class="hw-k">Ölçeriz</span><h3>Büyüme</h3><p>Sonuçları takip eder, işleyeni büyütür, işlemeyeni düzeltiriz.</p></div>
+      <article class="hw-card" style="--bg:#FBEBDD;--ac:#C9813F">
+        <div class="hw-t"><span class="hw-top"><span>Adım 04 / 04 · Ölçeriz</span><em>Sürekli</em></span><span class="hw-n">04</span><h3>Büyüme</h3><p>Sonuçları takip eder, işleyeni büyütür, işlemeyeni düzeltiriz.</p><ul class="hw-out"><li>Reklam yönetimi</li><li>Aylık rapor</li><li>İyileştirme turları</li></ul></div>
         <div class="hw-art a4" aria-hidden="true">
           <svg viewBox="0 0 300 200"><g class="gr"><path d="M0 160 H300 M0 110 H300 M0 60 H300"/></g><path class="ln" d="M10 170 C60 160 80 120 120 125 S180 90 210 70 S260 40 290 22"/><circle class="dt" cx="290" cy="22" r="7"/></svg>
           <div class="kpi"><small>Dönüşüm</small><b>+<span class="cnt" data-to="38">0</span>%</b></div>
@@ -2948,7 +3030,7 @@ $("#sendPk").addEventListener("click", () => {
     else { const pal = [["#FF5C9A", "#FFE0EC"], ["#00B3A4", "#D6FFF9"], ["#F9A825", "#FFF4CC"]][ex.length % 3];
       d = { ad: q.trim().slice(0, 22).replace(/^./, c => c.toLocaleUpperCase("tr")), type: [0, 2, 5][ex.length % 3], a: pal[0], b: pal[1], biz: DEF.biz.slice(0, 3) }; }
     ex.forEach(b => { b.gone = true; });
-    const b = makeBall(d, 0, true); b.t0 = performance.now(); b.m.scale.setScalar(BR); suggest(q, hit >= 0 ? SEC[hit] : DEF);
+    const b = makeBall(d, 0, true); b.t0 = performance.now(); b.m.scale.setScalar(BR); b.m.visible = false; b.pop.classList.add("r"); suggest(q, hit >= 0 ? SEC[hit] : DEF);
   };
 
   (function loop() {
@@ -2961,8 +3043,12 @@ $("#sendPk").addEventListener("click", () => {
     balls.forEach((b, i) => {
       b.prev.copy(b.pos); let vis = true, card = false;
       if (b.extra) { // yazılan sektör: tepeden girer, ağza kadar iner
-        if (b.gone) { b.fall = (b.fall || 0) + dt; b.pos.copy(exitP); b.pos.y -= b.fall * b.fall * 14; vis = b.pos.y > -vh * .8; }
-        else { const k = Math.min(1, (now - b.t0) / 3200); onTube((1 - ease(k)) * Lt, b.pos); card = k >= 1; }
+        if (b.gone) {
+          if (b.goneAt == null) { b.goneAt = b.pos.clone(); b.atMouth = b.arrived; }
+          b.fall = (b.fall || 0) + dt;
+          b.pos.copy(b.goneAt); b.shrink = Math.max(0, 1 - b.fall * 2.4); b.shrink *= b.shrink; vis = b.shrink > .01; // eski küre yerinde sönerek kaybolur, yeni küre yalnız tepeden gelir
+        }
+        else { const k = Math.min(1, (now - b.t0) / 3200); onTube((1 - ease(k)) * Lt, b.pos); card = k >= 1; b.arrived = k >= 1; }
       } else if (i < j || (i === j && j < N && f >= HOLD)) { // ağızdan aşağı düşer
         const k = i < j ? 1 : (f - HOLD) / (1 - HOLD), fall = k * k;
         b.pos.set(exitP.x + k * BR * .8, exitP.y - fall * vh * .75, 0); vis = k < .999;
@@ -2974,7 +3060,7 @@ $("#sendPk").addEventListener("click", () => {
       b.m.visible = vis; b.m.position.copy(b.pos);
       const mv = b.pos.distanceTo(b.prev); b.roll += mv / BR; b.m.rotation.set(0, t * .2, -b.roll);
       b.u.uTime.value = t; b.show += ((card ? 1 : 0) - b.show) * Math.min(1, dt * 6); b.u.uGlow.value = b.show;
-      b.m.scale.setScalar(BR * (1 + b.show * .1));
+      b.m.scale.setScalar(BR * (1 + b.show * .1) * (b.shrink == null ? 1 : b.shrink));
       if (card) shown++;
       if (!vis) { b.pop.classList.remove("on"); return; }
       tmp.copy(b.pos).project(cam); const x = (tmp.x + 1) / 2 * W, y = (1 - tmp.y) / 2 * H;
@@ -3081,8 +3167,30 @@ $("#sendPk").addEventListener("click", () => {
   addEventListener("pointermove", e => { mouse = { x: e.clientX, y: e.clientY, t: performance.now() }; }, { passive: true });
   addEventListener("pointerdown", e => {
     if (op < .5) return;
-    if (Math.hypot(e.clientX - pos.x, e.clientY - pos.y) < S * .38) { spinTo += Math.PI * 2; scared = 1; }
+    if (Math.hypot(e.clientX - pos.x, e.clientY - pos.y) < S * .38) {
+      spinTo += Math.PI * 2; scared = 1;
+      if (!e.target.closest("a,button,input,textarea,select,label,.gsay,#orbStage,#pkArea,#stGl,#anGl,#heroPanel canvas")) say();
+    } else if (sayEl && !e.target.closest(".gsay")) hideSay();
   });
+  // tıklanınca tatlı bir balon: soru sormaya davet eder
+  const SAY = [
+    ["Boo!", "Korkmayın, sadece merak ettim. Aklınızda bir proje mi var?", "Bana anlatın", "#iletisim"],
+    ["Psst…", "Fiyat mı soracaktınız? WhatsApp asistanımız gece de cevap veriyor.", "Asistana sorun", "#bot"],
+    ["Merhaba!", "Ben buranın maskotuyum. Ne lazımsa ekibe ben iletirim.", "Mektup yazın", "#iletisim"],
+    ["Hâlâ buradayım", "Takıldığınız bir yer olursa bir soru sormanız yeter.", "Soru sorun", "#iletisim"]
+  ];
+  let sayEl = null, sayI = 0, sayHold = 0, sayTimer = 0;
+  function say() {
+    if (!sayEl) {
+      sayEl = document.createElement("div"); sayEl.className = "gsay"; sayEl.setAttribute("role", "status"); document.body.appendChild(sayEl);
+      sayEl.addEventListener("click", e => { if (e.target.closest("button")) hideSay(); else if (e.target.closest("a")) setTimeout(hideSay, 200); });
+    }
+    const [h, tx, cta, href] = SAY[sayI++ % SAY.length];
+    sayEl.innerHTML = `<button type="button" aria-label="Kapat">×</button><b>${h}</b>${tx}<br><a href="${href}">${cta}</a>`;
+    requestAnimationFrame(() => sayEl.classList.add("on")); sayHold = 7; clearTimeout(sayTimer); sayTimer = setTimeout(hideSay, 7000);
+  }
+  function hideSay() { if (sayEl) sayEl.classList.remove("on"); sayHold = 0; }
+  window.__ghostSay = say;
   addEventListener("scroll", () => { scrollV += (scrollY - lastY); lastY = scrollY; }, { passive: true });
   addEventListener("resize", () => { S = innerWidth < 760 ? 112 : 160; renderer.setSize(S, S); pos.x = Math.min(pos.x, innerWidth - S / 2); pos.y = Math.min(pos.y, innerHeight - S / 2); pickTarget(); });
   // şehir sahnesinin kendi hayaleti var: orada çekilir
@@ -3122,7 +3230,8 @@ $("#sendPk").addEventListener("click", () => {
         else { tgt = { x: innerWidth + S * 2.5, y: -S * 2 }; nextT = 9;
           task.el.style.transform = `translate(${(pos.x - task.ox).toFixed(1)}px,${(pos.y - task.oy).toFixed(1)}px) rotate(${(vel.x / 60).toFixed(1)}deg) scale(${Math.max(.38, 1 - task.t * 1.2).toFixed(3)})`;
           if (pos.x > innerWidth + S * .9 || pos.y < -S * .9) { const d = task.done; task.el.style.transform = ""; task = null; cv.classList.remove("front"); phasing = 1; phaseAt = 18; d && d(); } }
-      } else { nextT -= dt; if (nextT < 0 || Math.hypot(tgt.x - pos.x, tgt.y - pos.y) < 30) { pickTarget(); nextT = 4 + Math.random() * 5; } }
+      } else if (sayHold > 0) { sayHold -= dt; tgt = { x: pos.x, y: pos.y }; } // balon açıkken yerinde süzülür
+      else { nextT -= dt; if (nextT < 0 || Math.hypot(tgt.x - pos.x, tgt.y - pos.y) < 30) { pickTarget(); nextT = 4 + Math.random() * 5; } }
       const md = Math.hypot(mouse.x - pos.x, mouse.y - pos.y);
       if (!task && md < S * .75 && now - mouse.t < 1500) { // imleç yaklaşınca nazikçe kaçar
         const ax = (pos.x - mouse.x) / (md || 1), ay = (pos.y - mouse.y) / (md || 1);
@@ -3139,6 +3248,8 @@ $("#sendPk").addEventListener("click", () => {
     scared = Math.max(0, scared - dt * .8);
     const bob = Math.sin(t * 2.1) * 7;
     cv.style.transform = `translate3d(${(pos.x - S / 2).toFixed(1)}px,${(pos.y - S / 2 + bob).toFixed(1)}px,0)`;
+    if (sayEl && sayEl.classList.contains("on")) { const w = sayEl.offsetWidth, h = sayEl.offsetHeight, left = pos.x + S * .3 + w > innerWidth - 12; sayEl.classList.toggle("l", left);
+      sayEl.style.transform = `translate(${Math.round(left ? pos.x - S * .3 - w : pos.x + S * .3)}px,${Math.round(Math.max(12, pos.y - S * .35 - h + bob))}px)`; }
 
     // duruş: yöne eğilir, imlece bakar, tıklanınca döner
     const nvx = Math.max(-1, Math.min(1, vel.x / 420)), nvy = Math.max(-1, Math.min(1, vel.y / 420));
@@ -3319,7 +3430,7 @@ if (ST) addEventListener("load", () => ST.refresh());
     for (let i = 0; i < 2600; i++) { g.fillStyle = `rgba(120,100,90,${Math.random() * .035})`; g.fillRect(Math.random() * 1024, Math.random() * 600, 1.5, 1.5); }
     g.fillStyle = "#2A2433"; g.textAlign = "center";
     g.font = "500 30px 'Geist Mono', monospace"; g.fillText("N° 07", 512, 120);
-    g.font = "italic 300 150px Fraunces, Georgia, serif"; g.fillText("Çiy", 512, 290);
+    g.font = "italic 300 150px Fraunces, Georgia, serif"; g.fillText("Esinti", 512, 290);
     g.fillStyle = "#C98A92"; g.fillRect(452, 330, 120, 2);
     g.fillStyle = "#6B6474"; g.font = "400 30px Geist, sans-serif"; g.fillText("Yüz serumu · 30 ml", 512, 400);
     g.font = "400 22px 'Geist Mono', monospace"; g.fillText("NEM · IŞILTI · BARİYER", 512, 470);
