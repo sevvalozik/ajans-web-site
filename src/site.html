@@ -163,7 +163,7 @@ p{margin:0}
   font-size:clamp(54px,8.8vw,148px);font-weight:600;
   letter-spacing:-.055em;line-height:.92;color:var(--head);
 }
-.hero-h .ln{display:block;overflow:hidden;padding-bottom:.17em;margin-bottom:-.17em}
+.hero-h .ln{display:block;overflow:hidden;padding-bottom:.17em;margin-bottom:-.17em;white-space:nowrap}
 .hero-h .ln > span{display:inline-block}
 .hero-h .ln:first-child{font-family:"Bricolage Grotesque",var(--f-sans,sans-serif);font-weight:800;letter-spacing:-.05em;font-variation-settings:"opsz" 96}
 .hero-h .ln:last-child{font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:560;letter-spacing:-.035em;font-size:1.12em;line-height:.9;margin-top:-.1em}
@@ -2110,8 +2110,14 @@ document.addEventListener("keydown", e => {
       s0 = wide ? Math.min(1.45, vh / 4.9) : Math.min(.8, vw / 5.2);
       root.scale.setScalar(s0); root.position.set(wide ? vw * .2 : vw * .08, 0, 0);
       Ls = (vh / 2 + .4) / s0 - (wide ? vh * .15 : vh * .2) / s0;
+      if (!wide) { // telefonda takılar başlığın üstünde bitsin (tarayıcı çubukları ekranı kısaltsa da)
+        const hh = $(".hero-h"), pr = panel.getBoundingClientRect();
+        if (hh && pr.height) { const tt = hh.getBoundingClientRect().top - pr.top; const tw = vh / 2 - tt / pr.height * vh;
+          s0 = Math.min(s0, Math.max(.36, (vh / 2 - tw) / 4.9)); root.scale.setScalar(s0);
+          const ry = (tw + .1) / s0 + RING_R + 2.6; /* takıların en altı halka merkezinin ~2.4 birim altına iner */ Ls = Math.max(.6, ((vh / 2) / s0 + .4) - ry); }
+      }
     }
-    size(); new ResizeObserver(size).observe(panel);
+    size(); new ResizeObserver(size).observe(panel); document.fonts && document.fonts.ready.then(size);
     const topY = () => (vh / 2) / s0 + .4;
     A.set(0, topY() + 6, 0); R.set(.3, A.y - Ls, 0); Rq.copy(R);
     const attach = (c, out) => { const ang = Math.atan2(R.x - A.x, A.y - R.y); const cx = R.x + Math.sin(ang) * RING_R, cy = R.y - Math.cos(ang) * RING_R;
@@ -2664,41 +2670,39 @@ $$(".btn").forEach(b => {
   if (!reduce) setInterval(() => vis.forEach(play), 7000);
 })();
 
-/* ---------- Yumuşak hizalama: kaydırma iki bölümün arasında durursa en yakın bölümün başına kayar ---------- */
+/* ---------- Yumuşak hizalama (temkinli): yalnız bölüm sınırına çok yakın durulursa, kaydırma yönünde hizalar ---------- */
 (() => {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const ids = ["#top", "#hizmetler", "#paket", "#kareler", "#anatomi", "#isler", "#bot", "#surec", "#iletisim"];
-  const secs = ids.map(i => $(i)).filter(Boolean);
-  let idle = 0, down = false, busy = false, lastY = scrollY, born = performance.now();
-  addEventListener("pointerdown", () => { down = true; }, { passive: true });
-  addEventListener("pointerup", () => { down = false; schedule(); }, { passive: true });
-  addEventListener("touchstart", () => { down = true; }, { passive: true });
-  addEventListener("touchend", () => { down = false; schedule(); }, { passive: true });
-  const blocked = () => down || busy || performance.now() - born < 2500 || document.documentElement.classList.contains("intro-on")
+  if (!fine) return; // dokunmatikte (telefon/tablet) hiç devreye girmez: iOS'un kendi kaydırmasıyla çakışıp sayfayı zıplatıyordu
+  const secs = ["#top", "#hizmetler", "#paket", "#kareler", "#anatomi", "#isler", "#bot", "#surec", "#iletisim"].map(i => $(i)).filter(Boolean);
+  let idle = 0, down = false, lastY = scrollY, dir = 1, coolUntil = 0, born = performance.now();
+  const cancel = () => clearTimeout(idle);
+  addEventListener("pointerdown", () => { down = true; cancel(); }, { passive: true });
+  addEventListener("pointerup", () => { down = false; }, { passive: true });
+  addEventListener("touchstart", () => { down = true; cancel(); }, { passive: true });
+  addEventListener("touchend", () => { down = false; }, { passive: true });
+  addEventListener("keydown", cancel);
+  const blocked = () => down || performance.now() < coolUntil || performance.now() - born < 3000 || document.documentElement.classList.contains("intro-on")
     || $("#faq.open") || $("#dock.open") || (document.activeElement && /INPUT|TEXTAREA/.test(document.activeElement.tagName));
   function settle() {
     if (blocked()) return;
-    const vh = innerHeight, y = scrollY, max = document.documentElement.scrollHeight - vh;
-    if (y >= max - 4) return; // en altta (alt bilgi) dokunma
-    // ekranı tek başına dolduran bir bölümün içindeysek (sabitlenen sahneler dahil) dokunma
-    for (const el of secs) { const b = el.getBoundingClientRect(); if (b.top <= 1 && b.bottom >= vh - 1) return; }
-    // görünümü en çok paylaşan iki bölümü bul: biri üstte yarım, biri altta yarım kalmış mı?
-    let target = null, best = Infinity;
+    const vh = innerHeight, y = scrollY;
+    if (y >= document.documentElement.scrollHeight - vh - 4) return;
+    for (const el of secs) { const b = el.getBoundingClientRect(); if (b.top <= 1 && b.bottom >= vh - 1) return; } // tek bölüm ekranı dolduruyorsa dokunma
+    let target = null;
     for (const el of secs) {
-      const top = el.getBoundingClientRect().top + y;
-      const d = top - y; // bölüm başının ekranın üstüne uzaklığı
-      if (Math.abs(d) < 6) return; // zaten hizalı
-      if (Math.abs(d) < vh * .42 && Math.abs(d) < Math.abs(best)) { best = d; target = top; }
+      const d = el.getBoundingClientRect().top; // bölüm başının ekran üstüne uzaklığı
+      if (Math.abs(d) < 8) return; // zaten hizalı
+      // yalnız sınıra çok yakınsa: kaydırma yönündeki bölüme %18'e kadar, geride kalana %10'a kadar
+      const ok = dir > 0 ? (d > 0 && d < vh * .18) || (d < 0 && d > -vh * .10) : (d < 0 && d > -vh * .18) || (d > 0 && d < vh * .10);
+      if (ok && (target == null || Math.abs(d) < Math.abs(target))) target = d;
     }
     if (target == null) return;
-    busy = true;
-    const done = () => { busy = false; };
-    if (lenis) lenis.scrollTo(target, { duration: .75, easing: t => 1 - Math.pow(1 - t, 3), onComplete: done });
-    else { scrollTo({ top: target, behavior: "smooth" }); setTimeout(done, 800); }
-    setTimeout(done, 1200);
+    coolUntil = performance.now() + 1800;
+    const to = y + target;
+    if (lenis) lenis.scrollTo(to, { duration: .6, easing: t => 1 - Math.pow(1 - t, 3) }); else scrollTo({ top: to, behavior: "smooth" });
   }
-  function schedule() { clearTimeout(idle); idle = setTimeout(settle, 220); }
-  addEventListener("scroll", () => { if (Math.abs(scrollY - lastY) > 0) schedule(); lastY = scrollY; }, { passive: true });
+  addEventListener("scroll", () => { const dy = scrollY - lastY; if (dy) dir = dy > 0 ? 1 : -1; lastY = scrollY; cancel(); if (performance.now() >= coolUntil) idle = setTimeout(settle, 450); }, { passive: true });
 })();
 
 /* ---------- Klas imleç: nokta imlecin tam yerinde, halka yumuşakça takip eder ---------- */
