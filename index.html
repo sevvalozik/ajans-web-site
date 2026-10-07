@@ -2698,7 +2698,7 @@ $$(".btn").forEach(b => {
 /* ---------- Yumuşak hizalama (temkinli): yalnız bölüm sınırına çok yakın durulursa, kaydırma yönünde hizalar ---------- */
 (() => {
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  if (!fine) return; // dokunmatikte (telefon/tablet) hiç devreye girmez: iOS'un kendi kaydırmasıyla çakışıp sayfayı zıplatıyordu
+  return; // kapalı: dokunmatikte ve dizüstü touchpad'inin süzülen kaydırmasında sayfayı zıplatıyordu
   const secs = ["#top", "#hizmetler", "#paket", "#kareler", "#anatomi", "#isler", "#bot", "#surec", "#iletisim"].map(i => $(i)).filter(Boolean);
   let idle = 0, down = false, lastY = scrollY, dir = 1, coolUntil = 0, born = performance.now();
   const cancel = () => clearTimeout(idle);
